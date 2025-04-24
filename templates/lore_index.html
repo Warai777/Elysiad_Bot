@@ -1,29 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Lore Index - Elysiad</title>
-    <style>
-        body { background: #201146; color: #fff; font-family: 'Segoe UI', Arial, sans-serif;}
-        .container { max-width: 600px; margin: 3rem auto; background: #281b52; border-radius: 16px; padding: 2rem 2rem;}
-        .lore-item { background:#362564; margin-bottom:1em; padding:1em 1.2em; border-radius:10px;}
-        .by { color:#a994ff;}
-        .back { margin-bottom: 1em;}
-    </style>
+    <title>Lore Index | Elysiad</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="container">
-        <a class="back" href="{{ url_for('home') }}">&#8592; Back to Adventure</a>
-        <h2>Global Lore Index</h2>
-        {% if lore %}
-            {% for item in lore %}
-                <div class="lore-item">
-                    {{ item["text"] }}<br>
-                    <span class="by">Discovered by {{ item["by"] }}</span>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No lore has been discovered yet. Go play and find some!</p>
-        {% endif %}
+<div class="container">
+    <h1>Lore Index</h1>
+    <div class="card">
+    {% for entry in lore %}
+        <h3>{{ entry.title }}</h3>
+        <p>{{ entry.content }}</p>
+        <small>Discovered by {{ entry.found_by }} at {{ entry.timestamp }}</small>
+        <hr>
+    {% else %}
+        <p>No lore discovered yet.</p>
+    {% endfor %}
     </div>
+    <a href="/dashboard">Back to dashboard</a>
+</div>
 </body>
 </html>
