@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register - Elysiad</title>
+    <title>Register | Elysiad</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h2>Register</h2>
-    <form method="post">
-        <input name="username" placeholder="Username" required><br>
-        <input name="password" type="password" placeholder="Password" required><br>
+<div class="container">
+    <h1>Elysiad Register</h1>
+    <form method="POST">
+        <div><input name="username" placeholder="Username" required></div>
+        <div><input type="password" name="password" placeholder="Password" required></div>
         <button type="submit">Register</button>
     </form>
-    <p><a href="{{ url_for('login') }}">Already have an account? Login</a></p>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>{% for m in messages %}<li>{{m}}</li>{% endfor %}</ul>
-        {% endif %}
-    {% endwith %}
+    <p>Already have an account? <a href="/login">Login</a></p>
+    {% if error %}<div style="color:red;">{{ error }}</div>{% endif %}
+</div>
 </body>
 </html>
