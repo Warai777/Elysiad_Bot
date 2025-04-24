@@ -138,24 +138,32 @@ async def start(ctx):
     u["Story"]["scene"] = 1
     u["Story"]["history"] = []
     u["LastStory"] = ""
-    u["Story"]["started"] = False
+    u["Story"]["started"] = True
     save_users()
+    # Combined intro + first choice
     intro_prompt = (
         "You are the narrator of a solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
         "Introduce the player as a regular human, waking up with no powers, in an unknown place, and set the stage. "
-        "Immediately after the introduction, present the first scenario and 5 choices (following the established choice rules)."
+        "After the introduction, immediately present the first scenario and offer 5 choices as per the system rules: "
+        "- 1 leads to death (not obvious), 1 progresses the story, 2 are world-building (loop back to choices), 1 is random (dice roll determines good/bad outcome). "
+        "List the 5 choices clearly as: 'Choices: 1. ... 2. ... 3. ... 4. ... 5. ...'."
     )
     response = client_ai.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",  # Or your model of choice
         messages=[{"role": "system", "content": intro_prompt}],
-        max_tokens=350,
-        temperature=0.8
+        max_tokens=700,
+        temperature=0.9
     )
+    def filter_intro(text):
+        # Removes duplicate Choices section if any
+        parts = text.split("Choices:")
+        if len(parts) > 2:
+            return parts[0] + "Choices:" + parts[1]
+        return text
     intro = filter_intro(response.choices[0].message.content)
     u["LastStory"] = intro
-    u["Story"]["started"] = True
     save_users()
-    await ctx.send(f"{ctx.author.mention}, your Elysiad solo adventure begins!\n{intro}\n\nUse `!choose <number>` to start making choices when prompted.")
+    await ctx.send(f"{ctx.author.mention}, your Elysiad solo adventure begins!\n{intro}\n\nUse `!choose <number>` to select your action.")
 
 @bot.command()
 async def stats(ctx):
