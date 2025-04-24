@@ -92,7 +92,7 @@ def generate_global_event():
         "Give: Event Name, World(s), and Description (1-2 sentences, no commentary)."
     )
     response = client_ai.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4-o",
         messages=[{"role": "system", "content": prompt}],
         max_tokens=200,
         temperature=1.2
