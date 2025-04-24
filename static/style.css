@@ -1,12 +1,1 @@
-body {
-    background: #181037;
-    color: #ffe066;
-    font-family: 'Segoe UI', sans-serif;
-}
-a { color: #dabfff; }
-.container { max-width: 900px; margin: 0 auto; padding: 2rem; }
-.card { background: #281c47; padding: 1.5rem; margin-bottom: 1rem; border-radius: 12px; }
-input, button { font-size: 1rem; border-radius: 4px; padding: .5rem; border: none; margin-bottom: .5rem;}
-button { background: #7c3aed; color: white; cursor: pointer; }
-h1, h2, h3 { color: #ffe066; }
-.stat-label { font-weight: bold; color: #dabfff; }
+
