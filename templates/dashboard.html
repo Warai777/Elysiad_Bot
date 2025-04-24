@@ -1,7 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="dashboard-grid">
-    <div class="story-box">
+
+    <!-- BEGIN ADVENTURE BUTTON: Only show if not started -->
+    {% if not user["Story"].get("started", False) %}
+        <form method="post" action="{{ url_for('start_adventure') }}" class="start-form" style="text-align:center; margin-bottom:2em;">
+            <button type="submit" class="btn btn-lg btn-primary">Begin Adventure</button>
+        </form>
+    {% endif %}
+
+    <!-- STORY/CHOICES: Only show if adventure started -->
+    <div class="story-box" {% if not user["Story"].get("started", False) %}style="display:none"{% endif %}>
         <h2>Story</h2>
         <div class="story-content">{{ message|safe }}</div>
         <form method="post" class="choices-form">
@@ -9,6 +18,7 @@
             <button type="submit">Choose</button>
         </form>
     </div>
+
     <div class="side-panel">
         <h3>Your Stat Sheet</h3>
         <div class="stat-sheet">
