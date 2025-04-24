@@ -4,12 +4,12 @@ def singleton_check(port=65432):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         sock.bind(("127.0.0.1", port))
-        return True  # This is the only instance
+        return True
     except OSError:
         print("Another instance of the bot is already running.")
         exit()
 
-singleton_check()  # Call this before starting the botimport discord
+singleton_check()
 
 import discord
 from discord.ext import commands
@@ -20,7 +20,7 @@ import threading
 import datetime
 from flask import Flask, render_template, jsonify
 
-# ========== Persistent Storage ==========
+# ===== Persistent Storage =====
 USER_FILE = "users.json"
 GLOBAL_FILE = "global_state.json"
 
@@ -59,7 +59,7 @@ def get_user(uid, name=None):
         save_users()
     return users[uid]
 
-# ========== OPENAI GPT Setup ==========
+# ===== OPENAI GPT Setup =====
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
 client_ai = openai.OpenAI(api_key=OPENAI_API_KEY)
@@ -84,9 +84,10 @@ Context:
 
 Respond in a light-novel style.
 Present next set of 5 choices at the end of the message (list as "Choices: 1. ... 2. ... etc.")
+NEVER repeat the choices or intro more than once. Do not send duplicate scenes.
 """
 
-# ========== GLOBAL EVENTS ==========
+# ===== GLOBAL EVENTS =====
 EVENT_INTERVAL = 60 * 60  # Every hour
 
 def next_event_time():
@@ -131,7 +132,7 @@ def auto_event_scheduler():
 
 threading.Thread(target=auto_event_scheduler, daemon=True).start()
 
-# ========== DISCORD BOT ==========
+# ===== DISCORD BOT =====
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
@@ -141,7 +142,11 @@ async def on_ready():
     print(f"Elysiad Bot Online as {bot.user}")
 
 def filter_intro(text):
-    return text.split("Choices:")[0].strip()
+    # Remove duplicate "Choices" blocks if any
+    parts = text.split("Choices:")
+    if len(parts) > 2:
+        return parts[0] + "Choices:" + parts[1]
+    return text
 
 @bot.command()
 async def start(ctx):
@@ -189,15 +194,13 @@ async def choose(ctx, number: int):
     if not u["Story"].get("started", False):
         await ctx.send("You must start your adventure first with `!start`.")
         return
-    # Build dynamic prompt
     history = "\n".join(u['Story'].get("history", [])[-5:])
     prompt = ELY_PROMPT.replace("{HISTORY}", history)\
                       .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
     prompt += f"\nCurrent scene: Chapter {u['Story']['chapter']} Scene {u['Story']['scene']}\n"
     prompt += f"User chose: {number}"
-    # GPT Call
     response = client_ai.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=[{"role": "system", "content": prompt}],
         max_tokens=700,
         temperature=0.95
@@ -214,7 +217,7 @@ async def last(ctx):
     u = get_user(ctx.author.id)
     await ctx.send(f"{ctx.author.mention} Previous scene:\n{u['LastStory']}")
 
-# ========== SHOP COMMANDS ==========
+# ===== SHOP COMMANDS =====
 @bot.command()
 async def shop(ctx):
     u = get_user(ctx.author.id)
@@ -247,7 +250,7 @@ async def buy(ctx, number: int):
     save_users()
     await ctx.send(f"You bought {item['name']}!")
 
-# ========== FLASK DASHBOARD ==========
+# ===== FLASK DASHBOARD =====
 app = Flask(__name__)
 
 def seconds_to_clock(secs):
@@ -279,9 +282,7 @@ def timer():
 def run_dashboard():
     app.run(host="0.0.0.0", port=5000)
 
-# Start Flask in background
 threading.Thread(target=run_dashboard, daemon=True).start()
 
-# Run the Discord bot
 if __name__ == "__main__":
     bot.run(DISCORD_TOKEN)
