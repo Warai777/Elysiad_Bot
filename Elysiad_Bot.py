@@ -159,13 +159,17 @@ async def start(ctx):
     u["Story"]["started"] = True
     save_users()
     intro_prompt = (
-        "You are the narrator of a solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
-        "Introduce the player as a regular human, waking up with no powers, in an unknown place, and set the stage. "
-        "After the introduction, immediately present the first scenario and offer 5 choices as per the system rules: "
-        "- 1 leads to death (not obvious), 1 progresses the story, 2 are world-building (loop back to choices), 1 is random (dice roll determines good/bad outcome). "
-        "List the 5 choices clearly as: 'Choices: 1. ... 2. ... 3. ... 4. ... 5. ...'. "
-        "DO NOT repeat the scenario, and present ONLY ONE set of choices. Never repeat yourself."
-    )
+    "You are the narrator for a Discord solo adventure game. "
+    "The player wakes up as a powerless human in a strange multiverse forest. "
+    "FIRST: Write only ONE short introduction (max 2 paragraphs). "
+    "SECOND: Present a scenario and immediately list FIVE possible actions, each numbered, in the following strict format: "
+    "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...' "
+    "Include the word 'Choices:' **followed by** the 5 options. "
+    "Do NOT output anything after the fifth choice. "
+    "NEVER omit the choices. "
+    "NEVER output multiple introductions or duplicate text. "
+    "Your output MUST always end with 'Choices:' and the five choices. "
+)
     response = client_ai.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "system", "content": intro_prompt}],
