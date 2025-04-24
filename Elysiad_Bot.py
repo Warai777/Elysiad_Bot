@@ -6,6 +6,7 @@ import json
 import threading
 import datetime
 from flask import Flask, render_template, jsonify, redirect
+import re
 
 # ======== Persistent Storage =========
 USER_FILE = "users.json"
@@ -145,16 +146,21 @@ async def stats(ctx):
     embed.add_field(name="Progress", value=f"Ch. {u['Story']['chapter']}, Scene {u['Story']['scene']}", inline=False)
     await ctx.send(embed=embed)
 
+def remove_duplicate_choices(text):
+    # Finds all "Choices:" sections and only keeps the first one
+    parts = re.split(r'Choices:', text)
+    if len(parts) > 2:
+        return parts[0] + "Choices:" + parts[1]
+    return text
+
 @bot.command()
 async def choose(ctx, number: int):
     u = get_user(ctx.author.id)
-    # --- Build dynamic prompt
     history = "\n".join(u['Story'].get("history", [])[-5:])
     prompt = ELY_PROMPT.replace("{HISTORY}", history)\
                       .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
     prompt += f"\nCurrent scene: Chapter {u['Story']['chapter']} Scene {u['Story']['scene']}\n"
     prompt += f"User chose: {number}"
-    # --- Call GPT
     response = client_ai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "system", "content": prompt}],
@@ -162,7 +168,7 @@ async def choose(ctx, number: int):
         temperature=0.95
     )
     story = response.choices[0].message.content
-    # --- Save scene to user history, increment scene, update stats as desired
+    story = remove_duplicate_choices(story)   # PATCH: removes double "Choices:"
     u['Story']['history'].append(f"Choice {number}: {story[:200]}...")  # Short log, trim as needed
     u['LastStory'] = story
     u['Story']['scene'] += 1
@@ -178,12 +184,11 @@ async def last(ctx):
 @bot.command()
 async def shop(ctx):
     u = get_user(ctx.author.id)
-    # Example static shop - you can use GPT to generate as before!
     items = [
         {"name": "Senzu Bean", "desc": "Restore HP to full", "stat": "HP", "amt": 100-u["HP"], "cost": 10},
         {"name": "Luck Potion", "desc": "Feel lucky", "stat": "Origin Essence", "amt": 5, "cost": 20}
     ]
-    u["Shop"] = items  # Store for this user
+    u["Shop"] = items
     lines = [f"{i+1}. {x['name']} — {x['desc']} [Cost: {x['cost']} OE]" for i,x in enumerate(items)]
     save_users()
     await ctx.send("**Shop Items:**\n" + "\n".join(lines) + "\nBuy with `!buy <number>`.")
