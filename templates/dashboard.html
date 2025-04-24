@@ -36,7 +36,7 @@
             <button type="submit">Choose</button>
         </form>
         {% elif not user["Story"].get("started", False) %}
-        <form method="post" action="{{ url_for('start_adventure') }}" class="choices-form">
+        <form method="post" action="{{ url_for('dashboard') }}" class="choices-form">
             <button type="submit" style="margin:auto;display:block;">Begin Adventure</button>
         </form>
         {% endif %}
