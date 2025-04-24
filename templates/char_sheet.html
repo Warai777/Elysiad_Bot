@@ -1,1 +1,65 @@
-
+{% extends "layout.html" %}
+{% block content %}
+<div class="char-sheet-box">
+    <h2>{{ username|capitalize }}'s Stat Sheet</h2>
+    <div class="stat-sheet">
+        <strong>Tier:</strong> {{ user['Tier'] }}<br>
+        <strong>Attack Potency:</strong> {{ user['Attack Potency'] }}<br>
+        <strong>Speed:</strong> {{ user['Speed'] }}<br>
+        <strong>Durability:</strong> {{ user['Durability'] }}<br>
+        <strong>Stamina:</strong> {{ user['Stamina'] }}<br>
+        <strong>Range:</strong> {{ user['Range'] }}<br>
+        <strong>Intelligence:</strong> {{ user['Intelligence'] }}<br>
+        <strong>HP:</strong> {{ user['HP'] }}<br>
+        <strong>Origin Essence:</strong> {{ user['Origin Essence'] }}<br>
+        <strong>Inventory:</strong>
+        <ul>
+            {% for item in user['Inventory'] %}
+            <li>{{ item }}</li>
+            {% else %}
+            <li>None</li>
+            {% endfor %}
+        </ul>
+        <strong>Standard Equipment:</strong>
+        <ul>
+            {% for item in user['Standard Equipment'] %}
+            <li>{{ item }}</li>
+            {% else %}
+            <li>None</li>
+            {% endfor %}
+        </ul>
+        <strong>Notable Attacks/Techniques:</strong>
+        <ul>
+            {% for item in user['Notable Attacks/Techniques'] %}
+            <li>{{ item }}</li>
+            {% else %}
+            <li>None</li>
+            {% endfor %}
+        </ul>
+        <strong>Weaknesses:</strong>
+        <ul>
+            {% for item in user['Weaknesses'] %}
+            <li>{{ item }}</li>
+            {% else %}
+            <li>None</li>
+            {% endfor %}
+        </ul>
+        <strong>Recent Actions:</strong>
+        <ul>
+            {% for action in user['Story']['recent']|reverse %}
+            <li>{{ action }}</li>
+            {% else %}
+            <li>No actions yet.</li>
+            {% endfor %}
+        </ul>
+        <strong>Lore Found:</strong>
+        <ul>
+            {% for lore_item in user['Lore'] %}
+            <li>{{ lore_item }}</li>
+            {% else %}
+            <li>No lore yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
