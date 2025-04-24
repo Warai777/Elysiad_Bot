@@ -274,6 +274,39 @@ def lore_index():
 def timer_api():
     return jsonify({"timer": max(0, int(time_until_next_event()))})
 
+@app.route("/start_adventure", methods=["POST"])
+@login_required
+def start_adventure():
+    u = get_user_data(current_user.username)
+    u["Story"]["started"] = True
+    u["Story"]["chapter"] = 1
+    u["Story"]["scene"] = 1
+    u["Story"]["history"] = []
+    u["LastStory"] = ""
+
+    # Generate the intro using GPT-4o (similar to your !start logic)
+    intro_prompt = (
+        "You are the narrator for a web-based solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
+        "The player wakes up as a powerless human in a strange multiverse forest. "
+        "FIRST: Write only ONE short introduction (max 2 paragraphs). "
+        "SECOND: Present a scenario and immediately list FIVE possible actions, each numbered, in the following strict format: "
+        "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...' "
+        "Include the word 'Choices:' **followed by** the 5 options. "
+        "Do NOT output anything after the fifth choice. "
+        "NEVER omit the choices. "
+        "NEVER output multiple introductions or duplicate text. "
+        "Your output MUST always end with 'Choices:' and the five choices."
+    )
+    response = client_ai.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "system", "content": intro_prompt}],
+        max_tokens=700,
+        temperature=0.9
+    )
+    intro = response.choices[0].message.content
+    u["LastStory"] = intro
+    save_users()
+    return redirect(url_for("dashboard"))
 # ========== MAIN ==========
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
