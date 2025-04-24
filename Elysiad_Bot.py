@@ -1,3 +1,15 @@
+import socket
+
+def singleton_check(port=65432):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.bind(("127.0.0.1", port))
+        return True  # This is the only instance
+    except OSError:
+        print("Another instance of the bot is already running.")
+        exit()
+
+singleton_check()  # Call this before starting the botimport discord
 import discord
 from discord.ext import commands
 import openai
