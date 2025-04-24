@@ -143,7 +143,7 @@ async def start(ctx):
     intro_prompt = (
         "You are the narrator of a solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
         "Introduce the player as a regular human, waking up with no powers, in an unknown place, and set the stage. "
-        "Do NOT present choices or options yet, just introduce the scene and the sense of mystery and opportunity."
+        "Immediately after the introduction, present the first scenario and 5 choices (following the established choice rules)."
     )
     response = client_ai.chat.completions.create(
         model="gpt-3.5-turbo",
