@@ -5,10 +5,9 @@ import os
 import json
 import threading
 import datetime
-from flask import Flask, render_template, jsonify, redirect
-import re
+from flask import Flask, render_template, jsonify
 
-# ======== Persistent Storage =========
+# ========== Persistent Storage ==========
 USER_FILE = "users.json"
 GLOBAL_FILE = "global_state.json"
 
@@ -41,13 +40,13 @@ def get_user(uid, name=None):
             "HP": 100,
             "Origin Essence": 0,
             "Inventory": [],
-            "Story": {"chapter": 1, "scene": 1, "history": []},
+            "Story": {"chapter": 1, "scene": 1, "history": [], "started": False},
             "LastStory": ""
         }
         save_users()
     return users[uid]
 
-# ======= OPENAI GPT Setup =======
+# ========== OPENAI GPT Setup ==========
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
 client_ai = openai.OpenAI(api_key=OPENAI_API_KEY)
@@ -75,7 +74,7 @@ Present next set of 5 choices at the end of the message (list as "Choices: 1. ..
 """
 
 # ========== GLOBAL EVENTS ==========
-EVENT_INTERVAL = 60 * 60  # Every hour (in seconds)
+EVENT_INTERVAL = 60 * 60  # Every hour
 
 def next_event_time():
     if not global_state["last_event_time"]:
@@ -114,7 +113,7 @@ def generate_global_event():
 def auto_event_scheduler():
     while True:
         if next_event_time() <= 0:
-            ev = generate_global_event()
+            generate_global_event()
         threading.Event().wait(60)
 
 threading.Thread(target=auto_event_scheduler, daemon=True).start()
@@ -128,12 +127,35 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"Elysiad Bot Online as {bot.user}")
 
+def filter_intro(text):
+    return text.split("Choices:")[0].strip()
+
 @bot.command()
 async def start(ctx):
     u = get_user(ctx.author.id, ctx.author.display_name)
     u["Name"] = ctx.author.display_name
+    u["Story"]["chapter"] = 1
+    u["Story"]["scene"] = 1
+    u["Story"]["history"] = []
+    u["LastStory"] = ""
+    u["Story"]["started"] = False
     save_users()
-    await ctx.send(f"{ctx.author.mention}, your Elysiad solo adventure begins! Use `!choose <number>` to pick choices.")
+    intro_prompt = (
+        "You are the narrator of a solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
+        "Introduce the player as a regular human, waking up with no powers, in an unknown place, and set the stage. "
+        "Do NOT present choices or options yet, just introduce the scene and the sense of mystery and opportunity."
+    )
+    response = client_ai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "system", "content": intro_prompt}],
+        max_tokens=350,
+        temperature=0.8
+    )
+    intro = filter_intro(response.choices[0].message.content)
+    u["LastStory"] = intro
+    u["Story"]["started"] = True
+    save_users()
+    await ctx.send(f"{ctx.author.mention}, your Elysiad solo adventure begins!\n{intro}\n\nUse `!choose <number>` to start making choices when prompted.")
 
 @bot.command()
 async def stats(ctx):
@@ -146,21 +168,19 @@ async def stats(ctx):
     embed.add_field(name="Progress", value=f"Ch. {u['Story']['chapter']}, Scene {u['Story']['scene']}", inline=False)
     await ctx.send(embed=embed)
 
-def remove_duplicate_choices(text):
-    # Finds all "Choices:" sections and only keeps the first one
-    parts = re.split(r'Choices:', text)
-    if len(parts) > 2:
-        return parts[0] + "Choices:" + parts[1]
-    return text
-
 @bot.command()
 async def choose(ctx, number: int):
     u = get_user(ctx.author.id)
+    if not u["Story"].get("started", False):
+        await ctx.send("You must start your adventure first with `!start`.")
+        return
+    # Build dynamic prompt
     history = "\n".join(u['Story'].get("history", [])[-5:])
     prompt = ELY_PROMPT.replace("{HISTORY}", history)\
                       .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
     prompt += f"\nCurrent scene: Chapter {u['Story']['chapter']} Scene {u['Story']['scene']}\n"
     prompt += f"User chose: {number}"
+    # GPT Call
     response = client_ai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "system", "content": prompt}],
@@ -168,8 +188,7 @@ async def choose(ctx, number: int):
         temperature=0.95
     )
     story = response.choices[0].message.content
-    story = remove_duplicate_choices(story)   # PATCH: removes double "Choices:"
-    u['Story']['history'].append(f"Choice {number}: {story[:200]}...")  # Short log, trim as needed
+    u['Story']['history'].append(f"Choice {number}: {story[:200]}...")  # Short log
     u['LastStory'] = story
     u['Story']['scene'] += 1
     save_users()
