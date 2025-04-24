@@ -129,7 +129,7 @@ Context:
 - The world can be affected by current global events: {GLOBAL_EVENT}
 - Player's journey so far: {HISTORY}
 
-Respond in a light-novel style.
+Respond in a detailed and thought-out light-novel style.
 Present next set of 5 choices at the end of the message (list as "Choices: 1. ... 2. ... etc.")
 If any new lore is discovered, mention it clearly as: 'Lore Discovered: ...'
 """
@@ -217,6 +217,26 @@ def dashboard():
     u = get_user_data(current_user.username)
     message = None
 
+    # --- RANDOMIZED INTRO POOLS ---
+    INTRO_TEMPLATES = [
+        # SHADOW SLAVE
+        "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
+        # LORD OF THE MYSTERIES
+        "The city fog was thick, memories of your mundane life fading. You clutch a brass coin, feeling it vibrate with secrets. Then, reality bends, and you stand before the Library of Beginnings, its doors silently inviting you in.",
+        # ONE PIECE
+        "You dreamed of blue seas and distant laughter. Your small apartment vanishes in a spray of salt air—you find yourself before an ancient, barnacle-crusted Library. Above it, a sign reads: 'Beginnings.'",
+        # NARUTO
+        "You hear distant village bells. You look down and see a headband—yet not your own. The world blurs and you stand at the edge of a great Library, its stone gates marked with a swirling spiral.",
+        # BLEACH
+        "A hollow breeze stirs the night. Streetlights flicker; a sword lies at your feet. In the next instant, you stand before the vast Library of Beginnings, its windows glowing faintly in the twilight.",
+        # DRAGON BALL
+        "You feel a surge of energy—yet it’s gone in an instant. Ordinary once more, you watch as a capsule-shaped object vanishes, revealing a path to the mysterious Library of Beginnings.",
+        # STAR WARS
+        "You awaken to the hum of distant machinery. A blue glow—like a lightsaber—briefly illuminates a great Library. You step forward; the stars themselves seem to whisper: 'Your story begins here.'",
+        # HITCHHIKER'S GUIDE
+        "You’re just brushing your teeth when a voice booms: 'Don’t Panic!' Suddenly, you’re standing in front of a vast Library, a towel inexplicably slung over your shoulder. The adventure begins..."
+    ]
+
     # Begin Adventure
     if request.method == "POST" and not u["Story"].get("started", False):
         u["Story"]["started"] = True
@@ -225,23 +245,21 @@ def dashboard():
         u["Story"]["history"] = []
         u["LastStory"] = ""
 
+        # Pick a random intro
+        selected_intro = random.choice(INTRO_TEMPLATES)
+
+        # Now prompt GPT to continue the adventure
         intro_prompt = (
-            "You are the narrator for a web-based solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
-            "The player wakes up as a powerless human in a strange multiverse forest. "
-            "FIRST: Write only ONE short introduction (max 2 paragraphs). "
-            "SECOND: Present a scenario and immediately list FIVE possible actions, each numbered, in the following strict format: "
-            "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...' "
-            "Include the word 'Choices:' **followed by** the 5 options. "
-            "Do NOT output anything after the fifth choice. "
-            "NEVER omit the choices. "
-            "NEVER output multiple introductions or duplicate text. "
-            "Your output MUST always end with 'Choices:' and the five choices."
+            f"{selected_intro}\n\n"
+            "Narrate the scene as a light novel. Immediately follow with a scenario and list FIVE possible actions, numbered. Format strictly as:\n"
+            "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...'\n"
+            "End your message with the 5 choices, no extras."
         )
         response = client_ai.chat.completions.create(
             model="gpt-4o",
             messages=[{"role": "system", "content": intro_prompt}],
             max_tokens=700,
-            temperature=0.9
+            temperature=0.95
         )
         intro = response.choices[0].message.content
         u["LastStory"] = intro
@@ -293,6 +311,7 @@ def dashboard():
         users=users,
         history=u['Story'].get("history", [])
     )
+
 @app.route("/char_sheet/<username>")
 @login_required
 def char_sheet(username):
