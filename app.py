@@ -215,9 +215,43 @@ def logout():
 @login_required
 def dashboard():
     u = get_user_data(current_user.username)
-    # On post: handle choice
     message = None
-    if request.method == "POST":
+
+    # Begin Adventure
+    if request.method == "POST" and not u["Story"].get("started", False):
+        u["Story"]["started"] = True
+        u["Story"]["chapter"] = 1
+        u["Story"]["scene"] = 1
+        u["Story"]["history"] = []
+        u["LastStory"] = ""
+
+        intro_prompt = (
+            "You are the narrator for a web-based solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
+            "The player wakes up as a powerless human in a strange multiverse forest. "
+            "FIRST: Write only ONE short introduction (max 2 paragraphs). "
+            "SECOND: Present a scenario and immediately list FIVE possible actions, each numbered, in the following strict format: "
+            "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...' "
+            "Include the word 'Choices:' **followed by** the 5 options. "
+            "Do NOT output anything after the fifth choice. "
+            "NEVER omit the choices. "
+            "NEVER output multiple introductions or duplicate text. "
+            "Your output MUST always end with 'Choices:' and the five choices."
+        )
+        response = client_ai.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "system", "content": intro_prompt}],
+            max_tokens=700,
+            temperature=0.9
+        )
+        intro = response.choices[0].message.content
+        u["LastStory"] = intro
+        u["Story"]["history"].append(intro)
+        save_users()
+        message = intro
+        return redirect(url_for("dashboard"))
+
+    # Make a choice
+    if request.method == "POST" and u["Story"].get("started", False):
         try:
             number = int(request.form["choice"])
         except:
@@ -235,7 +269,7 @@ def dashboard():
             temperature=0.95
         )
         story = response.choices[0].message.content
-        u['Story']['history'].append(f"Choice {number}: {story[:200]}...")
+        u['Story']['history'].append(f"<b>Choice {number}:</b> {story}")
         u['LastStory'] = story
         u['Story']['scene'] += 1
         update_recent_action(current_user.username, f"Chose {number}: {story[:120]}...")
@@ -249,14 +283,16 @@ def dashboard():
                 u["Lore"].append(new_lore)
         save_users()
         message = story
-    return render_template("dashboard.html",
+
+    return render_template(
+        "dashboard.html",
         user=u,
         message=message or u["LastStory"],
         global_event=global_state.get("current_event"),
         timer=max(0, int(time_until_next_event())),
-        users=users
+        users=users,
+        history=u['Story'].get("history", [])
     )
-
 @app.route("/char_sheet/<username>")
 @login_required
 def char_sheet(username):
@@ -274,33 +310,6 @@ def lore_index():
 def timer_api():
     return jsonify({"timer": max(0, int(time_until_next_event()))})
 
-@app.route("/start_adventure", methods=["POST"])
-@login_required
-def start_adventure():
-    u = get_user_data(current_user.username)
-    u["Story"]["started"] = True
-    u["Story"]["chapter"] = 1
-    u["Story"]["scene"] = 1
-    u["Story"]["history"] = []
-    u["LastStory"] = ""
-
-@app.route("/dashboard", methods=["GET", "POST"])
-@login_required
-def dashboard():
-    u = get_user_data(current_user.username)
-    # ...
-    history_list = u['Story'].get("history", [])
-    # ...
-    return render_template(
-        "dashboard.html",
-        user=u,
-        message=message or u["LastStory"],
-        global_event=global_state.get("current_event"),
-        timer=max(0, int(time_until_next_event())),
-        users=users,
-        history=history_list
-    )
- 
     # Generate the intro using GPT-4o (similar to your !start logic)
     intro_prompt = (
         "You are the narrator for a web-based solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
