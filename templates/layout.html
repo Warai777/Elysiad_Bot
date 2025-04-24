@@ -1,56 +1,168 @@
+<!-- layout.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Elysiad Multiverse Adventure</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script>
-        // Timer for global events
-        function updateTimer() {
-            fetch('/timer').then(res => res.json()).then(data => {
-                let t = data.timer;
-                let m = Math.floor(t / 60);
-                let s = t % 60;
-                document.getElementById("global-timer").innerText =
-                    (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
-            });
+    <title>Elysiad: Multiverse Adventure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #1f1147 0%, #341c63 100%);
+            color: #f1eaff;
+            min-height: 100vh;
         }
-        setInterval(updateTimer, 1000);
-        window.onload = updateTimer;
-    </script>
+        .navbar {
+            background: #2a1760;
+            padding: 1.2em 2em;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px #16083355;
+        }
+        .navbar .logo-title {
+            font-size: 2em;
+            font-family: 'Inter', Arial, sans-serif;
+            color: #a689fa;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+        }
+        .navbar .nav-links {
+            margin-left: 2em;
+            flex: 1;
+        }
+        .navbar .nav-links a {
+            color: #ad8cff;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 1em;
+            transition: color 0.2s;
+        }
+        .navbar .nav-links a:hover {
+            color: #f8a5ff;
+        }
+        .navbar .user-links {
+            margin-left: auto;
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            grid-template-rows: 1fr 250px;
+            gap: 1.5em;
+            max-width: 1400px;
+            margin: 2em auto 0 auto;
+            min-height: 70vh;
+            padding: 0 1em;
+        }
+        .side-left, .side-right, .bottom-right, .lore-box {
+            background: #261646cc;
+            border-radius: 18px;
+            padding: 1.3em 1.1em;
+            box-shadow: 0 8px 30px #25144e33;
+        }
+        .side-left {
+            grid-row: 1 / span 2;
+            grid-column: 1 / 2;
+            margin-bottom: 0.8em;
+            min-width: 0;
+        }
+        .story-box {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            padding: 0 0.3em;
+            margin-top: 0.8em;
+        }
+        .story-content {
+            min-height: 180px;
+            margin-bottom: 2.2em;
+            font-size: 1.19em;
+            line-height: 1.62em;
+        }
+        .choices-form {
+            display: flex;
+            justify-content: center;
+            gap: 0.7em;
+            margin-bottom: 1.5em;
+        }
+        .choices-form input, .choices-form button {
+            padding: 0.5em 1.2em;
+            border-radius: 8px;
+            border: none;
+            font-size: 1.1em;
+        }
+        .choices-form input[type="number"] {
+            width: 80px;
+        }
+        .choices-form button {
+            background: #8233ff;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .choices-form button:hover {
+            background: #b661ff;
+        }
+        .side-right {
+            grid-column: 3 / 4;
+            grid-row: 1 / 2;
+            min-width: 0;
+        }
+        .bottom-right {
+            grid-column: 3 / 4;
+            grid-row: 2 / 3;
+            min-width: 0;
+            margin-top: 0;
+        }
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 220px 1fr 290px;
+                gap: 0.8em;
+            }
+        }
+        @media (max-width: 900px) {
+            .main-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5em;
+            }
+            .side-left, .side-right, .bottom-right {
+                max-width: 100vw;
+            }
+        }
+    </style>
+    {% block head %}{% endblock %}
 </head>
 <body>
-    <nav>
-        <div class="logo">Elysiad</div>
-        {% if current_user.is_authenticated %}
-            <a href="{{ url_for('dashboard') }}">Dashboard</a>
-            <a href="{{ url_for('lore_index') }}">Lore Index</a>
-            <a href="{{ url_for('logout') }}">Logout</a>
-        {% else %}
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('register') }}">Register</a>
+    <div class="navbar">
+        <div class="logo-title">
+            <!-- If you have a logo, you can use <img src="..." style="height:2.2em;vertical-align:middle;"> Elysiad -->
+            Elysiad
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}">Home</a>
+            <a href="{{ url_for('char_sheet', username=current_user.username) }}">Character</a>
+            <a href="{{ url_for('lore_index') }}">Lore</a>
+        </div>
+        <div class="user-links">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </div>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div style="color:#f67; margin:1em auto; text-align:center;">
+                {% for msg in messages %}
+                    {{ msg }}
+                {% endfor %}
+            </div>
         {% endif %}
-    </nav>
-    <div class="global-event-box">
-        <div id="timer-center">
-            <span>Next Global Event in <span id="global-timer"></span></span>
-        </div>
-        <div id="global-event">
-            <strong>Global Event:</strong>
-            {{ global_event or "None" }}
-        </div>
-    </div>
-    <div class="main-content">
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <ul class="flashes">
-              {% for message in messages %}
-                <li>{{ message }}</li>
-              {% endfor %}
-            </ul>
-          {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
-    </div>
+    {% endwith %}
+
+    {% block content %}{% endblock %}
 </body>
 </html>
