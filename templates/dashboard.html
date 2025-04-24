@@ -1,109 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Elysiad Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background: linear-gradient(135deg, #21213a 60%, #17202A 100%);
+            background: #1a1333;
             color: #fff;
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
+            padding: 0;
         }
-        .container { max-width: 900px; margin: auto; padding: 30px 15px; }
-        h1 { font-size: 2.5rem; color: #ffe066; margin-bottom: 10px; }
-        .event-banner {
-            background: #2e86de;
-            color: #fff;
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            font-size: 1.15rem;
-            display: flex; justify-content: space-between; align-items: center;
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 1.5rem;
         }
         .timer {
-            background: #ffb347;
-            color: #222;
-            padding: 4px 12px;
-            border-radius: 6px;
+            text-align: center;
+            font-size: 2.1rem;
+            color: #ffe066;
             font-weight: bold;
+            margin-bottom: 0.7rem;
+            letter-spacing: 2px;
         }
-        .search-bar input {
-            padding: 7px;
+        .event-box {
+            background: #292050;
+            border-radius: 12px;
+            padding: 1.25rem 1.3rem 1.3rem 1.3rem;
+            margin-bottom: 2.2rem;
+            box-shadow: 0 2px 12px 0 rgba(50,30,80,0.17);
+        }
+        .event-title {
+            color: #ffe066;
+            font-weight: bold;
+            font-size: 1.35rem;
+            margin-bottom: 0.7rem;
+        }
+        .event-content {
+            color: #aab6ff;
+            font-size: 1.07rem;
+            line-height: 1.55;
+        }
+        .player-search {
+            margin: 1.1rem 0 1.3rem 0;
+            width: 100%;
+        }
+        .player-search input {
+            width: 100%;
+            padding: 0.7rem;
             border: none;
-            border-radius: 5px;
-            width: 190px;
-            margin-bottom: 12px;
-            margin-right: 6px;
+            border-radius: 8px;
+            background: #211947;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 1.2rem;
         }
-        .player-list {
-            background: #1a1a2e;
+        .card {
+            background: #22134d;
+            color: #ffe066;
             border-radius: 10px;
-            box-shadow: 0 4px 32px #18181866;
-            padding: 12px 0;
-        }
-        .player-row {
+            margin-bottom: 1.3rem;
+            padding: 0.9rem 1.3rem;
             display: flex;
             align-items: center;
-            padding: 10px 20px;
-            border-bottom: 1px solid #22264b;
-            transition: background 0.2s;
+            justify-content: space-between;
         }
-        .player-row:hover {
-            background: #2e2e52;
-        }
-        .avatar {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            margin-right: 20px;
-            object-fit: cover;
-            border: 2px solid #ffe066;
-        }
-        .tier-badge {
-            margin-left: 12px;
-            background: #ffe066;
-            color: #333;
-            padding: 2px 7px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: bold;
-        }
-        .user-link {
-            color: #7ee5f8;
+        .player-link {
+            color: #ffe066;
             text-decoration: none;
-            font-size: 1.18rem;
+            font-size: 1.13rem;
             font-weight: 500;
-            transition: color 0.16s;
+            transition: color 0.2s;
         }
-        .user-link:hover { color: #fff; }
-        .progress { margin-left: auto; font-size: 0.98rem; color: #ffe066; }
-        .activity-feed {
-            background: #232347;
-            border-radius: 8px;
-            margin-top: 32px;
-            padding: 14px 20px;
+        .player-link:hover {
+            color: #d4c85f;
+            text-decoration: underline;
         }
-        .activity-feed h2 { font-size: 1.22rem; color: #f5d97a; margin: 0 0 7px 0; }
-        .activity-row { color: #b3d1ff; margin-bottom: 4px; font-size: 1.01rem;}
-        @media (max-width: 600px) {
-            h1 { font-size: 1.2rem; }
-            .player-row, .activity-feed { padding: 7px; }
-            .avatar { width: 32px; height: 32px; }
-            .container { padding: 9px; }
+        .section-title {
+            font-size: 1.25rem;
+            color: #ffe066;
+            font-weight: bold;
+            margin: 1.9rem 0 0.8rem 0;
+            letter-spacing: 1px;
+        }
+        @media (max-width: 700px) {
+            .container {
+                padding: 0.5rem;
+            }
         }
     </style>
     <script>
-        // Live countdown timer (auto-refresh every second)
-        function startTimer(secs) {
-            let el = document.getElementById('timer');
+        function updateTimer(secs) {
+            const timerElem = document.getElementById("timer");
+            let t = secs;
             function tick() {
-                if (secs < 0) return;
-                let m = Math.floor(secs / 60);
-                let s = secs % 60;
-                el.textContent = m + ":" + (s < 10 ? "0" : "") + s;
-                if (secs > 0) {
-                    secs--;
+                let m = Math.floor(t / 60);
+                let s = t % 60;
+                timerElem.textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
+                if (t > 0) {
+                    t--;
                     setTimeout(tick, 1000);
                 }
             }
@@ -111,55 +107,42 @@
         }
         window.onload = function() {
             {% if time_left %}
-            let secs = {{ time_left.split(":")[0]|int * 60 + time_left.split(":")[1]|int }};
-            startTimer(secs);
+            let timeArr = "{{ time_left }}".split(":");
+            let totalSecs = parseInt(timeArr[0])*60 + parseInt(timeArr[1]);
+            updateTimer(totalSecs);
             {% endif %}
-        }
-        // Search/Filter
-        function filterPlayers() {
-            let search = document.getElementById("playerSearch").value.toLowerCase();
-            let rows = document.querySelectorAll(".player-row");
-            rows.forEach(function(row) {
-                let user = row.querySelector(".user-link").textContent.toLowerCase();
-                row.style.display = user.includes(search) ? "flex" : "none";
-            });
         }
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Elysiad Dashboard</h1>
-        <div class="event-banner">
-            <div>
-                <b>Current Global Event:</b>
-                {{ global_event or "No global event active" }}
-            </div>
-            <div>
-                <span class="timer" id="timer">{{ time_left or "??:??" }}</span>
+        <div class="timer" id="timer"></div>
+        <div class="event-box">
+            <div class="event-title">Current Global Event:</div>
+            <div class="event-content">
+                {{ global_event }}
             </div>
         </div>
-        <div class="search-bar">
-            <input type="text" id="playerSearch" placeholder="Search player..." onkeyup="filterPlayers()">
+        <div class="section-title">All Players</div>
+        <div class="player-search">
+            <input type="text" id="search" placeholder="Search player..." onkeyup="searchPlayers()">
         </div>
-        <div class="player-list">
-            {% for uid, u in users.items() %}
-            <div class="player-row">
-                <img src="https://ui-avatars.com/api/?name={{ u['Name']|urlencode }}&background=312b62&color=fff" class="avatar">
-                <a class="user-link" href="/user/{{ uid }}">{{ u['Name'] }}</a>
-                <span class="tier-badge">{{ u['Tier'] }}</span>
-                <span class="progress">Ch. {{ u['Story']['chapter'] }} | Sc. {{ u['Story']['scene'] }}</span>
+        {% for uid, u in users.items() %}
+            <div class="card">
+                <a href="/user/{{uid}}" class="player-link">{{ u["Name"] or uid }}</a>
+                <span>{{ u["Tier"] }} | Ch. {{ u["Story"]["chapter"] }} | Sc. {{ u["Story"]["scene"] }}</span>
             </div>
-            {% endfor %}
-        </div>
-        <div class="activity-feed">
-            <h2>Recent Activity</h2>
-            {% for uid, u in users.items() %}
-            <div class="activity-row">
-                <b>{{ u['Name'] }}:</b>
-                {{ u['LastStory'][:70] ~ ("..." if u['LastStory']|length > 70 else "") }}
-            </div>
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
+    <script>
+        function searchPlayers() {
+            let input = document.getElementById("search").value.toLowerCase();
+            let cards = document.getElementsByClassName("card");
+            for (let c of cards) {
+                let name = c.querySelector(".player-link").textContent.toLowerCase();
+                c.style.display = name.includes(input) ? "flex" : "none";
+            }
+        }
+    </script>
 </body>
 </html>
