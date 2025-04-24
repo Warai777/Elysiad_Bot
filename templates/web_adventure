@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Elysiad Web Adventure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { background: #201146; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin:0; }
+        .container { max-width: 640px; margin: 2.5rem auto; background: #281b52; border-radius: 16px; padding: 2rem 2rem; box-shadow:0 2px 18px #0006; }
+        .stat { color: #ffe066; margin-right: 2.3em; font-weight: bold;}
+        .choices { margin-top: 2.2rem; }
+        .choice-btn { display:block; background:#433e79; color:#ffe066; border:none; border-radius:9px; padding:1em; margin-bottom:0.7em; font-size:1.15rem; text-align:left; cursor:pointer; transition: background 0.15s;}
+        .choice-btn:hover { background:#644cba; }
+        .lore { margin-top:2.5em; background: #362564; padding: 1em 1.2em; border-radius:10px;}
+        .history { margin:1.8em 0 0 0; }
+        .logout { float: right; color:#ffc2c2; }
+        a { color:#a994ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+        <h2>Elysiad Web Adventure</h2>
+        <div>
+            <span class="stat">Tier: {{ user["Tier"] }}</span>
+            <span class="stat">HP: {{ user["HP"] }}</span>
+            <span class="stat">OE: {{ user["Origin Essence"] }}</span>
+            <span class="stat">Ch. {{ user["Story"]["chapter"] }} | Sc. {{ user["Story"]["scene"] }}</span>
+            <a href="{{ url_for('stats') }}">[Stats]</a> |
+            <a href="{{ url_for('lore') }}">[Lore Index]</a>
+        </div>
+        <div style="margin:1.3rem 0 0.8rem 0; line-height:1.6;">
+            {{ story|safe }}
+        </div>
+        <div class="choices">
+        {% for c in choices %}
+            <form method="get" action="{{ url_for('choose', num=loop.index) }}">
+                <button type="submit" class="choice-btn">{{ c }}</button>
+            </form>
+        {% endfor %}
+        </div>
+        {% if lore_discovered %}
+            <div class="lore">
+                <b>Lore Discovered This Scene:</b>
+                <ul>
+                {% for lore in lore_discovered %}
+                    <li>{{ lore }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div class="history">
+            <b>Recent Actions:</b>
+            <ul>
+            {% for a in user["Story"]["history"][-5:] %}
+                <li>{{ a }}</li>
+            {% else %}
+                <li>No recent actions yet.</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
