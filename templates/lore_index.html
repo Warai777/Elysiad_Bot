@@ -1,1 +1,13 @@
-
+{% extends "layout.html" %}
+{% block content %}
+<div class="lore-box">
+    <h2>Lore Index (All Discovered)</h2>
+    <ul>
+        {% for entry in lore %}
+        <li>{{ entry }}</li>
+        {% else %}
+        <li>No lore discovered yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
