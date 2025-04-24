@@ -284,6 +284,23 @@ def start_adventure():
     u["Story"]["history"] = []
     u["LastStory"] = ""
 
+@app.route("/dashboard", methods=["GET", "POST"])
+@login_required
+def dashboard():
+    u = get_user_data(current_user.username)
+    # ...
+    history_list = u['Story'].get("history", [])
+    # ...
+    return render_template(
+        "dashboard.html",
+        user=u,
+        message=message or u["LastStory"],
+        global_event=global_state.get("current_event"),
+        timer=max(0, int(time_until_next_event())),
+        users=users,
+        history=history_list
+    )
+ 
     # Generate the intro using GPT-4o (similar to your !start logic)
     intro_prompt = (
         "You are the narrator for a web-based solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
