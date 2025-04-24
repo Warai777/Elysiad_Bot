@@ -49,7 +49,16 @@ def get_user(uid, name=None):
     if uid not in users:
         users[uid] = {
             "Name": name or "",
-            "Tier": "10-C (Human)",
+            "Tier": "10-C (Human)",  # VS Battles base tier
+            "Attack Potency": "Human level",
+            "Speed": "Below Average",
+            "Durability": "Human level",
+            "Stamina": "Average",
+            "Range": "Standard melee range",
+            "Intelligence": "Average",
+            "Standard Equipment": [],
+            "Notable Attacks/Techniques": [],
+            "Weaknesses": [],
             "HP": 100,
             "Origin Essence": 0,
             "Inventory": [],
@@ -184,11 +193,28 @@ async def start(ctx):
 @bot.command()
 async def stats(ctx):
     u = get_user(ctx.author.id)
-    embed = discord.Embed(title=f"{u['Name']}'s Stat Sheet", color=discord.Color.purple())
+    embed = discord.Embed(title=f"{u['Name']}'s VS Battles Wiki Stat Sheet", color=discord.Color.purple())
     embed.add_field(name="Tier", value=u['Tier'], inline=False)
+    embed.add_field(name="Attack Potency", value=u['Attack Potency'], inline=False)
+    embed.add_field(name="Speed", value=u['Speed'], inline=False)
+    embed.add_field(name="Durability", value=u['Durability'], inline=False)
+    embed.add_field(name="Stamina", value=u['Stamina'], inline=False)
+    embed.add_field(name="Range", value=u['Range'], inline=False)
+    embed.add_field(name="Intelligence", value=u['Intelligence'], inline=False)
     embed.add_field(name="HP", value=u['HP'], inline=True)
     embed.add_field(name="Origin Essence", value=u['Origin Essence'], inline=True)
-    embed.add_field(name="Inventory", value=", ".join(u["Inventory"]) if u["Inventory"] else "Empty", inline=False)
+    embed.add_field(
+        name="Standard Equipment", 
+        value=", ".join(u["Standard Equipment"]) if u["Standard Equipment"] else "None", 
+        inline=False)
+    embed.add_field(
+        name="Notable Attacks/Techniques", 
+        value=", ".join(u["Notable Attacks/Techniques"]) if u["Notable Attacks/Techniques"] else "None", 
+        inline=False)
+    embed.add_field(
+        name="Weaknesses", 
+        value=", ".join(u["Weaknesses"]) if u["Weaknesses"] else "None", 
+        inline=False)
     embed.add_field(name="Progress", value=f"Ch. {u['Story']['chapter']}, Scene {u['Story']['scene']}", inline=False)
     await ctx.send(embed=embed)
 
