@@ -2,61 +2,92 @@
 {% block content %}
 <div class="dashboard-grid">
 
-    <!-- BEGIN ADVENTURE BUTTON: Only show if not started -->
-    {% if not user["Story"].get("started", False) %}
-        <form method="post" action="{{ url_for('start_adventure') }}" class="start-form" style="text-align:center; margin-bottom:2em;">
-            <button type="submit" class="btn btn-lg btn-primary">Begin Adventure</button>
-        </form>
-    {% endif %}
-
-    <!-- STORY/CHOICES: Only show if adventure started -->
-    <div class="story-box" {% if not user["Story"].get("started", False) %}style="display:none"{% endif %}>
-        <h2>Story</h2>
-        <!-- STORY HISTORY SCROLL BOX -->
-        <div class="story-history" style="max-height:180px; overflow-y:auto; background:#210046; padding:10px; border-radius:8px; margin-bottom:10px;">
-            <strong>Previous Choices & Story:</strong>
-            <ul style="padding-left:18px;">
-            {% for entry in history|reverse %}
-                <li style="margin-bottom:8px;">{{ entry|safe }}</li>
-            {% else %}
-                <li>No previous actions yet.</li>
-            {% endfor %}
-            </ul>
+    <!-- Global Event and Timer -->
+    <div style="text-align: center; margin-bottom: 1.5em;">
+        <h4 style="color: #fff;">
+            <b>Global Event:</b>
+            <span style="color: #b0aaff;">{{ global_event or 'None' }}</span>
+        </h4>
+        <div style="font-size:1.2em; color: #b0aaff;">
+            Next Global Event in: 
+            <span id="timer">{{ timer // 60 }}:{% if timer %}{{ "%02d" % (timer % 60) }}{% else %}00{% endif %}</span>
         </div>
-        <!-- END STORY HISTORY SCROLL BOX -->
-
-        <div class="story-content">{{ message|safe }}</div>
-        <form method="post" class="choices-form">
-            <input type="number" name="choice" min="1" max="5" placeholder="Enter choice 1-5" required>
-            <button type="submit">Choose</button>
-        </form>
     </div>
 
-    <div class="side-panel">
-        <h3>Your Stat Sheet</h3>
-        <div class="stat-sheet">
-            <strong>Tier:</strong> {{ user['Tier'] }}<br>
-            <strong>Attack Potency:</strong> {{ user['Attack Potency'] }}<br>
-            <strong>Speed:</strong> {{ user['Speed'] }}<br>
-            <strong>Durability:</strong> {{ user['Durability'] }}<br>
-            <strong>Stamina:</strong> {{ user['Stamina'] }}<br>
-            <strong>Range:</strong> {{ user['Range'] }}<br>
-            <strong>Intelligence:</strong> {{ user['Intelligence'] }}<br>
-            <strong>HP:</strong> {{ user['HP'] }}<br>
-            <strong>Origin Essence:</strong> {{ user['Origin Essence'] }}<br>
-            <strong>Inventory:</strong>
-            <ul>
-                {% for item in user['Inventory'] %}
-                <li>{{ item }}</li>
-                {% else %}
-                <li>None</li>
+    <div class="row">
+        <!-- STORY AND CHOICE SECTION -->
+        <div class="col-md-8 story-box">
+            <h2>Story</h2>
+
+            <!-- Scrollable story history -->
+            <div class="story-history" style="max-height:320px; overflow-y:auto; background:#271857; padding:1em; border-radius:8px; margin-bottom:1em;">
+                {% for entry in history %}
+                    <div class="story-entry" style="margin-bottom:1em;">{{ entry|safe }}</div>
                 {% endfor %}
+            </div>
+
+            {% if not user["Story"].get("started", False) %}
+                <!-- Begin Adventure -->
+                <form method="post" action="{{ url_for('dashboard') }}" class="start-form" style="text-align:center; margin-bottom:2em;">
+                    <button type="submit" class="btn btn-lg btn-primary">Begin Adventure</button>
+                </form>
+            {% else %}
+                <!-- Choice Form -->
+                <form method="post" class="choices-form d-flex" style="gap:8px;">
+                    <input type="number" name="choice" min="1" max="5" class="form-control" placeholder="Enter choice 1-5" required>
+                    <button type="submit" class="btn btn-success">Choose</button>
+                </form>
+            {% endif %}
+        </div>
+
+        <!-- STATS PANEL -->
+        <div class="col-md-4 side-panel" style="background: #1c1141; color: #fff; border-radius:8px; padding:1.2em;">
+            <h3>Your Stat Sheet</h3>
+            <div class="stat-sheet">
+                <strong>Tier:</strong> {{ user['Tier'] }}<br>
+                <strong>Attack Potency:</strong> {{ user['Attack Potency'] }}<br>
+                <strong>Speed:</strong> {{ user['Speed'] }}<br>
+                <strong>Durability:</strong> {{ user['Durability'] }}<br>
+                <strong>Stamina:</strong> {{ user['Stamina'] }}<br>
+                <strong>Range:</strong> {{ user['Range'] }}<br>
+                <strong>Intelligence:</strong> {{ user['Intelligence'] }}<br>
+                <strong>HP:</strong> {{ user['HP'] }}<br>
+                <strong>Origin Essence:</strong> {{ user['Origin Essence'] }}<br>
+                <strong>Inventory:</strong>
+                <ul>
+                    {% for item in user['Inventory'] %}
+                        <li>{{ item }}</li>
+                    {% else %}
+                        <li>None</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <h4 style="margin-top:1em;">Quick Access</h4>
+            <ul>
+                <li>
+                    <a href="{{ url_for('char_sheet', username=current_user.username) }}" style="color:#b0aaff;">
+                        Your Full Stat Sheet
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('lore_index') }}" style="color:#b0aaff;">
+                        Lore Index
+                    </a>
+                </li>
             </ul>
         </div>
-        <h4>Quick Access</h4>
-        <ul>
-            <li><a href="{{ url_for('char_sheet', username=current_user.username) }}">Your Full Stat Sheet</a></li>
-        </ul>
     </div>
 </div>
+
+<script>
+    // OPTIONAL: Live update for timer
+    let t = {{ timer }};
+    setInterval(function() {
+        if (t > 0) {
+            t--;
+            let min = Math.floor(t/60), sec = t%60;
+            document.getElementById('timer').textContent = min + ":" + (sec<10?"0":"") + sec;
+        }
+    }, 1000);
+</script>
 {% endblock %}
