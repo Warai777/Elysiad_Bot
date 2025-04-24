@@ -10,6 +10,7 @@ def singleton_check(port=65432):
         exit()
 
 singleton_check()  # Call this before starting the botimport discord
+
 import discord
 from discord.ext import commands
 import openai
