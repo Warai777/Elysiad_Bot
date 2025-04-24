@@ -2,147 +2,27 @@
 <html>
 <head>
     <title>Elysiad Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            background: #1a1333;
-            color: #fff;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
-        .timer {
-            text-align: center;
-            font-size: 2.1rem;
-            color: #ffe066;
-            font-weight: bold;
-            margin-bottom: 0.7rem;
-            letter-spacing: 2px;
-        }
-        .event-box {
-            background: #292050;
-            border-radius: 12px;
-            padding: 1.25rem 1.3rem 1.3rem 1.3rem;
-            margin-bottom: 2.2rem;
-            box-shadow: 0 2px 12px 0 rgba(50,30,80,0.17);
-        }
-        .event-title {
-            color: #ffe066;
-            font-weight: bold;
-            font-size: 1.35rem;
-            margin-bottom: 0.7rem;
-        }
-        .event-content {
-            color: #aab6ff;
-            font-size: 1.07rem;
-            line-height: 1.55;
-        }
-        .player-search {
-            margin: 1.1rem 0 1.3rem 0;
-            width: 100%;
-        }
-        .player-search input {
-            width: 100%;
-            padding: 0.7rem;
-            border: none;
-            border-radius: 8px;
-            background: #211947;
-            color: #fff;
-            font-size: 1rem;
-            margin-bottom: 1.2rem;
-        }
-        .card {
-            background: #22134d;
-            color: #ffe066;
-            border-radius: 10px;
-            margin-bottom: 1.3rem;
-            padding: 0.9rem 1.3rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .player-link {
-            color: #ffe066;
-            text-decoration: none;
-            font-size: 1.13rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .player-link:hover {
-            color: #d4c85f;
-            text-decoration: underline;
-        }
-        .section-title {
-            font-size: 1.25rem;
-            color: #ffe066;
-            font-weight: bold;
-            margin: 1.9rem 0 0.8rem 0;
-            letter-spacing: 1px;
-        }
-        @media (max-width: 700px) {
-            .container {
-                padding: 0.5rem;
-            }
-        }
-    </style>
-    <script>
-        function updateTimer(secs) {
-            const timerElem = document.getElementById("timer");
-            let t = secs;
-            function tick() {
-                let m = Math.floor(t / 60);
-                let s = t % 60;
-                timerElem.textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
-                if (t > 0) {
-                    t--;
-                    setTimeout(tick, 1000);
-                }
-            }
-            tick();
-        }
-        window.onload = function() {
-            {% if time_left %}
-            let timeArr = "{{ time_left }}".split(":");
-            let totalSecs = parseInt(timeArr[0])*60 + parseInt(timeArr[1]);
-            updateTimer(totalSecs);
-            {% endif %}
-        }
-    </script>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="timer" id="timer"></div>
-        <div class="event-box">
-            <div class="event-title">Current Global Event:</div>
-            <div class="event-content">
-                {{ global_event }}
-            </div>
-        </div>
-        <div class="section-title">All Players</div>
-        <div class="player-search">
-            <input type="text" id="search" placeholder="Search player..." onkeyup="searchPlayers()">
-        </div>
-        {% for uid, u in users.items() %}
-            <div class="card">
-                <a href="/user/{{uid}}" class="player-link">{{ u["Name"] or uid }}</a>
-                <span>{{ u["Tier"] }} | Ch. {{ u["Story"]["chapter"] }} | Sc. {{ u["Story"]["scene"] }}</span>
-            </div>
-        {% endfor %}
+<div class="container">
+    <h1>Elysiad Dashboard</h1>
+    <div class="card">
+        <b>Current Global Event:</b> {{ global_event or "None" }}
+        <br><b>Time to next event:</b> {{ time_left }}
+        <br><a href="/lore_index">Lore Index</a>
     </div>
-    <script>
-        function searchPlayers() {
-            let input = document.getElementById("search").value.toLowerCase();
-            let cards = document.getElementsByClassName("card");
-            for (let c of cards) {
-                let name = c.querySelector(".player-link").textContent.toLowerCase();
-                c.style.display = name.includes(input) ? "flex" : "none";
-            }
-        }
-    </script>
+    <h2>All Players</h2>
+    <ul>
+    {% for user in users %}
+        <li>
+            <a href="/stat_sheet/{{ user['username'] }}">{{ user['username'] }}</a>
+            (Ch. {{ user['Story']['chapter'] }} | Sc. {{ user['Story']['scene'] }})
+        </li>
+    {% endfor %}
+    </ul>
+    <a href="/adventure">Go to your adventure!</a>
+    <br><a href="/logout">Logout</a>
+</div>
 </body>
 </html>
