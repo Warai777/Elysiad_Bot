@@ -12,6 +12,19 @@
     <!-- STORY/CHOICES: Only show if adventure started -->
     <div class="story-box" {% if not user["Story"].get("started", False) %}style="display:none"{% endif %}>
         <h2>Story</h2>
+        <!-- STORY HISTORY SCROLL BOX -->
+        <div class="story-history" style="max-height:180px; overflow-y:auto; background:#210046; padding:10px; border-radius:8px; margin-bottom:10px;">
+            <strong>Previous Choices & Story:</strong>
+            <ul style="padding-left:18px;">
+            {% for entry in history|reverse %}
+                <li style="margin-bottom:8px;">{{ entry|safe }}</li>
+            {% else %}
+                <li>No previous actions yet.</li>
+            {% endfor %}
+            </ul>
+        </div>
+        <!-- END STORY HISTORY SCROLL BOX -->
+
         <div class="story-content">{{ message|safe }}</div>
         <form method="post" class="choices-form">
             <input type="number" name="choice" min="1" max="5" placeholder="Enter choice 1-5" required>
