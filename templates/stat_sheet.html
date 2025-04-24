@@ -1,34 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Stat Sheet</title>
-    <style>
-        body { background: #201146; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; }
-        .container { max-width: 500px; margin: 3rem auto; background: #281b52; border-radius: 16px; padding: 2rem 2rem;}
-        .back { margin-bottom: 1em; }
-        .statname { color:#ffe066; font-weight:bold;}
-        .statval { color:#fff; }
-    </style>
+    <title>{{ user['username'] }}'s Stat Sheet | Elysiad</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="container">
-        <a class="back" href="{{ url_for('home') }}">&#8592; Back to Adventure</a>
-        <h2>{{ user["Name"] }}'s Stat Sheet</h2>
-        <p><span class="statname">Tier:</span> <span class="statval">{{ user["Tier"] }}</span></p>
-        <p><span class="statname">HP:</span> <span class="statval">{{ user["HP"] }}</span></p>
-        <p><span class="statname">Origin Essence:</span> <span class="statval">{{ user["Origin Essence"] }}</span></p>
-        <p><span class="statname">Inventory:</span> <span class="statval">{{ user["Inventory"]|join(", ") }}</span></p>
-        <p><span class="statname">Progress:</span> Ch. {{ user["Story"]["chapter"] }}, Scene {{ user["Story"]["scene"] }}</p>
-        <div class="history">
-            <b>Recent Actions:</b>
-            <ul>
-            {% for a in user["Story"]["history"][-5:] %}
-                <li>{{ a }}</li>
-            {% else %}
-                <li>No recent actions yet.</li>
-            {% endfor %}
-            </ul>
-        </div>
+<div class="container">
+    <h1>{{ user['username'] }}'s VS Battles Stat Sheet</h1>
+    <div class="card">
+        <div><span class="stat-label">Tier:</span> {{ user['Tier'] }}</div>
+        <div><span class="stat-label">Attack Potency:</span> {{ user['Attack Potency'] }}</div>
+        <div><span class="stat-label">Speed:</span> {{ user['Speed'] }}</div>
+        <div><span class="stat-label">Durability:</span> {{ user['Durability'] }}</div>
+        <div><span class="stat-label">Stamina:</span> {{ user['Stamina'] }}</div>
+        <div><span class="stat-label">Range:</span> {{ user['Range'] }}</div>
+        <div><span class="stat-label">Intelligence:</span> {{ user['Intelligence'] }}</div>
+        <div><span class="stat-label">HP:</span> {{ user['HP'] }}</div>
+        <div><span class="stat-label">Origin Essence:</span> {{ user['Origin Essence'] }}</div>
+        <div><span class="stat-label">Standard Equipment:</span> {{ user['Standard Equipment']|join(', ') or "None" }}</div>
+        <div><span class="stat-label">Notable Attacks/Techniques:</span> {{ user['Notable Attacks/Techniques']|join(', ') or "None" }}</div>
+        <div><span class="stat-label">Weaknesses:</span> {{ user['Weaknesses']|join(', ') or "None" }}</div>
     </div>
+    <h2>Recent Actions</h2>
+    <ul>
+        {% for entry in user['Story']['history']|reverse|slice(0,5) %}
+            <li>{{ entry }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/dashboard">Back to dashboard</a>
+</div>
 </body>
 </html>
