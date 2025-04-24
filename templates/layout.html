@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Elysiad Multiverse Adventure</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        // Timer for global events
+        function updateTimer() {
+            fetch('/timer').then(res => res.json()).then(data => {
+                let t = data.timer;
+                let m = Math.floor(t / 60);
+                let s = t % 60;
+                document.getElementById("global-timer").innerText =
+                    (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+            });
+        }
+        setInterval(updateTimer, 1000);
+        window.onload = updateTimer;
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="logo">Elysiad</div>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('lore_index') }}">Lore Index</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </nav>
+    <div class="global-event-box">
+        <div id="timer-center">
+            <span>Next Global Event in <span id="global-timer"></span></span>
+        </div>
+        <div id="global-event">
+            <strong>Global Event:</strong>
+            {{ global_event or "None" }}
+        </div>
+    </div>
+    <div class="main-content">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
