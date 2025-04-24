@@ -140,26 +140,20 @@ async def start(ctx):
     u["LastStory"] = ""
     u["Story"]["started"] = True
     save_users()
-    # Combined intro + first choice
     intro_prompt = (
         "You are the narrator of a solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
         "Introduce the player as a regular human, waking up with no powers, in an unknown place, and set the stage. "
         "After the introduction, immediately present the first scenario and offer 5 choices as per the system rules: "
         "- 1 leads to death (not obvious), 1 progresses the story, 2 are world-building (loop back to choices), 1 is random (dice roll determines good/bad outcome). "
-        "List the 5 choices clearly as: 'Choices: 1. ... 2. ... 3. ... 4. ... 5. ...'."
+        "List the 5 choices clearly as: 'Choices: 1. ... 2. ... 3. ... 4. ... 5. ...'. "
+        "DO NOT repeat the scenario, and present ONLY ONE set of choices. Never repeat yourself."
     )
     response = client_ai.chat.completions.create(
-        model="gpt-4o",  # Or your model of choice
+        model="gpt-4o",
         messages=[{"role": "system", "content": intro_prompt}],
         max_tokens=700,
         temperature=0.9
     )
-    def filter_intro(text):
-        # Removes duplicate Choices section if any
-        parts = text.split("Choices:")
-        if len(parts) > 2:
-            return parts[0] + "Choices:" + parts[1]
-        return text
     intro = filter_intro(response.choices[0].message.content)
     u["LastStory"] = intro
     save_users()
