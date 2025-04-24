@@ -1,1 +1,39 @@
-
+{% extends "layout.html" %}
+{% block content %}
+<div class="dashboard-grid">
+    <div class="story-box">
+        <h2>Story</h2>
+        <div class="story-content">{{ message|safe }}</div>
+        <form method="post" class="choices-form">
+            <input type="number" name="choice" min="1" max="5" placeholder="Enter choice 1-5" required>
+            <button type="submit">Choose</button>
+        </form>
+    </div>
+    <div class="side-panel">
+        <h3>Your Stat Sheet</h3>
+        <div class="stat-sheet">
+            <strong>Tier:</strong> {{ user['Tier'] }}<br>
+            <strong>Attack Potency:</strong> {{ user['Attack Potency'] }}<br>
+            <strong>Speed:</strong> {{ user['Speed'] }}<br>
+            <strong>Durability:</strong> {{ user['Durability'] }}<br>
+            <strong>Stamina:</strong> {{ user['Stamina'] }}<br>
+            <strong>Range:</strong> {{ user['Range'] }}<br>
+            <strong>Intelligence:</strong> {{ user['Intelligence'] }}<br>
+            <strong>HP:</strong> {{ user['HP'] }}<br>
+            <strong>Origin Essence:</strong> {{ user['Origin Essence'] }}<br>
+            <strong>Inventory:</strong>
+            <ul>
+                {% for item in user['Inventory'] %}
+                <li>{{ item }}</li>
+                {% else %}
+                <li>None</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <h4>Quick Access</h4>
+        <ul>
+            <li><a href="{{ url_for('char_sheet', username=current_user.username) }}">Your Full Stat Sheet</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
