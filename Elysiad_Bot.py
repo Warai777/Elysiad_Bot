@@ -445,7 +445,8 @@ def setglobal():
     return redirect("/")
 
 def run_dashboard():
-    app.run(port=5000)
+   app.run(host='0.0.0.0', port=5000)
+
 
 # Start the dashboard in a new thread
 threading.Thread(target=run_dashboard, daemon=True).start()
