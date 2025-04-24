@@ -2,33 +2,102 @@
 <html>
 <head>
     <title>Elysiad Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { font-family: Arial, background: #1a1536; color: #fff; }
-        h1, h2 { color: #ffe066; }
-        .user-list { display: flex; flex-wrap: wrap; gap: 20px; }
-        .user-card { background: #2c225d; padding: 20px; border-radius: 12px; width: 300px; }
-        .stat { margin: 5px 0; }
-        a { color: #5af5ff; }
+        body {
+            background: #181a20;
+            color: #f0c84b;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #22232b;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px #0008;
+        }
+        h1, h2, h3 {
+            color: #f0c84b;
+        }
+        .event-timer {
+            font-size: 1.2em;
+            color: #70ffb7;
+            margin-bottom: 20px;
+        }
+        .user-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 18px;
+        }
+        .user-card {
+            background: #282a36;
+            border-radius: 8px;
+            padding: 16px;
+            min-width: 160px;
+            text-align: center;
+            color: #ffe48d;
+            box-shadow: 0 2px 8px #0006;
+            transition: transform 0.15s;
+        }
+        .user-card:hover {
+            transform: translateY(-4px) scale(1.04);
+            background: #383a4a;
+        }
+        .user-card a {
+            text-decoration: none;
+            color: #ffd700;
+            font-weight: bold;
+        }
+        @media (max-width: 800px) {
+            .container { margin: 0; border-radius: 0; }
+            .user-list { flex-direction: column; gap: 8px; }
+            .user-card { min-width: 0; }
+        }
     </style>
+    <script>
+        // Timer update (fetches time from /api/timer every second)
+        async function updateTimer() {
+            let resp = await fetch('/api/timer');
+            let data = await resp.json();
+            let secs = data.seconds;
+            let minutes = Math.floor(secs / 60);
+            let seconds = secs % 60;
+            let timerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timer').innerText = timerText;
+            setTimeout(updateTimer, 1000);
+        }
+        window.onload = updateTimer;
+    </script>
 </head>
 <body>
+<div class="container">
     <h1>Elysiad Dashboard</h1>
-    <h2>Current Global Event:</h2>
-    <p>{{ global_event or "None" }}</p>
-    <h3>Time until next event: {{ time_left }}</h3>
-
+    <div>
+        <h2>Current Global Event:</h2>
+        <div style="font-size:1.1em;margin-bottom:10px;">
+            {{ global_event or "None yet." }}
+        </div>
+        <div class="event-timer">
+            Time until next event: <span id="timer"></span>
+        </div>
+    </div>
     <h2>All Players</h2>
     <div class="user-list">
-        {% for uid, user in users.items() %}
-            <div class="user-card">
-                <h3>{{ user["Name"] }}</h3>
-                <div class="stat"><strong>Tier:</strong> {{ user["Tier"] }}</div>
-                <div class="stat"><strong>HP:</strong> {{ user["HP"] }}</div>
-                <div class="stat"><strong>Origin Essence:</strong> {{ user["Origin Essence"] }}</div>
-                <div class="stat"><strong>Progress:</strong> Ch. {{ user["Story"]["chapter"] }}, Scene {{ user["Story"]["scene"] }}</div>
-                <a href="/user/{{ uid }}">View Full Sheet</a>
+        {% for uid, u in users.items() %}
+        <div class="user-card">
+            <a href="/user/{{ uid }}">{{ u['Name'] or "Unnamed" }}</a>
+            <div style="font-size:0.95em; margin-top:5px;">
+                Tier: {{ u['Tier'] }}<br>
+                HP: {{ u['HP'] }}<br>
+                OE: {{ u['Origin Essence'] }}
             </div>
+        </div>
         {% endfor %}
     </div>
+</div>
 </body>
 </html>
