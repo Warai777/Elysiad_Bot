@@ -1,103 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Elysiad Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background: #181a20;
-            color: #f0c84b;
+            background: linear-gradient(135deg, #21213a 60%, #17202A 100%);
+            color: #fff;
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
-            padding: 0;
         }
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #22232b;
-            border-radius: 12px;
-            box-shadow: 0 4px 24px #0008;
-        }
-        h1, h2, h3 {
-            color: #f0c84b;
-        }
-        .event-timer {
-            font-size: 1.2em;
-            color: #70ffb7;
+        .container { max-width: 900px; margin: auto; padding: 30px 15px; }
+        h1 { font-size: 2.5rem; color: #ffe066; margin-bottom: 10px; }
+        .event-banner {
+            background: #2e86de;
+            color: #fff;
+            padding: 12px 20px;
             margin-bottom: 20px;
-        }
-        .user-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-top: 18px;
-        }
-        .user-card {
-            background: #282a36;
             border-radius: 8px;
-            padding: 16px;
-            min-width: 160px;
-            text-align: center;
-            color: #ffe48d;
-            box-shadow: 0 2px 8px #0006;
-            transition: transform 0.15s;
+            font-size: 1.15rem;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .user-card:hover {
-            transform: translateY(-4px) scale(1.04);
-            background: #383a4a;
-        }
-        .user-card a {
-            text-decoration: none;
-            color: #ffd700;
+        .timer {
+            background: #ffb347;
+            color: #222;
+            padding: 4px 12px;
+            border-radius: 6px;
             font-weight: bold;
         }
-        @media (max-width: 800px) {
-            .container { margin: 0; border-radius: 0; }
-            .user-list { flex-direction: column; gap: 8px; }
-            .user-card { min-width: 0; }
+        .search-bar input {
+            padding: 7px;
+            border: none;
+            border-radius: 5px;
+            width: 190px;
+            margin-bottom: 12px;
+            margin-right: 6px;
+        }
+        .player-list {
+            background: #1a1a2e;
+            border-radius: 10px;
+            box-shadow: 0 4px 32px #18181866;
+            padding: 12px 0;
+        }
+        .player-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #22264b;
+            transition: background 0.2s;
+        }
+        .player-row:hover {
+            background: #2e2e52;
+        }
+        .avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            margin-right: 20px;
+            object-fit: cover;
+            border: 2px solid #ffe066;
+        }
+        .tier-badge {
+            margin-left: 12px;
+            background: #ffe066;
+            color: #333;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+        .user-link {
+            color: #7ee5f8;
+            text-decoration: none;
+            font-size: 1.18rem;
+            font-weight: 500;
+            transition: color 0.16s;
+        }
+        .user-link:hover { color: #fff; }
+        .progress { margin-left: auto; font-size: 0.98rem; color: #ffe066; }
+        .activity-feed {
+            background: #232347;
+            border-radius: 8px;
+            margin-top: 32px;
+            padding: 14px 20px;
+        }
+        .activity-feed h2 { font-size: 1.22rem; color: #f5d97a; margin: 0 0 7px 0; }
+        .activity-row { color: #b3d1ff; margin-bottom: 4px; font-size: 1.01rem;}
+        @media (max-width: 600px) {
+            h1 { font-size: 1.2rem; }
+            .player-row, .activity-feed { padding: 7px; }
+            .avatar { width: 32px; height: 32px; }
+            .container { padding: 9px; }
         }
     </style>
     <script>
-        // Timer update (fetches time from /api/timer every second)
-        async function updateTimer() {
-            let resp = await fetch('/api/timer');
-            let data = await resp.json();
-            let secs = data.seconds;
-            let minutes = Math.floor(secs / 60);
-            let seconds = secs % 60;
-            let timerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('timer').innerText = timerText;
-            setTimeout(updateTimer, 1000);
+        // Live countdown timer (auto-refresh every second)
+        function startTimer(secs) {
+            let el = document.getElementById('timer');
+            function tick() {
+                if (secs < 0) return;
+                let m = Math.floor(secs / 60);
+                let s = secs % 60;
+                el.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+                if (secs > 0) {
+                    secs--;
+                    setTimeout(tick, 1000);
+                }
+            }
+            tick();
         }
-        window.onload = updateTimer;
+        window.onload = function() {
+            {% if time_left %}
+            let secs = {{ time_left.split(":")[0]|int * 60 + time_left.split(":")[1]|int }};
+            startTimer(secs);
+            {% endif %}
+        }
+        // Search/Filter
+        function filterPlayers() {
+            let search = document.getElementById("playerSearch").value.toLowerCase();
+            let rows = document.querySelectorAll(".player-row");
+            rows.forEach(function(row) {
+                let user = row.querySelector(".user-link").textContent.toLowerCase();
+                row.style.display = user.includes(search) ? "flex" : "none";
+            });
+        }
     </script>
 </head>
 <body>
-<div class="container">
-    <h1>Elysiad Dashboard</h1>
-    <div>
-        <h2>Current Global Event:</h2>
-        <div style="font-size:1.1em;margin-bottom:10px;">
-            {{ global_event or "None yet." }}
-        </div>
-        <div class="event-timer">
-            Time until next event: <span id="timer"></span>
-        </div>
-    </div>
-    <h2>All Players</h2>
-    <div class="user-list">
-        {% for uid, u in users.items() %}
-        <div class="user-card">
-            <a href="/user/{{ uid }}">{{ u['Name'] or "Unnamed" }}</a>
-            <div style="font-size:0.95em; margin-top:5px;">
-                Tier: {{ u['Tier'] }}<br>
-                HP: {{ u['HP'] }}<br>
-                OE: {{ u['Origin Essence'] }}
+    <div class="container">
+        <h1>Elysiad Dashboard</h1>
+        <div class="event-banner">
+            <div>
+                <b>Current Global Event:</b>
+                {{ global_event or "No global event active" }}
+            </div>
+            <div>
+                <span class="timer" id="timer">{{ time_left or "??:??" }}</span>
             </div>
         </div>
-        {% endfor %}
+        <div class="search-bar">
+            <input type="text" id="playerSearch" placeholder="Search player..." onkeyup="filterPlayers()">
+        </div>
+        <div class="player-list">
+            {% for uid, u in users.items() %}
+            <div class="player-row">
+                <img src="https://ui-avatars.com/api/?name={{ u['Name']|urlencode }}&background=312b62&color=fff" class="avatar">
+                <a class="user-link" href="/user/{{ uid }}">{{ u['Name'] }}</a>
+                <span class="tier-badge">{{ u['Tier'] }}</span>
+                <span class="progress">Ch. {{ u['Story']['chapter'] }} | Sc. {{ u['Story']['scene'] }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="activity-feed">
+            <h2>Recent Activity</h2>
+            {% for uid, u in users.items() %}
+            <div class="activity-row">
+                <b>{{ u['Name'] }}:</b>
+                {{ u['LastStory'][:70] ~ ("..." if u['LastStory']|length > 70 else "") }}
+            </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
 </body>
 </html>
