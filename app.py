@@ -4,7 +4,7 @@ import datetime
 import threading
 import random
 import time
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash, Response, stream_with_context
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, Response, stream_with_context
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from flask_bcrypt import Bcrypt
 import openai
@@ -124,6 +124,7 @@ def update_recent_action(username, action):
     save_users()
 
 # --- ROUTES ---
+
 @app.route("/")
 def home():
     if current_user.is_authenticated:
@@ -181,7 +182,7 @@ def dashboard():
         "dashboard.html",
         user=u,
         global_event=global_state.get("current_event"),
-        timer=0,
+        timer=0,  # not used in this HTML
         users=users,
         history=u['Story'].get("history", []),
         next_event_ts=next_event_ts
@@ -193,20 +194,19 @@ def stream_story():
     u = get_user_data(current_user.username)
 
     def stream_openai_response(prompt):
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions.create(
             model="gpt-4o",
             messages=[{"role": "system", "content": prompt}],
-            stream=True,
             max_tokens=700,
             temperature=0.95,
+            stream=True,
         )
         full_story = ""
         for chunk in response:
-            content = chunk['choices'][0].get('delta', {}).get('content')
-            if content:
-                full_story += content
-                yield content
-        # Save story after stream done
+            content = getattr(chunk.choices[0].delta, "content", "") or ""
+            full_story += content
+            yield content
+        # Update user after streaming
         if "Lore Discovered:" in full_story:
             new_lore = full_story.split("Lore Discovered:", 1)[1].split("\n")[0].strip()
             if new_lore not in lore:
@@ -221,11 +221,10 @@ def stream_story():
         u["Story"]["scene"] += 1
         save_users()
 
-    # New game/intro or next choice
     if request.form.get("begin") == "1":
         INTRO_TEMPLATES = [
             "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
-            # ...add more intros if you wish...
+            # Add more intros if you wish
         ]
         selected_intro = random.choice(INTRO_TEMPLATES)
         prompt = (
@@ -247,7 +246,7 @@ def stream_story():
             number = 1
         history = "\n".join(u['Story'].get("history", [])[-5:])
         prompt = ELY_PROMPT.replace("{HISTORY}", history)\
-            .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
+                          .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
         prompt += f"\nCurrent scene: Chapter {u['Story']['chapter']} Scene {u['Story']['scene']}\n"
         prompt += f"User chose: {number}"
 
