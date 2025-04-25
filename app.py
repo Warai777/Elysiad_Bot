@@ -225,7 +225,7 @@ def dashboard():
         # ... add others ...
     ]
 
-    # Begin Adventure
+    # Begin Adventure (only for initial start, NOT for choices)
     if request.method == "POST" and not u["Story"].get("started", False):
         u["Story"]["started"] = True
         u["Story"]["chapter"] = 1
@@ -252,40 +252,6 @@ def dashboard():
         message = intro
         return redirect(url_for("dashboard"))
 
-    # Make a choice
-    if request.method == "POST" and u["Story"].get("started", False):
-        try:
-            number = int(request.form["choice"])
-        except:
-            flash("Please pick a valid number.", "game")
-            return redirect(url_for("dashboard"))
-        history = "\n".join(u['Story'].get("history", [])[-5:])
-        prompt = ELY_PROMPT.replace("{HISTORY}", history)\
-                          .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
-        prompt += f"\nCurrent scene: Chapter {u['Story']['chapter']} Scene {u['Story']['scene']}\n"
-        prompt += f"User chose: {number}"
-        response = client_ai.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": prompt}],
-            max_tokens=700,
-            temperature=0.95
-        )
-        story = response.choices[0].message.content
-        u['Story']['history'].append(f"<b>Choice {number}:</b> {story}")
-        u['LastStory'] = story
-        u['Story']['scene'] += 1
-        update_recent_action(current_user.username, f"Chose {number}: {story[:120]}...")
-        # Lore detection
-        if "Lore Discovered:" in story:
-            new_lore = story.split("Lore Discovered:", 1)[1].split("\n")[0].strip()
-            if new_lore not in lore:
-                lore.append(new_lore)
-                save_lore()
-            if new_lore not in u["Lore"]:
-                u["Lore"].append(new_lore)
-        save_users()
-        message = story
-
     # === DAILY EVENT TIMER LOGIC ===
     last_event = global_state.get("last_event_time")
     if last_event:
@@ -306,6 +272,43 @@ def dashboard():
         history=u['Story'].get("history", []),
         next_event_ts=next_event_ts
     )
+
+@app.route("/choose", methods=["POST"])
+@login_required
+def choose():
+    u = get_user_data(current_user.username)
+    try:
+        number = int(request.form["choice"])
+    except:
+        return jsonify({"error": "Invalid choice"}), 400
+
+    history = "\n".join(u['Story'].get("history", [])[-5:])
+    prompt = ELY_PROMPT.replace("{HISTORY}", history)\
+                      .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
+    prompt += f"\nCurrent scene: Chapter {u['Story']['chapter']} Scene {u['Story']['scene']}\n"
+    prompt += f"User chose: {number}"
+    response = client_ai.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "system", "content": prompt}],
+        max_tokens=700,
+        temperature=0.95
+    )
+    story = response.choices[0].message.content
+    u['Story']['history'].append(f"<b>Choice {number}:</b> {story}")
+    u['LastStory'] = story
+    u['Story']['scene'] += 1
+    update_recent_action(current_user.username, f"Chose {number}: {story[:120]}...")
+
+    # Lore detection
+    if "Lore Discovered:" in story:
+        new_lore = story.split("Lore Discovered:", 1)[1].split("\n")[0].strip()
+        if new_lore not in lore:
+            lore.append(new_lore)
+            save_lore()
+        if new_lore not in u["Lore"]:
+            u["Lore"].append(new_lore)
+    save_users()
+    return jsonify({"story": story})
 
 @app.route("/char_sheet/<username>")
 @login_required
@@ -333,15 +336,6 @@ def timer_api():
     now = int(time.time())
     return jsonify({"timer": max(0, next_event_ts - now)})
 
-
-@app.route("/choose", methods=["POST"])
-@login_required
-def choose():
-    number = int(request.form["choice"])
-    u = get_user_data(current_user.username)
-    # ... (rest of your choice logic as in /dashboard route) ...
-    # After updating story/history etc:
-    return jsonify({"story": story})
 # ========== MAIN ==========
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
