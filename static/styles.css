@@ -144,6 +144,28 @@ body::before {
   color: #b82d2d;
   border: 1.5px solid #f59c98;
 }
+.begin-adventure-form {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.begin-btn {
+  background: #b26dff;
+  color: #fff;
+  font-size: 1.18em;
+  font-weight: bold;
+  padding: 14px 38px;
+  border-radius: 28px;
+  border: none;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 10px #cf9fff1a;
+  transition: background .2s, color .2s;
+  cursor: pointer;
+}
+.begin-btn:hover {
+  background: #fff;
+  color: #7a32b8;
+}
 
 /* Mascot image (optional) */
 .mascot {
