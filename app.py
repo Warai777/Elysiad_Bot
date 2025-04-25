@@ -333,7 +333,6 @@ def timer_api():
     now = int(time.time())
     return jsonify({"timer": max(0, next_event_ts - now)})
 
-from flask import jsonify
 
 @app.route("/choose", methods=["POST"])
 @login_required
