@@ -28,34 +28,37 @@
             </div>
         </aside>
         <!-- Main Story (Center) -->
-        <main class="story-center-panel">
-            <div class="story-main-box">
-                <div class="story-main-title">Story</div>
-               <div class="story-content-scroll">
-    {{ message|safe }}
-</div>
-</div>
-                {% if not user["Story"]["started"] %}
-                    <form method="post" class="begin-adventure-form">
-                        <button type="submit" class="begin-btn">Begin Adventure</button>
-                    </form>
-                {% else %}
-                    <form method="post" class="choices-form">
-                        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-                        <button type="submit">Choose</button>
-                    </form>
-                {% endif %}
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        <ul class="flashes">
-                        {% for category, msg in messages %}
-                            <li class="flash-{{ category }}">{{ msg }}</li>
-                        {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endwith %}
-            </div>
-        </main>
+        <<main class="story-center-panel">
+    <div class="story-main-box">
+        <div class="story-main-title">Story</div>
+        <div class="story-content-scroll">
+            {% for item in history %}
+                {{ item|safe }}<br>
+            {% endfor %}
+            {{ message|safe }}
+        </div>
+        <!-- MOVE THE FORM INSIDE THE BOX, here: -->
+        {% if not user["Story"]["started"] %}
+            <form method="post" class="begin-adventure-form">
+                <button type="submit" class="begin-btn">Begin Adventure</button>
+            </form>
+        {% else %}
+            <form method="post" class="choices-form">
+                <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                <button type="submit">Choose</button>
+            </form>
+        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, msg in messages %}
+                    <li class="flash-{{ category }}">{{ msg }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+</main>
         <!-- Character Sheet (Right) -->
         <aside class="char-sheet-container">
             <div class="char-sheet-box">
