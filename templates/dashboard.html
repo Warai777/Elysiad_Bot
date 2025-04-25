@@ -125,6 +125,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                if (data.story) {
                 const box = document.getElementById('story-box');
                 typeWriter(box, data.story);
                 // Swap to choice form after intro
