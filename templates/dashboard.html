@@ -22,8 +22,8 @@
                 <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
                 {% if timer %}
                 <div class="event-timer">
-                    <b>Next event in:</b> {{ timer }}s
-                </div>
+    <b>Next event in:</b> <span id="global-timer"></span>
+</div>
                 {% endif %}
             </div>
         </aside>
@@ -79,3 +79,23 @@
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
 </body>
 </html>
+<script>
+(function() {
+    // Use timestamp (UTC seconds) sent from Flask
+    const nextEventTs = {{ next_event_ts|tojson }};
+    function pad(n){ return n < 10 ? '0'+n : n; }
+
+    function updateTimer() {
+        const now = Math.floor(Date.now()/1000); // current time in UTC seconds
+        let diff = nextEventTs - now;
+        if (diff < 0) diff = 0;
+        let hours = Math.floor(diff/3600);
+        let minutes = Math.floor((diff % 3600)/60);
+        let seconds = diff % 60;
+        document.getElementById('global-timer').textContent =
+            pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+    }
+    updateTimer();
+    setInterval(updateTimer, 1000);
+})();
+</script>
