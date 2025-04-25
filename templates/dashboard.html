@@ -42,6 +42,12 @@
             justify-content: flex-start;
             min-width: 0;
             padding: 32px 10px 0 10px;
+        {% if not user["Story"]["started"] %}
+  <form method="post" class="begin-adventure-form">
+    <button type="submit" class="begin-btn">Begin Adventure</button>
+  </form>
+{% endif %}
+
         }
         .main-story-box {
             background: rgba(35, 14, 50, 0.97);
