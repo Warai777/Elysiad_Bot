@@ -36,17 +36,19 @@
                         {{ item|safe }}<br>
                     {% endfor %}
                 </div>
-                <!-- MOVE THE FORM INSIDE THE BOX, here: -->
-                {% if not user["Story"]["started"] %}
-                    <form method="post" class="begin-adventure-form">
-                        <button type="submit" class="begin-btn">Begin Adventure</button>
-                    </form>
-                {% else %}
-                    <form id="choice-form" class="choices-form">
-                        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-                        <button type="submit">Choose</button>
-                    </form>
-                {% endif %}
+                <!-- Begin Adventure and Choices Forms go here -->
+                <div id="button-zone">
+                    {% if not user["Story"]["started"] %}
+                        <form id="begin-form" class="begin-adventure-form">
+                            <button type="submit" class="begin-btn">Begin Adventure</button>
+                        </form>
+                    {% else %}
+                        <form id="choice-form" class="choices-form">
+                            <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                            <button type="submit">Choose</button>
+                        </form>
+                    {% endif %}
+                </div>
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         <ul class="flashes">
@@ -78,7 +80,7 @@
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
 
-    <!-- ALL JS should be here just before </body> -->
+    <!-- JS -->
     <script>
     // Global Event Timer
     (function() {
@@ -98,25 +100,7 @@
         setInterval(updateTimer, 1000);
     })();
 
-    // Choice AJAX + Typewriter
-    const form = document.getElementById('choice-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const data = new FormData(form);
-            fetch('/choose', {
-                method: 'POST',
-                body: data,
-                headers: {'X-Requested-With': 'XMLHttpRequest'}
-            })
-            .then(response => response.json())
-            .then(data => {
-                const box = document.getElementById('story-box');
-                typeWriter(box, data.story);
-                form.reset();
-            });
-        });
-    }
+    // Typewriter effect
     function typeWriter(element, text, i = 0) {
         element.innerHTML = "";
         function type() {
@@ -129,6 +113,35 @@
         }
         type();
     }
-    </script>
-</body>
-</html>
+
+    // Begin Adventure AJAX
+    const beginForm = document.getElementById('begin-form');
+    if (beginForm) {
+        beginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('/begin', {
+                method: 'POST',
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                const box = document.getElementById('story-box');
+                typeWriter(box, data.story);
+                // Swap to choice form after intro
+                document.getElementById('button-zone').innerHTML = `
+                    <form id="choice-form" class="choices-form">
+                        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                        <button type="submit">Choose</button>
+                    </form>
+                `;
+                // Re-attach event handler for new form
+                attachChoiceListener();
+            });
+        });
+    }
+
+    // Choice AJAX
+    function attachChoiceListener() {
+        const form = document.getElementById('choice-form');
+        if (form) {
+            form.addEventListener('submit', function(e)
