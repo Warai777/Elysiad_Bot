@@ -123,10 +123,7 @@ def update_recent_action(username, action):
         recent.pop(0)
     save_users()
 
-# --- GLOBAL EVENTS (same as before, omitted for brevity) ---
-
 # --- ROUTES ---
-
 @app.route("/")
 def home():
     if current_user.is_authenticated:
@@ -184,7 +181,7 @@ def dashboard():
         "dashboard.html",
         user=u,
         global_event=global_state.get("current_event"),
-        timer=0,  # not used in this HTML
+        timer=0,
         users=users,
         history=u['Story'].get("history", []),
         next_event_ts=next_event_ts
@@ -196,7 +193,6 @@ def stream_story():
     u = get_user_data(current_user.username)
 
     def stream_openai_response(prompt):
-        # Streaming call
         response = openai.ChatCompletion.create(
             model="gpt-4o",
             messages=[{"role": "system", "content": prompt}],
@@ -210,9 +206,7 @@ def stream_story():
             if content:
                 full_story += content
                 yield content
-        # When done, update user's story/history (server-side)
-        # -- This happens only once, when streaming completes --
-        # Detect lore
+        # Save story after stream done
         if "Lore Discovered:" in full_story:
             new_lore = full_story.split("Lore Discovered:", 1)[1].split("\n")[0].strip()
             if new_lore not in lore:
@@ -220,7 +214,6 @@ def stream_story():
                 save_lore()
             if new_lore not in u["Lore"]:
                 u["Lore"].append(new_lore)
-        # Update user
         if not u["Story"].get("started"):
             u["Story"]["started"] = True
         u["Story"]["history"].append(full_story)
@@ -228,11 +221,11 @@ def stream_story():
         u["Story"]["scene"] += 1
         save_users()
 
-    # If "begin" is in form, use intro
+    # New game/intro or next choice
     if request.form.get("begin") == "1":
         INTRO_TEMPLATES = [
             "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
-            # ...add more intros here...
+            # ...add more intros if you wish...
         ]
         selected_intro = random.choice(INTRO_TEMPLATES)
         prompt = (
@@ -241,7 +234,6 @@ def stream_story():
             "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...'\n"
             "End your message with the 5 choices, no extras."
         )
-        # Reset story state for new game
         u["Story"]["started"] = True
         u["Story"]["chapter"] = 1
         u["Story"]["scene"] = 1
@@ -249,14 +241,13 @@ def stream_story():
         u["LastStory"] = ""
         save_users()
     else:
-        # It's a story choice!
         try:
             number = int(request.form["choice"])
         except:
             number = 1
         history = "\n".join(u['Story'].get("history", [])[-5:])
         prompt = ELY_PROMPT.replace("{HISTORY}", history)\
-                          .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
+            .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
         prompt += f"\nCurrent scene: Chapter {u['Story']['chapter']} Scene {u['Story']['scene']}\n"
         prompt += f"User chose: {number}"
 
