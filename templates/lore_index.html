@@ -1,13 +1,33 @@
-{% extends "layout.html" %}
-{% block content %}
-<div class="lore-box">
-    <h2>Lore Index (All Discovered)</h2>
-    <ul>
-        {% for entry in lore %}
-        <li>{{ entry }}</li>
-        {% else %}
-        <li>No lore discovered yet.</li>
-        {% endfor %}
-    </ul>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lore | Elysiad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="logo">Elysiad</div>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="signup-btn">Dashboard</a>
+            <a href="{{ url_for('char_sheet', username=current_user.username) }}" class="signup-btn">Character</a>
+            <a href="{{ url_for('logout') }}" class="signup-btn logout">Logout</a>
+        </div>
+    </div>
+    <div class="dashboard-flex" style="justify-content: center; align-items: flex-start;">
+        <div class="story-main-box" style="max-width: 520px;">
+            <div class="story-main-title" style="margin-bottom:18px;">Discovered Lore</div>
+            {% if lore %}
+                <ul style="padding-left: 22px; color: #fff;">
+                    {% for item in lore %}
+                        <li style="margin-bottom:12px;">{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div style="color: #bb93ff;">No lore discovered yet.</div>
+            {% endif %}
+        </div>
+    </div>
+    <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
+</body>
+</html>
