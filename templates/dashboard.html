@@ -55,41 +55,40 @@
             </div>
         </div>
         <!-- Center: Main Story -->
-        <div class="center-main-panel">
-
-            {# BEGIN ADVENTURE BUTTON #}
-            {% if not user["Story"]["started"] %}
+       <div class="main-story-box">
+    <div class="main-story-title">Story</div>
+    <div class="story-content-scroll">
+        {% if not user["Story"]["started"] %}
+            <div style="text-align:center; margin-top:50px; margin-bottom:35px;">
                 <form method="post" class="begin-adventure-form">
                     <button type="submit" class="begin-btn">Begin Adventure</button>
                 </form>
-            {% endif %}
-
-            <div class="main-story-box" {% if not user["Story"]["started"] %}style="opacity:0.38;pointer-events:none;"{% endif %}>
-                <div class="main-story-title">Story</div>
-                <div class="story-content-scroll">
-                    {% for item in history %}
-                        {{ item|safe }}<br>
-                    {% endfor %}
-                    {{ message|safe }}
-                </div>
-                {% if user["Story"]["started"] %}
-                <form method="post" class="choices-form">
-                    <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-                    <button type="submit">Choose</button>
-                </form>
-                {% endif %}
-
-                {% with messages = get_flashed_messages(with_categories=true, category_filter=["game"]) %}
-                  {% if messages %}
-                    <ul class="flashes">
-                      {% for category, msg in messages %}
-                        <li class="flash-{{ category }}">{{ msg }}</li>
-                      {% endfor %}
-                    </ul>
-                  {% endif %}
-                {% endwith %}
+                <div style="margin-top:16px; color:#e4ccff;">Welcome to Elysiad. Click to begin your journey.</div>
             </div>
-        </div>
+        {% else %}
+            {% for item in history %}
+                {{ item|safe }}<br>
+            {% endfor %}
+            {{ message|safe }}
+        {% endif %}
+    </div>
+    {% if user["Story"]["started"] %}
+    <form method="post" class="choices-form">
+        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+        <button type="submit">Choose</button>
+    </form>
+    {% endif %}
+    {% with messages = get_flashed_messages(with_categories=true, category_filter=["game"]) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, msg in messages %}
+            <li class="flash-{{ category }}">{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+
         <!-- Right: Character Data -->
         <div class="side-panel-right">
             <div class="char-sheet-box">
