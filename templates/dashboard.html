@@ -101,18 +101,24 @@
     })();
 
     // Typewriter effect
-    function typeWriter(element, text, i = 0) {
-        element.innerHTML = "";
-        function type() {
-            if (i < text.length) {
-                element.innerHTML += text.charAt(i);
-                i++;
-                element.scrollTop = element.scrollHeight;
-                setTimeout(type, 15);
-            }
+    let isTyping = false;
+
+function typeWriter(element, text, i = 0) {
+    if (isTyping) return; // Block if already typing
+    isTyping = true;
+    element.innerHTML = "";
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            element.scrollTop = element.scrollHeight;
+            setTimeout(type, 15);
+        } else {
+            isTyping = false; // Done
         }
-        type();
     }
+    type();
+}
 
     // Begin Adventure AJAX
     const beginForm = document.getElementById('begin-form');
