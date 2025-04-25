@@ -9,7 +9,6 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from flask_bcrypt import Bcrypt
 import openai
 
-# ========== CONFIG ==========
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "your_secret_key")
 bcrypt = Bcrypt(app)
@@ -18,14 +17,12 @@ login_manager.login_view = "login"
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 client_ai = openai.OpenAI(api_key=OPENAI_API_KEY)
-EVENT_INTERVAL = 24 * 60 * 60  # 24 hours
+EVENT_INTERVAL = 24 * 60 * 60
 
-# ========== FILE PATHS ==========
 USER_FILE = "users.json"
 GLOBAL_FILE = "global_state.json"
 LORE_FILE = "lore.json"
 
-# ========== STORAGE ==========
 def load_json(filename, default):
     if not os.path.exists(filename):
         with open(filename, "w") as f:
@@ -49,7 +46,6 @@ def save_users(): save_json(USER_FILE, users)
 def save_global(): save_json(GLOBAL_FILE, global_state)
 def save_lore(): save_json(LORE_FILE, lore)
 
-# ========== USER MODEL ==========
 class User(UserMixin):
     def __init__(self, username):
         self.id = username
@@ -66,7 +62,6 @@ def load_user(username):
         return User(username)
     return None
 
-# ========== GLOBAL EVENTS ==========
 def generate_global_event():
     prompt = (
         "Invent a new global event for a multiverse crossover of anime/webnovel worlds. "
@@ -108,8 +103,6 @@ def auto_event_scheduler():
         threading.Event().wait(60)
 
 threading.Thread(target=auto_event_scheduler, daemon=True).start()
-
-# ========== STORY ENGINE ==========
 
 ELY_PROMPT = """
 World: Elysiad is a multiverse where anime and web novel worlds overlap.
@@ -167,8 +160,6 @@ def update_recent_action(username, action):
     if len(recent) > 10:
         recent.pop(0)
     save_users()
-
-# ========== ROUTES ==========
 
 @app.route("/")
 def home():
@@ -239,10 +230,9 @@ def begin():
     u = get_user_data(current_user.username)
     if u["Story"].get("started", False):
         return jsonify({"error": "Already started"}), 400
-
     INTRO_TEMPLATES = [
         "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
-        # ... Add more intros for more variety if you want ...
+        # Add more intros as desired
     ]
     u["Story"]["started"] = True
     u["Story"]["chapter"] = 1
@@ -318,7 +308,6 @@ def lore_index():
 
 @app.route("/timer")
 def timer_api():
-    # Live timer endpoint for AJAX/JS
     last_event = global_state.get("last_event_time")
     if last_event:
         last_dt = datetime.datetime.fromisoformat(last_event)
@@ -329,7 +318,6 @@ def timer_api():
     now = int(time.time())
     return jsonify({"timer": max(0, next_event_ts - now)})
 
-# ========== MAIN ==========
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
