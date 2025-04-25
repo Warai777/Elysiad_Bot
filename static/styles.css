@@ -108,9 +108,41 @@ body::before {
     margin-top: 10px;
     transition: background 0.18s;
 }
+
 .login-form button:hover {
     background: #fff;
     color: #7a32b8;
+}
+
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.flashes li {
+  margin: 10px auto;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.04em;
+  max-width: 340px;
+  box-shadow: 0 1px 8px #0002;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.flash-info {
+  background: #e4f0ff;
+  color: #285180;
+  border: 1.5px solid #98bcf5;
+}
+
+.flash-error,
+.flash-game {
+  background: #ffd6d6;
+  color: #b82d2d;
+  border: 1.5px solid #f59c98;
 }
 
 /* Mascot image (optional) */
