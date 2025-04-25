@@ -126,22 +126,22 @@
             .then(response => response.json())
             .then(data => {
                 if (data.story) {
-                const box = document.getElementById('story-box');
-                typeWriter(box, data.story);
-                // Swap to choice form after intro
-                document.getElementById('button-zone').innerHTML = `
-                    <form id="choice-form" class="choices-form">
-                        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-                        <button type="submit">Choose</button>
-                    </form>
-                `;
-                // Re-attach event handler for new form
-                attachChoiceListener();
+                    const box = document.getElementById('story-box');
+                    typeWriter(box, data.story);
+                    // Swap to choice form after intro
+                    document.getElementById('button-zone').innerHTML = `
+                        <form id="choice-form" class="choices-form">
+                            <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                            <button type="submit">Choose</button>
+                        </form>
+                    `;
+                    // Attach listener for choice form
+                    attachChoiceListener();
+                }
             });
         });
     }
 
-    // Choice AJAX
     function attachChoiceListener() {
         const form = document.getElementById('choice-form');
         if (form) {
@@ -162,8 +162,7 @@
             });
         }
     }
-
-    // Attach choice listener if choice-form exists on first page load (user already started)
+    // Attach choice listener on first load if needed
     attachChoiceListener();
     </script>
 </body>
