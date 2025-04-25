@@ -5,67 +5,63 @@
     <title>Create Account | Elysiad</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
-        /* The mascot image in the bottom right */
-        .mascot-bottom-right {
-            position: fixed;
-            bottom: 36px;
-            right: 50px;
-            width: 115px;
-            opacity: 0.19;
-            z-index: 1;
-            pointer-events: none;
-            filter: drop-shadow(0 2px 12px #ba7fff);
+        body {
+            min-height: 100vh;
+            margin: 0;
+            /* Background gradient like login */
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #b18cff 0%, #f69cff 60%, #b18cff 100%);
         }
-        /* The top nav style for both screens */
         .ely-nav {
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 28px 32px 0 22px;
+            padding: 34px 38px 0 32px;
         }
         .ely-nav-title {
-            font-size: 2.1em;
+            font-size: 2em;
             color: #fff;
             font-weight: bold;
-            letter-spacing: 2.5px;
+            letter-spacing: 2px;
         }
         .ely-nav-link {
             background: #fff;
             color: #a362ea;
             font-weight: 600;
-            border-radius: 25px;
-            padding: 10px 30px;
+            border-radius: 24px;
+            padding: 10px 32px;
             text-decoration: none;
-            font-size: 1.15em;
+            font-size: 1.11em;
+            box-shadow: 0 3px 20px #dbb9ff40;
             transition: background 0.2s, color 0.2s;
         }
         .ely-nav-link:hover {
             background: #d2a3ff;
             color: #37004e;
         }
-        /* The center card for both forms */
         .center-card {
-            background: #2a163c;
+            background: #29163d;
             border-radius: 18px;
-            box-shadow: 0 0 60px #0003;
-            max-width: 400px;
+            box-shadow: 0 0 44px #b792e944;
+            max-width: 420px;
             margin: 110px auto 0 auto;
-            padding: 50px 48px 36px 48px;
+            padding: 48px 48px 35px 48px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .center-card h2 {
-            margin-bottom: 30px;
+            margin-bottom: 26px;
             color: #fff;
-            letter-spacing: 1.5px;
-            font-size: 1.6em;
+            font-size: 1.5em;
+            font-weight: 600;
+            letter-spacing: 1.2px;
         }
         .register-input {
             width: 100%;
-            margin-bottom: 16px;
-            padding: 12px 14px;
+            margin-bottom: 14px;
+            padding: 13px 14px;
             border: 1.3px solid #a174ed;
             border-radius: 6px;
             background: #392369;
@@ -86,7 +82,8 @@
             font-weight: bold;
             border-radius: 8px;
             font-size: 1.13em;
-            margin-top: 18px;
+            margin-top: 16px;
+            margin-bottom: 2px;
             cursor: pointer;
             transition: background 0.19s;
         }
@@ -95,7 +92,7 @@
             color: #4a1676;
         }
         .switch-link {
-            margin-top: 26px;
+            margin-top: 18px;
             font-size: 1em;
             color: #c7a7ee;
             text-align: center;
@@ -104,6 +101,17 @@
             color: #fff;
             font-weight: 600;
             text-decoration: underline;
+        }
+        /* Mascot bottom right */
+        .mascot-bottom-right {
+            position: fixed;
+            bottom: 36px;
+            right: 55px;
+            width: 100px;
+            opacity: 0.4;
+            z-index: 1;
+            pointer-events: none;
+            filter: drop-shadow(0 2px 16px #ba7fff);
         }
     </style>
 </head>
