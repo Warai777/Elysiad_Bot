@@ -4,33 +4,6 @@
     <meta charset="UTF-8">
     <title>Elysiad Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        /* ...your other styles... */
-        /* Keep your CSS from before here */
-
-        .begin-adventure-form {
-            margin-bottom: 32px;
-            text-align: center;
-        }
-        .begin-btn {
-            background: #b26dff;
-            color: #fff;
-            border: none;
-            padding: 18px 52px;
-            font-size: 1.25em;
-            font-weight: bold;
-            border-radius: 13px;
-            box-shadow: 0 4px 28px #7e28d426;
-            cursor: pointer;
-            letter-spacing: 2px;
-            transition: background 0.18s, color 0.18s, box-shadow 0.2s;
-        }
-        .begin-btn:hover {
-            background: #fff;
-            color: #7a32b8;
-            box-shadow: 0 0px 24px #b26dff55;
-        }
-    </style>
 </head>
 <body>
     <div class="top-bar">
@@ -55,40 +28,41 @@
             </div>
         </div>
         <!-- Center: Main Story -->
-       <div class="main-story-box">
-    <div class="main-story-title">Story</div>
-    <div class="story-content-scroll">
-        {% if not user["Story"]["started"] %}
-            <div style="text-align:center; margin-top:50px; margin-bottom:35px;">
-                <form method="post" class="begin-adventure-form">
-                    <button type="submit" class="begin-btn">Begin Adventure</button>
+        <div class="center-main-panel">
+            <div class="main-story-box">
+                <div class="main-story-title">Story</div>
+                <div class="story-content-scroll">
+                    {% if not user["Story"]["started"] %}
+                        <div style="text-align:center; margin-top:50px; margin-bottom:35px;">
+                            <form method="post" class="begin-adventure-form">
+                                <button type="submit" class="begin-btn">Begin Adventure</button>
+                            </form>
+                            <div style="margin-top:16px; color:#e4ccff;">Welcome to Elysiad. Click to begin your journey.</div>
+                        </div>
+                    {% else %}
+                        {% for item in history %}
+                            {{ item|safe }}<br>
+                        {% endfor %}
+                        {{ message|safe }}
+                    {% endif %}
+                </div>
+                {% if user["Story"]["started"] %}
+                <form method="post" class="choices-form">
+                    <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                    <button type="submit">Choose</button>
                 </form>
-                <div style="margin-top:16px; color:#e4ccff;">Welcome to Elysiad. Click to begin your journey.</div>
+                {% endif %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    <ul class="flashes">
+                      {% for category, msg in messages %}
+                        <li class="flash-{{ category }}">{{ msg }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endwith %}
             </div>
-        {% else %}
-            {% for item in history %}
-                {{ item|safe }}<br>
-            {% endfor %}
-            {{ message|safe }}
-        {% endif %}
-    </div>
-    {% if user["Story"]["started"] %}
-    <form method="post" class="choices-form">
-        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-        <button type="submit">Choose</button>
-    </form>
-    {% endif %}
-    {% with messages = get_flashed_messages(with_categories=true, category_filter=["game"]) %}
-      {% if messages %}
-        <ul class="flashes">
-          {% for category, msg in messages %}
-            <li class="flash-{{ category }}">{{ msg }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-</div>
-
+        </div>
         <!-- Right: Character Data -->
         <div class="side-panel-right">
             <div class="char-sheet-box">
