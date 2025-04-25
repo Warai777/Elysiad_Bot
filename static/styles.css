@@ -64,7 +64,9 @@ body::before {
     opacity: 0.92;
     filter: drop-shadow(0 5px 18px #8f47ee81);
 }
-
+@media (max-width: 700px) {
+    .mascot { width: 100px; right: 1vw; }
+}
 /* --- Dashboard Flex Layout --- */
 .dashboard-flex {
     display: flex;
