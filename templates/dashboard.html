@@ -22,42 +22,42 @@
                 <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
                 {% if timer %}
                 <div class="event-timer">
-    <b>Next event in:</b> <span id="global-timer"></span>
-</div>
+                    <b>Next event in:</b> <span id="global-timer"></span>
+                </div>
                 {% endif %}
             </div>
         </aside>
         <!-- Main Story (Center) -->
-        <<main class="story-center-panel">
-    <div class="story-main-box">
-        <div class="story-main-title">Story</div>
-        <div class="story-content-scroll" id="story box">
-            {% for item in history %}
-                {{ item|safe }}<br>
-            {% endfor %}
-        </div>
-        <!-- MOVE THE FORM INSIDE THE BOX, here: -->
-        {% if not user["Story"]["started"] %}
-            <form method="post" class="begin-adventure-form">
-                <button type="submit" class="begin-btn">Begin Adventure</button>
-            </form>
-        {% else %}
-            <form id="choice form" class="choices-form">
-                <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-                <button type="submit">Choose</button>
-            </form>
-        {% endif %}
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                {% for category, msg in messages %}
-                    <li class="flash-{{ category }}">{{ msg }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-    </div>
-</main>
+        <main class="story-center-panel">
+            <div class="story-main-box">
+                <div class="story-main-title">Story</div>
+                <div class="story-content-scroll" id="story-box">
+                    {% for item in history %}
+                        {{ item|safe }}<br>
+                    {% endfor %}
+                </div>
+                <!-- MOVE THE FORM INSIDE THE BOX, here: -->
+                {% if not user["Story"]["started"] %}
+                    <form method="post" class="begin-adventure-form">
+                        <button type="submit" class="begin-btn">Begin Adventure</button>
+                    </form>
+                {% else %}
+                    <form id="choice-form" class="choices-form">
+                        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                        <button type="submit">Choose</button>
+                    </form>
+                {% endif %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <ul class="flashes">
+                        {% for category, msg in messages %}
+                            <li class="flash-{{ category }}">{{ msg }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </main>
         <!-- Character Sheet (Right) -->
         <aside class="char-sheet-container">
             <div class="char-sheet-box">
@@ -77,58 +77,58 @@
         </aside>
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
-<script>
-document.getElementById('choice-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = this;
-    const data = new FormData(form);
-    fetch('/choose', {
-        method: 'POST',
-        body: data,
-        headers: {'X-Requested-With': 'XMLHttpRequest'}
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Scroll to bottom before starting animation
-        const box = document.getElementById('story-box');
-        typeWriter(box, data.story);
-        form.reset();
-    });
-});
 
-// Typewriter effect
-function typeWriter(element, text, i = 0) {
-    element.innerHTML = "";
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            element.scrollTop = element.scrollHeight; // auto-scroll to bottom
-            setTimeout(type, 15); // speed: smaller = faster
+    <!-- ALL JS should be here just before </body> -->
+    <script>
+    // Global Event Timer
+    (function() {
+        const nextEventTs = {{ next_event_ts|tojson }};
+        function pad(n){ return n < 10 ? '0'+n : n; }
+        function updateTimer() {
+            const now = Math.floor(Date.now()/1000);
+            let diff = nextEventTs - now;
+            if (diff < 0) diff = 0;
+            let hours = Math.floor(diff/3600);
+            let minutes = Math.floor((diff % 3600)/60);
+            let seconds = diff % 60;
+            document.getElementById('global-timer').textContent =
+                pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
         }
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    })();
+
+    // Choice AJAX + Typewriter
+    const form = document.getElementById('choice-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = new FormData(form);
+            fetch('/choose', {
+                method: 'POST',
+                body: data,
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                const box = document.getElementById('story-box');
+                typeWriter(box, data.story);
+                form.reset();
+            });
+        });
     }
-    type();
-}
-</script>
+    function typeWriter(element, text, i = 0) {
+        element.innerHTML = "";
+        function type() {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+                element.scrollTop = element.scrollHeight;
+                setTimeout(type, 15);
+            }
+        }
+        type();
+    }
+    </script>
 </body>
 </html>
-<script>
-(function() {
-    // Use timestamp (UTC seconds) sent from Flask
-    const nextEventTs = {{ next_event_ts|tojson }};
-    function pad(n){ return n < 10 ? '0'+n : n; }
-
-    function updateTimer() {
-        const now = Math.floor(Date.now()/1000); // current time in UTC seconds
-        let diff = nextEventTs - now;
-        if (diff < 0) diff = 0;
-        let hours = Math.floor(diff/3600);
-        let minutes = Math.floor((diff % 3600)/60);
-        let seconds = diff % 60;
-        document.getElementById('global-timer').textContent =
-            pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
-    }
-    updateTimer();
-    setInterval(updateTimer, 1000);
-})();
-</script>
