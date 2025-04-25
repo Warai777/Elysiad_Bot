@@ -3,6 +3,7 @@ import json
 import datetime
 import threading
 import random
+import time
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from flask_bcrypt import Bcrypt
@@ -17,7 +18,7 @@ login_manager.login_view = "login"
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 client_ai = openai.OpenAI(api_key=OPENAI_API_KEY)
-EVENT_INTERVAL = 60 * 60  # 1 hour
+EVENT_INTERVAL = 24 * 60 * 60  # 24 hours (daily event)
 
 # ========== FILE PATHS ==========
 USER_FILE = "users.json"
@@ -103,6 +104,7 @@ def time_until_next_event():
 
 def auto_event_scheduler():
     while True:
+        # Check if daily event timer has elapsed
         if next_event_time() <= 0:
             generate_global_event()
         threading.Event().wait(60)
@@ -217,24 +219,10 @@ def dashboard():
     u = get_user_data(current_user.username)
     message = None
 
-    # --- RANDOMIZED INTRO POOLS ---
     INTRO_TEMPLATES = [
-        # SHADOW SLAVE
+        # ... your intro templates ...
         "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
-        # LORD OF THE MYSTERIES
-        "The city fog was thick, memories of your mundane life fading. You clutch a brass coin, feeling it vibrate with secrets. Then, reality bends, and you stand before the Library of Beginnings, its doors silently inviting you in.",
-        # ONE PIECE
-        "You dreamed of blue seas and distant laughter. Your small apartment vanishes in a spray of salt air—you find yourself before an ancient, barnacle-crusted Library. Above it, a sign reads: 'Beginnings.'",
-        # NARUTO
-        "You hear distant village bells. You look down and see a headband—yet not your own. The world blurs and you stand at the edge of a great Library, its stone gates marked with a swirling spiral.",
-        # BLEACH
-        "A hollow breeze stirs the night. Streetlights flicker; a sword lies at your feet. In the next instant, you stand before the vast Library of Beginnings, its windows glowing faintly in the twilight.",
-        # DRAGON BALL
-        "You feel a surge of energy—yet it’s gone in an instant. Ordinary once more, you watch as a capsule-shaped object vanishes, revealing a path to the mysterious Library of Beginnings.",
-        # STAR WARS
-        "You awaken to the hum of distant machinery. A blue glow—like a lightsaber—briefly illuminates a great Library. You step forward; the stars themselves seem to whisper: 'Your story begins here.'",
-        # HITCHHIKER'S GUIDE
-        "You’re just brushing your teeth when a voice booms: 'Don’t Panic!' Suddenly, you’re standing in front of a vast Library, a towel inexplicably slung over your shoulder. The adventure begins..."
+        # ... add others ...
     ]
 
     # Begin Adventure
@@ -244,11 +232,7 @@ def dashboard():
         u["Story"]["scene"] = 1
         u["Story"]["history"] = []
         u["LastStory"] = ""
-
-        # Pick a random intro
         selected_intro = random.choice(INTRO_TEMPLATES)
-
-        # Now prompt GPT to continue the adventure
         intro_prompt = (
             f"{selected_intro}\n\n"
             "Narrate the scene as a light novel. Immediately follow with a scenario and list FIVE possible actions, numbered. Format strictly as:\n"
@@ -302,14 +286,25 @@ def dashboard():
         save_users()
         message = story
 
+    # === DAILY EVENT TIMER LOGIC ===
+    last_event = global_state.get("last_event_time")
+    if last_event:
+        last_dt = datetime.datetime.fromisoformat(last_event)
+        next_event_dt = last_dt + datetime.timedelta(days=1)
+        next_event_ts = int(next_event_dt.timestamp())
+    else:
+        next_event_ts = int(time.time())
+    # ===============================
+
     return render_template(
         "dashboard.html",
         user=u,
         message=message or u["LastStory"],
         global_event=global_state.get("current_event"),
-        timer=max(0, int(time_until_next_event())),
+        timer=max(0, int(next_event_ts - time.time())),
         users=users,
-        history=u['Story'].get("history", [])
+        history=u['Story'].get("history", []),
+        next_event_ts=next_event_ts
     )
 
 @app.route("/char_sheet/<username>")
@@ -325,53 +320,19 @@ def char_sheet(username):
 def lore_index():
     return render_template("lore_index.html", lore=lore)
 
-import time
-
-@app.route("/dashboard", methods=["GET", "POST"])
-@login_required
-def dashboard():
-    # ... your code ...
-    # Calculate next event timestamp (assuming last_event_time is in ISO format)
+@app.route("/timer")
+def timer_api():
+    # Live timer endpoint for AJAX/JS
     last_event = global_state.get("last_event_time")
     if last_event:
         last_dt = datetime.datetime.fromisoformat(last_event)
-        # Next event is 24 hours after last_event_time
         next_event_dt = last_dt + datetime.timedelta(days=1)
         next_event_ts = int(next_event_dt.timestamp())
     else:
-        # fallback: next event is now
         next_event_ts = int(time.time())
-    # Pass this to the template
-    return render_template(
-        "dashboard.html",
-        # ...your args...
-        next_event_ts=next_event_ts,
-        # ...rest...
-    )
+    now = int(time.time())
+    return jsonify({"timer": max(0, next_event_ts - now)})
 
-    # Generate the intro using GPT-4o (similar to your !start logic)
-    intro_prompt = (
-        "You are the narrator for a web-based solo adventure in the Elysiad multiverse (anime/web novel worlds crossover). "
-        "The player wakes up as a powerless human in a strange multiverse forest. "
-        "FIRST: Write only ONE short introduction (max 2 paragraphs). "
-        "SECOND: Present a scenario and immediately list FIVE possible actions, each numbered, in the following strict format: "
-        "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...' "
-        "Include the word 'Choices:' **followed by** the 5 options. "
-        "Do NOT output anything after the fifth choice. "
-        "NEVER omit the choices. "
-        "NEVER output multiple introductions or duplicate text. "
-        "Your output MUST always end with 'Choices:' and the five choices."
-    )
-    response = client_ai.chat.completions.create(
-        model="gpt-4o",
-        messages=[{"role": "system", "content": intro_prompt}],
-        max_tokens=700,
-        temperature=0.9
-    )
-    intro = response.choices[0].message.content
-    u["LastStory"] = intro
-    save_users()
-    return redirect(url_for("dashboard"))
 # ========== MAIN ==========
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
