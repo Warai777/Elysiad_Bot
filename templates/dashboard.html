@@ -5,143 +5,30 @@
     <title>Elysiad Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        .dashboard-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-        .global-event-side {
-            flex: 0 0 260px;
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-end;
-            padding-top: 70px;
-            padding-left: 24px;
-        }
-        .global-event-box {
-            background: rgba(52,0,90,0.93);
-            color: #ffd6ff;
-            border-radius: 14px;
-            box-shadow: 0 2px 12px #0002;
-            padding: 18px 18px 14px 18px;
-            font-size: 1.08em;
-            min-width: 220px;
-            max-width: 340px;
-            word-break: break-word;
-            margin-bottom: 16px;
-        }
-        .center-main-panel {
-            flex: 1 1 700px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-width: 0;
-            padding: 32px 10px 0 10px;
-        {% if not user["Story"]["started"] %}
-  <form method="post" class="begin-adventure-form">
-    <button type="submit" class="begin-btn">Begin Adventure</button>
-  </form>
-{% endif %}
+        /* ...your other styles... */
+        /* Keep your CSS from before here */
 
+        .begin-adventure-form {
+            margin-bottom: 32px;
+            text-align: center;
         }
-        .main-story-box {
-            background: rgba(35, 14, 50, 0.97);
-            border-radius: 18px;
-            box-shadow: 0 2px 20px #0003, 0 1.5px 0px #cf9fff33 inset;
-            padding: 36px 30px 28px 30px;
-            max-width: 630px;
-            width: 100%;
-            margin-bottom: 24px;
-            min-height: 280px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .main-story-title {
-            color: #fff;
-            margin-bottom: 15px;
-            font-size: 1.35em;
-            letter-spacing: 1px;
-        }
-        .story-content-scroll {
-            background: #432067a8;
-            color: #fff;
-            border-radius: 11px;
-            padding: 15px;
-            font-size: 1.09em;
-            line-height: 1.65;
-            min-height: 120px;
-            max-height: 330px;
-            overflow-y: auto;
-            margin-bottom: 14px;
-        }
-        .choices-form {
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-        }
-        .choices-form input[type="number"] {
-            width: 62px;
-            border-radius: 8px;
-            border: 1px solid #bb93ff;
-            padding: 8px;
-            background: #321c50;
-            color: #fff;
-        }
-        .choices-form button {
-            padding: 10px 28px;
-            border: none;
+        .begin-btn {
             background: #b26dff;
             color: #fff;
-            border-radius: 7px;
+            border: none;
+            padding: 18px 52px;
+            font-size: 1.25em;
             font-weight: bold;
-            font-size: 1.08em;
-            letter-spacing: 1px;
-            box-shadow: 0 2px 10px #cf9fff1c;
+            border-radius: 13px;
+            box-shadow: 0 4px 28px #7e28d426;
             cursor: pointer;
-            margin-left: 12px;
-            transition: background 0.18s;
+            letter-spacing: 2px;
+            transition: background 0.18s, color 0.18s, box-shadow 0.2s;
         }
-        .choices-form button:hover {
+        .begin-btn:hover {
             background: #fff;
             color: #7a32b8;
-        }
-        .side-panel-right {
-            flex: 0 0 240px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-            padding-top: 70px;
-            padding-right: 30px;
-        }
-        .char-sheet-box {
-            background: rgba(52,0,90,0.90);
-            color: #e7d7ff;
-            border-radius: 12px;
-            padding: 16px 18px;
-            font-size: 1em;
-            margin-bottom: 16px;
-            min-width: 170px;
-            max-width: 250px;
-            word-break: break-word;
-        }
-        .char-sheet-box h3 {
-            margin-top: 0; margin-bottom: 8px;
-            font-size: 1.07em;
-            color: #d9bfff;
-        }
-        @media (max-width: 1000px) {
-            .dashboard-layout { flex-direction: column; }
-            .global-event-side, .side-panel-right { padding-top: 0; padding-bottom: 14px; padding-right:0; padding-left:0;}
-            .center-main-panel { padding: 14px 3vw;}
-            .main-story-box { margin: 0 auto 18px auto; }
-            .char-sheet-box, .global-event-box { max-width: 96vw; min-width: 0; }
+            box-shadow: 0 0px 24px #b26dff55;
         }
     </style>
 </head>
@@ -169,7 +56,15 @@
         </div>
         <!-- Center: Main Story -->
         <div class="center-main-panel">
-            <div class="main-story-box">
+
+            {# BEGIN ADVENTURE BUTTON #}
+            {% if not user["Story"]["started"] %}
+                <form method="post" class="begin-adventure-form">
+                    <button type="submit" class="begin-btn">Begin Adventure</button>
+                </form>
+            {% endif %}
+
+            <div class="main-story-box" {% if not user["Story"]["started"] %}style="opacity:0.38;pointer-events:none;"{% endif %}>
                 <div class="main-story-title">Story</div>
                 <div class="story-content-scroll">
                     {% for item in history %}
@@ -177,21 +72,22 @@
                     {% endfor %}
                     {{ message|safe }}
                 </div>
+                {% if user["Story"]["started"] %}
                 <form method="post" class="choices-form">
                     <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
                     <button type="submit">Choose</button>
                 </form>
-               {% with messages = get_flashed_messages(with_categories=true, category_filter=["game"]) %}
-  {% if messages %}
-    <ul class="flashes">
-      {% for category, msg in messages %}
-        <li class="flash-{{ category }}">{{ msg }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+                {% endif %}
 
-
+                {% with messages = get_flashed_messages(with_categories=true, category_filter=["game"]) %}
+                  {% if messages %}
+                    <ul class="flashes">
+                      {% for category, msg in messages %}
+                        <li class="flash-{{ category }}">{{ msg }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endwith %}
             </div>
         </div>
         <!-- Right: Character Data -->
