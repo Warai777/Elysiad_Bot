@@ -1,65 +1,68 @@
-{% extends "layout.html" %}
-{% block content %}
-<div class="char-sheet-box">
-    <h2>{{ username|capitalize }}'s Stat Sheet</h2>
-    <div class="stat-sheet">
-        <strong>Tier:</strong> {{ user['Tier'] }}<br>
-        <strong>Attack Potency:</strong> {{ user['Attack Potency'] }}<br>
-        <strong>Speed:</strong> {{ user['Speed'] }}<br>
-        <strong>Durability:</strong> {{ user['Durability'] }}<br>
-        <strong>Stamina:</strong> {{ user['Stamina'] }}<br>
-        <strong>Range:</strong> {{ user['Range'] }}<br>
-        <strong>Intelligence:</strong> {{ user['Intelligence'] }}<br>
-        <strong>HP:</strong> {{ user['HP'] }}<br>
-        <strong>Origin Essence:</strong> {{ user['Origin Essence'] }}<br>
-        <strong>Inventory:</strong>
-        <ul>
-            {% for item in user['Inventory'] %}
-            <li>{{ item }}</li>
-            {% else %}
-            <li>None</li>
-            {% endfor %}
-        </ul>
-        <strong>Standard Equipment:</strong>
-        <ul>
-            {% for item in user['Standard Equipment'] %}
-            <li>{{ item }}</li>
-            {% else %}
-            <li>None</li>
-            {% endfor %}
-        </ul>
-        <strong>Notable Attacks/Techniques:</strong>
-        <ul>
-            {% for item in user['Notable Attacks/Techniques'] %}
-            <li>{{ item }}</li>
-            {% else %}
-            <li>None</li>
-            {% endfor %}
-        </ul>
-        <strong>Weaknesses:</strong>
-        <ul>
-            {% for item in user['Weaknesses'] %}
-            <li>{{ item }}</li>
-            {% else %}
-            <li>None</li>
-            {% endfor %}
-        </ul>
-        <strong>Recent Actions:</strong>
-        <ul>
-            {% for action in user['Story']['recent']|reverse %}
-            <li>{{ action }}</li>
-            {% else %}
-            <li>No actions yet.</li>
-            {% endfor %}
-        </ul>
-        <strong>Lore Found:</strong>
-        <ul>
-            {% for lore_item in user['Lore'] %}
-            <li>{{ lore_item }}</li>
-            {% else %}
-            <li>No lore yet.</li>
-            {% endfor %}
-        </ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Character Sheet | Elysiad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="logo">Elysiad</div>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="signup-btn">Dashboard</a>
+            <a href="{{ url_for('lore_index') }}" class="signup-btn">Lore</a>
+            <a href="{{ url_for('logout') }}" class="signup-btn logout">Logout</a>
+        </div>
     </div>
-</div>
-{% endblock %}
+    <div class="dashboard-flex" style="justify-content: center; align-items: flex-start;">
+        <div class="story-main-box" style="max-width: 420px;">
+            <div class="story-main-title" style="margin-bottom:18px;">Character Sheet</div>
+            <div class="char-sheet-box" style="background:none; box-shadow:none; padding:0; color:#e7d7ff;">
+                <strong>Tier:</strong> {{ user.Tier }}<br>
+                <strong>HP:</strong> {{ user.HP }}<br>
+                <strong>Origin Essence:</strong> {{ user['Origin Essence'] }}<br>
+                <strong>Inventory:</strong>
+                <ul style="padding-left:18px;">
+                    {% for item in user.Inventory %}
+                        <li>{{ item }}</li>
+                    {% else %}
+                        <li>None</li>
+                    {% endfor %}
+                </ul>
+                <hr style="border:0; border-bottom:1px solid #ad7fed31; margin:14px 0;">
+                <strong>Attack Potency:</strong> {{ user['Attack Potency'] }}<br>
+                <strong>Speed:</strong> {{ user['Speed'] }}<br>
+                <strong>Durability:</strong> {{ user['Durability'] }}<br>
+                <strong>Stamina:</strong> {{ user['Stamina'] }}<br>
+                <strong>Range:</strong> {{ user['Range'] }}<br>
+                <strong>Intelligence:</strong> {{ user['Intelligence'] }}<br>
+                <strong>Standard Equipment:</strong>
+                <ul style="padding-left:18px;">
+                    {% for eq in user['Standard Equipment'] %}
+                        <li>{{ eq }}</li>
+                    {% else %}
+                        <li>None</li>
+                    {% endfor %}
+                </ul>
+                <strong>Notable Attacks/Techniques:</strong>
+                <ul style="padding-left:18px;">
+                    {% for atk in user['Notable Attacks/Techniques'] %}
+                        <li>{{ atk }}</li>
+                    {% else %}
+                        <li>None</li>
+                    {% endfor %}
+                </ul>
+                <strong>Weaknesses:</strong>
+                <ul style="padding-left:18px;">
+                    {% for w in user['Weaknesses'] %}
+                        <li>{{ w }}</li>
+                    {% else %}
+                        <li>None</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
+</body>
+</html>
