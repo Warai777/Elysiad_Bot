@@ -15,19 +15,15 @@
         </div>
     </div>
     <div class="dashboard-flex">
-        <!-- Global Event (Left) -->
         <aside class="global-event-container">
             <div class="global-event-box">
                 <strong>Global Event</strong><br>
                 <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
-                {% if timer %}
                 <div class="event-timer">
                     <b>Next event in:</b> <span id="global-timer"></span>
                 </div>
-                {% endif %}
             </div>
         </aside>
-        <!-- Main Story (Center) -->
         <main class="story-center-panel">
             <div class="story-main-box">
                 <div class="story-main-title">Story</div>
@@ -36,10 +32,10 @@
                         {{ item|safe }}<br>
                     {% endfor %}
                 </div>
-                <!-- Begin Adventure and Choices Forms go here -->
                 <div id="button-zone">
                     {% if not user["Story"]["started"] %}
                         <form id="begin-form" class="begin-adventure-form">
+                            <input type="hidden" name="begin" value="1">
                             <button type="submit" class="begin-btn">Begin Adventure</button>
                         </form>
                     {% else %}
@@ -60,7 +56,6 @@
                 {% endwith %}
             </div>
         </main>
-        <!-- Character Sheet (Right) -->
         <aside class="char-sheet-container">
             <div class="char-sheet-box">
                 <h3>Character Sheet</h3>
@@ -82,7 +77,7 @@
 
     <!-- JS -->
     <script>
-    // Global Event Timer
+    // Global Event Timer (no change)
     (function() {
         const nextEventTs = {{ next_event_ts|tojson }};
         function pad(n){ return n < 10 ? '0'+n : n; }
@@ -100,76 +95,92 @@
         setInterval(updateTimer, 1000);
     })();
 
-    // Typewriter effect
-    let isTyping = false;
+    // Typewriter Streaming
+    function streamTypewriterAppend(element, stream) {
+        const reader = stream.getReader();
+        let text = "";
+        // Add a separating line for clarity
+        let appendDiv = document.createElement("div");
+        appendDiv.className = "new-chapter";
+        element.appendChild(appendDiv);
 
-function typeWriter(element, text, i = 0) {
-    if (isTyping) return; // Block if already typing
-    isTyping = true;
-    element.innerHTML = "";
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            element.scrollTop = element.scrollHeight;
-            setTimeout(type, 15);
-        } else {
-            isTyping = false; // Done
+        function read() {
+            reader.read().then(({done, value}) => {
+                if (done) {
+                    // After streaming, scroll to bottom
+                    element.scrollTop = element.scrollHeight;
+                    return;
+                }
+                const chunk = new TextDecoder().decode(value);
+                text += chunk;
+                appendDiv.innerHTML = text; // Typing effect could be made per-character, but streaming is already incremental.
+                element.scrollTop = element.scrollHeight;
+                read();
+            });
+        }
+        read();
+    }
+
+    function attachBeginListener() {
+        const beginForm = document.getElementById('begin-form');
+        if (beginForm) {
+            beginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const box = document.getElementById('story-box');
+                box.innerHTML = ""; // Start fresh on new adventure!
+                fetch('/stream_story', {
+                    method: 'POST',
+                    body: new FormData(beginForm),
+                }).then(response => {
+                    streamTypewriterAppend(box, response.body);
+                    response.body.getReader().read().then(function process() {
+                        document.getElementById('button-zone').innerHTML = `
+                            <form id="choice-form" class="choices-form">
+                                <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                                <button type="submit">Choose</button>
+                            </form>
+                        `;
+                        attachChoiceListener();
+                    });
+                });
+            });
         }
     }
-    type();
-}
-
-    // Begin Adventure AJAX
-    const beginForm = document.getElementById('begin-form');
-    if (beginForm) {
-        beginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            fetch('/begin', {
-                method: 'POST',
-                headers: {'X-Requested-With': 'XMLHttpRequest'}
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.story) {
-                    const box = document.getElementById('story-box');
-                    typeWriter(box, data.story);
-                    // Swap to choice form after intro
-                    document.getElementById('button-zone').innerHTML = `
-                        <form id="choice-form" class="choices-form">
-                            <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-                            <button type="submit">Choose</button>
-                        </form>
-                    `;
-                    // Attach listener for choice form
-                    attachChoiceListener();
-                }
-            });
-        });
-    }
-
     function attachChoiceListener() {
         const form = document.getElementById('choice-form');
         if (form) {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const data = new FormData(form);
-                fetch('/choose', {
+                const box = document.getElementById('story-box');
+                // Instead of clearing, we **append** new chapter
+                fetch('/stream_story', {
                     method: 'POST',
-                    body: data,
-                    headers: {'X-Requested-With': 'XMLHttpRequest'}
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const box = document.getElementById('story-box');
-                    typeWriter(box, data.story);
-                    form.reset();
+                    body: new FormData(form),
+                }).then(response => {
+                    streamTypewriterAppend(box, response.body);
                 });
             });
         }
     }
-    // Attach choice listener on first load if needed
+    attachBeginListener();
     attachChoiceListener();
     </script>
+    <style>
+    /* Optional: visually separate chapters */
+    .new-chapter {
+        margin-top: 1.25em;
+        padding-top: .5em;
+        border-top: 1px solid #aaa;
+        min-height: 1.5em;
+    }
+    .story-content-scroll {
+        max-height: 45vh;
+        overflow-y: auto;
+        padding-right: 10px;
+        font-family: 'Georgia', serif;
+        font-size: 1.04em;
+        background: #fafafc;
+    }
+    </style>
 </body>
 </html>
