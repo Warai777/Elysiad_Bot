@@ -31,7 +31,7 @@
         <<main class="story-center-panel">
     <div class="story-main-box">
         <div class="story-main-title">Story</div>
-        <div class="story-content-scroll">
+        <div class="story-content-scroll" id="story box">
             {% for item in history %}
                 {{ item|safe }}<br>
             {% endfor %}
@@ -42,7 +42,7 @@
                 <button type="submit" class="begin-btn">Begin Adventure</button>
             </form>
         {% else %}
-            <form method="post" class="choices-form">
+            <form id="choice form" class="choices-form">
                 <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
                 <button type="submit">Choose</button>
             </form>
@@ -77,6 +77,39 @@
         </aside>
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
+<script>
+document.getElementById('choice-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = this;
+    const data = new FormData(form);
+    fetch('/choose', {
+        method: 'POST',
+        body: data,
+        headers: {'X-Requested-With': 'XMLHttpRequest'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Scroll to bottom before starting animation
+        const box = document.getElementById('story-box');
+        typeWriter(box, data.story);
+        form.reset();
+    });
+});
+
+// Typewriter effect
+function typeWriter(element, text, i = 0) {
+    element.innerHTML = "";
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            element.scrollTop = element.scrollHeight; // auto-scroll to bottom
+            setTimeout(type, 15); // speed: smaller = faster
+        }
+    }
+    type();
+}
+</script>
 </body>
 </html>
 <script>
