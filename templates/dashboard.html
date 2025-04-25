@@ -4,6 +4,169 @@
     <meta charset="UTF-8">
     <title>Elysiad Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0a3ff 0%, #c2a8fa 50%, #e39ae9 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2.5vh 4vw 0 4vw;
+        }
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 3px;
+            margin-right: 1em;
+        }
+        .signup-btn, .signup-btn.logout {
+            margin-left: 8px;
+            padding: 6px 22px;
+            border-radius: 15px;
+            border: none;
+            background: linear-gradient(90deg, #eee2ff 40%, #eea1fd 100%);
+            color: #784cc0;
+            font-weight: bold;
+            font-size: 1em;
+            text-decoration: none;
+        }
+        .signup-btn.logout {
+            background: linear-gradient(90deg, #fd7bb7 10%, #feabbc 90%);
+            color: #fff;
+        }
+
+        .dashboard-flex {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 5vh 0 0 0;
+        }
+
+        .global-event-container {
+            width: 24vw;
+            min-width: 220px;
+            padding-right: 3vw;
+        }
+        .global-event-box {
+            background: #471b5b;
+            border-radius: 18px;
+            color: #fff;
+            padding: 1.2em 1.2em 1.2em 1.2em;
+            margin-bottom: 1.5em;
+            font-size: 1em;
+            box-shadow: 0 4px 18px 0 rgba(50,15,85,0.08);
+        }
+        .event-content { margin: 0.4em 0 0.7em 0; }
+        .event-timer { font-size: .97em; }
+
+        .story-center-panel {
+            flex: 1 1 48vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .story-main-box {
+            width: 46vw;
+            min-width: 340px;
+            background: #2d183a !important;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px 0 rgba(50,15,85,0.14);
+            padding: 1.7em 2em;
+            margin-bottom: 2em;
+        }
+        .story-main-title {
+            color: #fff;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 0.7em;
+        }
+        .story-content-scroll {
+            max-height: 45vh;
+            overflow-y: auto;
+            padding: 18px 14px 18px 20px;
+            font-family: 'Georgia', serif;
+            font-size: 1.05em;
+            background: #2d183a !important;
+            color: #fff !important;
+            border-radius: 12px;
+            box-shadow: none;
+            border: none;
+            min-height: 200px;
+            margin-bottom: 1.2em;
+            transition: background 0.4s;
+        }
+        .new-chapter {
+            margin-top: 1.25em;
+            padding-top: .5em;
+            border-top: 1px solid #70459c;
+            min-height: 1.5em;
+            color: #fff;
+        }
+        .begin-btn, .choices-form button {
+            background: linear-gradient(90deg, #eee2ff 20%, #eea1fd 100%);
+            color: #784cc0;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            padding: 0.5em 1.7em;
+            margin-top: 0.8em;
+            margin-bottom: 0.2em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px 0 rgba(120, 76, 192, 0.09);
+        }
+        .choices-form input[type="number"] {
+            width: 7em;
+            padding: 6px 8px;
+            border-radius: 7px;
+            border: 1px solid #bb90e9;
+            margin-right: 10px;
+            font-size: 1em;
+            color: #471b5b;
+        }
+        .flashes {
+            margin: 0.6em 0;
+            padding: 0;
+            list-style: none;
+        }
+        .flashes .flash-error { color: #ff6c94; }
+        .flashes .flash-info  { color: #8bf2d4; }
+
+        .char-sheet-container {
+            width: 18vw;
+            min-width: 200px;
+            padding-left: 3vw;
+            display: flex;
+            flex-direction: column;
+        }
+        .char-sheet-box {
+            background: #471b5b;
+            color: #fff;
+            border-radius: 16px;
+            padding: 1.5em 1.1em 1.2em 1.1em;
+            font-size: 1em;
+            margin-top: 4vh;
+            box-shadow: 0 3px 14px 0 rgba(50,15,85,0.09);
+        }
+        .mascot {
+            position: fixed;
+            right: 2vw;
+            bottom: 2vh;
+            width: 70px;
+            opacity: 0.93;
+        }
+        @media (max-width: 900px) {
+            .dashboard-flex { flex-direction: column; align-items: center; }
+            .global-event-container, .char-sheet-container { width: 92vw; min-width: 0; padding: 0; }
+            .story-center-panel { width: 98vw; }
+            .story-main-box { width: 97vw; min-width: 0; }
+        }
+    </style>
 </head>
 <body>
     <div class="top-bar">
@@ -15,6 +178,7 @@
         </div>
     </div>
     <div class="dashboard-flex">
+        <!-- Global Event (Left) -->
         <aside class="global-event-container">
             <div class="global-event-box">
                 <strong>Global Event</strong><br>
@@ -24,12 +188,13 @@
                 </div>
             </div>
         </aside>
+        <!-- Main Story (Center) -->
         <main class="story-center-panel">
             <div class="story-main-box">
                 <div class="story-main-title">Story</div>
                 <div class="story-content-scroll" id="story-box">
                     {% for item in history %}
-                        <div class="new-chapter">{{ item|safe }}</div>
+                        {{ item|safe }}<br>
                     {% endfor %}
                 </div>
                 <div id="button-zone">
@@ -56,6 +221,7 @@
                 {% endwith %}
             </div>
         </main>
+        <!-- Character Sheet (Right) -->
         <aside class="char-sheet-container">
             <div class="char-sheet-box">
                 <h3>Character Sheet</h3>
@@ -77,7 +243,7 @@
 
     <!-- JS -->
     <script>
-    // Global Event Timer
+    // Global Event Timer (no change)
     (function() {
         const nextEventTs = {{ next_event_ts|tojson }};
         function pad(n){ return n < 10 ? '0'+n : n; }
@@ -95,10 +261,11 @@
         setInterval(updateTimer, 1000);
     })();
 
-    // Streaming story + typewriter
+    // Typewriter Streaming
     function streamTypewriterAppend(element, stream) {
         const reader = stream.getReader();
         let text = "";
+        // Add a separating line for clarity
         let appendDiv = document.createElement("div");
         appendDiv.className = "new-chapter";
         element.appendChild(appendDiv);
@@ -106,6 +273,7 @@
         function read() {
             reader.read().then(({done, value}) => {
                 if (done) {
+                    // After streaming, scroll to bottom
                     element.scrollTop = element.scrollHeight;
                     return;
                 }
@@ -125,7 +293,7 @@
             beginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const box = document.getElementById('story-box');
-                box.innerHTML = ""; // Clear for new adventure
+                box.innerHTML = ""; // Start fresh on new adventure!
                 fetch('/stream_story', {
                     method: 'POST',
                     body: new FormData(beginForm),
@@ -162,21 +330,5 @@
     attachBeginListener();
     attachChoiceListener();
     </script>
-    <style>
-    .new-chapter {
-        margin-top: 1.25em;
-        padding-top: .5em;
-        border-top: 1px solid #aaa;
-        min-height: 1.5em;
-    }
-    .story-content-scroll {
-        max-height: 45vh;
-        overflow-y: auto;
-        padding-right: 10px;
-        font-family: 'Georgia', serif;
-        font-size: 1.04em;
-        background: #fafafc;
-    }
-    </style>
 </body>
 </html>
