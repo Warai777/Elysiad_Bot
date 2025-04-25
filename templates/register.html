@@ -4,136 +4,31 @@
     <meta charset="UTF-8">
     <title>Create Account | Elysiad</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        body {
-            min-height: 100vh;
-            margin: 0;
-            /* Background gradient like login */
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(120deg, #b18cff 0%, #f69cff 60%, #b18cff 100%);
-        }
-        .ely-nav {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 34px 38px 0 32px;
-        }
-        .ely-nav-title {
-            font-size: 2em;
-            color: #fff;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-        .ely-nav-link {
-            background: #fff;
-            color: #a362ea;
-            font-weight: 600;
-            border-radius: 24px;
-            padding: 10px 32px;
-            text-decoration: none;
-            font-size: 1.11em;
-            box-shadow: 0 3px 20px #dbb9ff40;
-            transition: background 0.2s, color 0.2s;
-        }
-        .ely-nav-link:hover {
-            background: #d2a3ff;
-            color: #37004e;
-        }
-        .center-card {
-            background: #29163d;
-            border-radius: 18px;
-            box-shadow: 0 0 44px #b792e944;
-            max-width: 420px;
-            margin: 110px auto 0 auto;
-            padding: 48px 48px 35px 48px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .center-card h2 {
-            margin-bottom: 26px;
-            color: #fff;
-            font-size: 1.5em;
-            font-weight: 600;
-            letter-spacing: 1.2px;
-        }
-        .register-input {
-            width: 100%;
-            margin-bottom: 14px;
-            padding: 13px 14px;
-            border: 1.3px solid #a174ed;
-            border-radius: 6px;
-            background: #392369;
-            color: #eee;
-            font-size: 1.06em;
-            outline: none;
-            transition: border 0.18s;
-        }
-        .register-input:focus {
-            border: 1.6px solid #fff;
-        }
-        .register-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(90deg, #b17dfc 20%, #a169e7 100%);
-            border: none;
-            color: #fff;
-            font-weight: bold;
-            border-radius: 8px;
-            font-size: 1.13em;
-            margin-top: 16px;
-            margin-bottom: 2px;
-            cursor: pointer;
-            transition: background 0.19s;
-        }
-        .register-btn:hover {
-            background: #fff;
-            color: #4a1676;
-        }
-        .switch-link {
-            margin-top: 18px;
-            font-size: 1em;
-            color: #c7a7ee;
-            text-align: center;
-        }
-        .switch-link a {
-            color: #fff;
-            font-weight: 600;
-            text-decoration: underline;
-        }
-        /* Mascot bottom right */
-        .mascot-bottom-right {
-            position: fixed;
-            bottom: 36px;
-            right: 55px;
-            width: 100px;
-            opacity: 0.4;
-            z-index: 1;
-            pointer-events: none;
-            filter: drop-shadow(0 2px 16px #ba7fff);
-        }
-    </style>
 </head>
 <body>
-    <div class="ely-nav">
-        <div class="ely-nav-title">Elysiad</div>
-        <a href="{{ url_for('login') }}" class="ely-nav-link">Login</a>
+    <div class="top-bar">
+        <div class="logo">Elysiad</div>
+        <a href="{{ url_for('login') }}" class="signup-btn">Login</a>
     </div>
-    <form method="post" class="center-card">
-        <h2>Create Your Account</h2>
-        <input class="register-input" name="username" placeholder="Username" required>
-        <input class="register-input" name="password" placeholder="Password" type="password" required>
-        <button type="submit" class="register-btn">Sign Up</button>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class="flashes">{% for msg in messages %}<li>{{ msg }}</li>{% endfor %}</ul>
-            {% endif %}
-        {% endwith %}
-        <div class="switch-link">
-            Already have an account? <a href="{{ url_for('login') }}">Login</a>
-        </div>
-    </form>
-    <img src="{{ url_for('static', filename='mascot.png') }}" class="mascot-bottom-right" alt="mascot">
+
+    <div class="center-box">
+        <form method="post" class="login-form" style="min-width:340px;">
+            <h2>Create Your Account</h2>
+            <input type="text" name="username" placeholder="Username" required autocomplete="username">
+            <input type="password" name="password" placeholder="Password" required autocomplete="new-password">
+            <button type="submit">Sign Up</button>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flashes">{% for msg in messages %}<li>{{ msg }}</li>{% endfor %}</ul>
+                {% endif %}
+            {% endwith %}
+            <div style="margin-top: 16px; color: #bb93ff; font-size: 1em;">
+                Already have an account?
+                <a href="{{ url_for('login') }}" style="color:#fff; text-decoration:underline; font-weight:bold;">Login</a>
+            </div>
+        </form>
+    </div>
+
+    <img src="{{ url_for('static', filename='mascot.png') }}" class="mascot" alt="mascot">
 </body>
 </html>
