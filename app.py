@@ -325,9 +325,29 @@ def char_sheet(username):
 def lore_index():
     return render_template("lore_index.html", lore=lore)
 
-@app.route("/timer")
-def timer_api():
-    return jsonify({"timer": max(0, int(time_until_next_event()))})
+import time
+
+@app.route("/dashboard", methods=["GET", "POST"])
+@login_required
+def dashboard():
+    # ... your code ...
+    # Calculate next event timestamp (assuming last_event_time is in ISO format)
+    last_event = global_state.get("last_event_time")
+    if last_event:
+        last_dt = datetime.datetime.fromisoformat(last_event)
+        # Next event is 24 hours after last_event_time
+        next_event_dt = last_dt + datetime.timedelta(days=1)
+        next_event_ts = int(next_event_dt.timestamp())
+    else:
+        # fallback: next event is now
+        next_event_ts = int(time.time())
+    # Pass this to the template
+    return render_template(
+        "dashboard.html",
+        # ...your args...
+        next_event_ts=next_event_ts,
+        # ...rest...
+    )
 
     # Generate the intro using GPT-4o (similar to your !start logic)
     intro_prompt = (
