@@ -327,3 +327,77 @@ body::before {
     .char-sheet-box, .global-event-box { max-width: 98vw; min-width: 0; }
     .login-form { min-width: 80vw; }
 }
+/* ...existing universal styles... */
+
+/* --- Responsive: Tablet --- */
+@media (max-width: 1200px) {
+    .dashboard-flex { flex-direction: column; gap: 24px; align-items: stretch; }
+    .story-center-panel { align-items: stretch; }
+    .story-main-box { margin-left: auto; margin-right: auto; }
+    .global-event-container, .char-sheet-container {
+        justify-content: center; align-items: center; margin-top: 10px;
+    }
+}
+
+/* --- Responsive: Mobile --- */
+@media (max-width: 700px) {
+    .top-bar {
+        flex-direction: column;
+        gap: 14px;
+        padding: 18px 7px 0 7px;
+        align-items: flex-start;
+    }
+    .logo {
+        font-size: 1.45em;
+        padding-bottom: 4px;
+    }
+    .signup-btn {
+        font-size: 1em;
+        padding: 8px 20px;
+    }
+    .dashboard-flex {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+        margin-top: 16px;
+        min-height: unset;
+    }
+    .global-event-container, .char-sheet-container {
+        flex: 1 1 auto;
+        max-width: 98vw;
+        margin: 0 auto 10px auto;
+        padding: 0;
+    }
+    .global-event-box,
+    .char-sheet-box {
+        max-width: 98vw;
+        min-width: 0;
+        margin: 0 auto 8px auto;
+        font-size: 0.97em;
+        padding: 10px 7px;
+    }
+    .story-center-panel {
+        width: 100vw;
+        align-items: stretch;
+        padding: 0 1vw;
+    }
+    .story-main-box {
+        padding: 12px 2vw 14px 2vw;
+        min-width: 90vw;
+        max-width: 98vw;
+        margin: 0 auto 16px auto;
+    }
+    .story-main-title {
+        font-size: 1.12em;
+    }
+    .story-content-scroll {
+        max-height: 180px;
+        padding: 10px;
+        font-size: 0.98em;
+    }
+    .mascot {
+        width: 76px;
+        right: 1vw;
+        bottom: 2vw;
+    }
+}
