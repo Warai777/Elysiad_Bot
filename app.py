@@ -333,6 +333,16 @@ def timer_api():
     now = int(time.time())
     return jsonify({"timer": max(0, next_event_ts - now)})
 
+from flask import jsonify
+
+@app.route("/choose", methods=["POST"])
+@login_required
+def choose():
+    number = int(request.form["choice"])
+    u = get_user_data(current_user.username)
+    # ... (rest of your choice logic as in /dashboard route) ...
+    # After updating story/history etc:
+    return jsonify({"story": story})
 # ========== MAIN ==========
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
