@@ -18,7 +18,7 @@ login_manager.login_view = "login"
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 client_ai = openai.OpenAI(api_key=OPENAI_API_KEY)
-EVENT_INTERVAL = 24 * 60 * 60  # 24 hours (daily event)
+EVENT_INTERVAL = 24 * 60 * 60  # 24 hours
 
 # ========== FILE PATHS ==========
 USER_FILE = "users.json"
@@ -26,7 +26,6 @@ GLOBAL_FILE = "global_state.json"
 LORE_FILE = "lore.json"
 
 # ========== STORAGE ==========
-
 def load_json(filename, default):
     if not os.path.exists(filename):
         with open(filename, "w") as f:
@@ -104,7 +103,6 @@ def time_until_next_event():
 
 def auto_event_scheduler():
     while True:
-        # Check if daily event timer has elapsed
         if next_event_time() <= 0:
             generate_global_event()
         threading.Event().wait(60)
@@ -213,46 +211,10 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-@app.route("/dashboard", methods=["GET", "POST"])
+@app.route("/dashboard")
 @login_required
 def dashboard():
     u = get_user_data(current_user.username)
-    message = None
-
-    INTRO_TEMPLATES = [
-        # ... your intro templates ...
-        "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
-        # ... add others ...
-    ]
-
-    # Begin Adventure (only for initial start, NOT for choices)
-    if request.method == "POST" and not u["Story"].get("started", False):
-        u["Story"]["started"] = True
-        u["Story"]["chapter"] = 1
-        u["Story"]["scene"] = 1
-        u["Story"]["history"] = []
-        u["LastStory"] = ""
-        selected_intro = random.choice(INTRO_TEMPLATES)
-        intro_prompt = (
-            f"{selected_intro}\n\n"
-            "Narrate the scene as a light novel. Immediately follow with a scenario and list FIVE possible actions, numbered. Format strictly as:\n"
-            "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...'\n"
-            "End your message with the 5 choices, no extras."
-        )
-        response = client_ai.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": intro_prompt}],
-            max_tokens=700,
-            temperature=0.95
-        )
-        intro = response.choices[0].message.content
-        u["LastStory"] = intro
-        u["Story"]["history"].append(intro)
-        save_users()
-        message = intro
-        return redirect(url_for("dashboard"))
-
-    # === DAILY EVENT TIMER LOGIC ===
     last_event = global_state.get("last_event_time")
     if last_event:
         last_dt = datetime.datetime.fromisoformat(last_event)
@@ -260,12 +222,10 @@ def dashboard():
         next_event_ts = int(next_event_dt.timestamp())
     else:
         next_event_ts = int(time.time())
-    # ===============================
-
     return render_template(
         "dashboard.html",
         user=u,
-        message=message or u["LastStory"],
+        message=u["LastStory"],
         global_event=global_state.get("current_event"),
         timer=max(0, int(next_event_ts - time.time())),
         users=users,
@@ -273,15 +233,49 @@ def dashboard():
         next_event_ts=next_event_ts
     )
 
+@app.route("/begin", methods=["POST"])
+@login_required
+def begin():
+    u = get_user_data(current_user.username)
+    if u["Story"].get("started", False):
+        return jsonify({"error": "Already started"}), 400
+
+    INTRO_TEMPLATES = [
+        "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
+        # ... Add more intros for more variety if you want ...
+    ]
+    u["Story"]["started"] = True
+    u["Story"]["chapter"] = 1
+    u["Story"]["scene"] = 1
+    u["Story"]["history"] = []
+    u["LastStory"] = ""
+    selected_intro = random.choice(INTRO_TEMPLATES)
+    intro_prompt = (
+        f"{selected_intro}\n\n"
+        "Narrate the scene as a light novel. Immediately follow with a scenario and list FIVE possible actions, numbered. Format strictly as:\n"
+        "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...'\n"
+        "End your message with the 5 choices, no extras."
+    )
+    response = client_ai.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "system", "content": intro_prompt}],
+        max_tokens=700,
+        temperature=0.95
+    )
+    intro = response.choices[0].message.content
+    u["LastStory"] = intro
+    u["Story"]["history"].append(intro)
+    save_users()
+    return jsonify({"story": intro})
+
 @app.route("/choose", methods=["POST"])
 @login_required
 def choose():
     u = get_user_data(current_user.username)
     try:
         number = int(request.form["choice"])
-    except:
+    except Exception:
         return jsonify({"error": "Invalid choice"}), 400
-
     history = "\n".join(u['Story'].get("history", [])[-5:])
     prompt = ELY_PROMPT.replace("{HISTORY}", history)\
                       .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
@@ -298,7 +292,6 @@ def choose():
     u['LastStory'] = story
     u['Story']['scene'] += 1
     update_recent_action(current_user.username, f"Chose {number}: {story[:120]}...")
-
     # Lore detection
     if "Lore Discovered:" in story:
         new_lore = story.split("Lore Discovered:", 1)[1].split("\n")[0].strip()
