@@ -21,7 +21,6 @@
             font-weight: bold;
             color: #fff;
             letter-spacing: 3px;
-            margin-right: 1em;
         }
         .signup-btn, .signup-btn.logout {
             margin-left: 8px;
@@ -46,11 +45,10 @@
             align-items: flex-start;
             margin: 5vh 0 0 0;
         }
-
         .global-event-container {
-            width: 24vw;
+            width: 22vw;
             min-width: 220px;
-            padding-right: 3vw;
+            padding-right: 2vw;
         }
         .global-event-box {
             background: #471b5b;
@@ -65,15 +63,15 @@
         .event-timer { font-size: .97em; }
 
         .story-center-panel {
-            flex: 1 1 48vw;
+            flex: 1 1 50vw;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .story-main-box {
-            width: 46vw;
-            min-width: 340px;
-            background: #2d183a !important;
+            width: 44vw;
+            min-width: 320px;
+            background: #2d183a;
             border-radius: 20px;
             box-shadow: 0 4px 24px 0 rgba(50,15,85,0.14);
             padding: 1.7em 2em;
@@ -91,14 +89,13 @@
             padding: 18px 14px 18px 20px;
             font-family: 'Georgia', serif;
             font-size: 1.05em;
-            background: #2d183a !important;
-            color: #fff !important;
+            background: #2d183a;
+            color: #fff;
             border-radius: 12px;
             box-shadow: none;
             border: none;
             min-height: 200px;
             margin-bottom: 1.2em;
-            transition: background 0.4s;
         }
         .new-chapter {
             margin-top: 1.25em;
@@ -140,7 +137,7 @@
         .char-sheet-container {
             width: 18vw;
             min-width: 200px;
-            padding-left: 3vw;
+            padding-left: 2vw;
             display: flex;
             flex-direction: column;
         }
@@ -243,7 +240,7 @@
 
     <!-- JS -->
     <script>
-    // Global Event Timer (no change)
+    // Global Event Timer
     (function() {
         const nextEventTs = {{ next_event_ts|tojson }};
         function pad(n){ return n < 10 ? '0'+n : n; }
@@ -265,7 +262,6 @@
     function streamTypewriterAppend(element, stream) {
         const reader = stream.getReader();
         let text = "";
-        // Add a separating line for clarity
         let appendDiv = document.createElement("div");
         appendDiv.className = "new-chapter";
         element.appendChild(appendDiv);
@@ -273,7 +269,6 @@
         function read() {
             reader.read().then(({done, value}) => {
                 if (done) {
-                    // After streaming, scroll to bottom
                     element.scrollTop = element.scrollHeight;
                     return;
                 }
@@ -293,7 +288,7 @@
             beginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const box = document.getElementById('story-box');
-                box.innerHTML = ""; // Start fresh on new adventure!
+                box.innerHTML = ""; // Start fresh!
                 fetch('/stream_story', {
                     method: 'POST',
                     body: new FormData(beginForm),
