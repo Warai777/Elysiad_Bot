@@ -182,13 +182,13 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         if username in users:
-            flash("Username already exists.")
+            flash("Username already exists.", "error")
             return redirect(url_for("register"))
         pw_hash = bcrypt.generate_password_hash(password).decode("utf-8")
         users[username] = default_stat_sheet()
         users[username]["pw_hash"] = pw_hash
         save_users()
-        flash("Registered! Please login.")
+        flash("Registered! Please login.", "info")
         return redirect(url_for("login"))
     return render_template("register.html")
 
@@ -202,7 +202,7 @@ def login():
             login_user(User(username))
             return redirect(url_for("dashboard"))
         else:
-            flash("Login failed.")
+            flash("Login failed.", "error")
     return render_template("login.html")
 
 @app.route("/logout")
@@ -273,7 +273,7 @@ def dashboard():
         try:
             number = int(request.form["choice"])
         except:
-            flash("Please pick a valid number.")
+            flash("Please pick a valid number.", "game")
             return redirect(url_for("dashboard"))
         history = "\n".join(u['Story'].get("history", [])[-5:])
         prompt = ELY_PROMPT.replace("{HISTORY}", history)\
