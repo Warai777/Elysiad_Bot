@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         body {
-            background: linear-gradient(135deg, #e0a3ff 0%, #c2a8fa 50%, #e39ae9 100%);
+            background: linear-gradient(135deg, #efecff 0%, #ece8f8 100%);
             min-height: 100vh;
             margin: 0;
         }
@@ -19,7 +19,7 @@
         .logo {
             font-size: 2em;
             font-weight: bold;
-            color: #fff;
+            color: #784cc0;
             letter-spacing: 3px;
         }
         .signup-btn, .signup-btn.logout {
@@ -32,136 +32,133 @@
             font-weight: bold;
             font-size: 1em;
             text-decoration: none;
+            box-shadow: none;
         }
         .signup-btn.logout {
             background: linear-gradient(90deg, #fd7bb7 10%, #feabbc 90%);
             color: #fff;
         }
-
         .dashboard-flex {
+            width: 100vw;
+            min-height: 80vh;
             display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: flex-start;
-            margin: 5vh 0 0 0;
-        }
-        .global-event-container {
-            width: 22vw;
-            min-width: 220px;
-            padding-right: 2vw;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
         }
         .global-event-box {
-            background: #471b5b;
+            margin: 2em auto 1.2em auto;
+            background: #f6f5fd;
+            color: #784cc0;
             border-radius: 18px;
-            color: #fff;
-            padding: 1.2em 1.2em 1.2em 1.2em;
-            margin-bottom: 1.5em;
-            font-size: 1em;
-            box-shadow: 0 4px 18px 0 rgba(50,15,85,0.08);
+            padding: 1.2em 2em;
+            box-shadow: 0 4px 20px 0 rgba(120, 76, 192, 0.09);
+            font-size: 1.1em;
+            width: 330px;
+            max-width: 96vw;
+            text-align: center;
+            border: 1.5px solid #ece2f8;
         }
         .event-content { margin: 0.4em 0 0.7em 0; }
-        .event-timer { font-size: .97em; }
+        .event-timer { font-size: 1em; }
 
-        .story-center-panel {
-            flex: 1 1 50vw;
+        .story-main-box {
+            margin: 0 auto;
+            width: 95vw;
+            max-width: 640px;
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 7px 36px 0 rgba(120, 76, 192, 0.13);
+            padding: 2em 2em 2.3em 2em;
+            margin-bottom: 2em;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .story-main-box {
-            width: 44vw;
-            min-width: 320px;
-            background: #2d183a;
-            border-radius: 20px;
-            box-shadow: 0 4px 24px 0 rgba(50,15,85,0.14);
-            padding: 1.7em 2em;
-            margin-bottom: 2em;
-        }
         .story-main-title {
-            color: #fff;
-            font-size: 1.3em;
+            color: #784cc0;
+            font-size: 1.4em;
             font-weight: bold;
-            margin-bottom: 0.7em;
+            margin-bottom: 0.8em;
+            letter-spacing: 1.5px;
         }
         .story-content-scroll {
-            max-height: 45vh;
+            width: 100%;
+            min-height: 170px;
+            max-height: 38vh;
             overflow-y: auto;
-            padding: 18px 14px 18px 20px;
             font-family: 'Georgia', serif;
-            font-size: 1.05em;
-            background: #2d183a;
-            color: #fff;
-            border-radius: 12px;
-            box-shadow: none;
-            border: none;
-            min-height: 200px;
-            margin-bottom: 1.2em;
+            font-size: 1.08em;
+            color: #513269;
+            background: #fff;
+            border-radius: 10px;
+            border: 1.5px solid #ede5f9;
+            margin-bottom: 1.3em;
+            padding: 16px 18px 16px 18px;
+            box-sizing: border-box;
         }
         .new-chapter {
-            margin-top: 1.25em;
+            margin-top: 1.4em;
             padding-top: .5em;
-            border-top: 1px solid #70459c;
+            border-top: 1px solid #ecd7ff;
             min-height: 1.5em;
-            color: #fff;
         }
         .begin-btn, .choices-form button {
             background: linear-gradient(90deg, #eee2ff 20%, #eea1fd 100%);
             color: #784cc0;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 1em;
             font-weight: bold;
-            padding: 0.5em 1.7em;
-            margin-top: 0.8em;
-            margin-bottom: 0.2em;
+            padding: 0.6em 2.3em;
+            margin-top: 0.7em;
+            margin-bottom: 0.1em;
             cursor: pointer;
             box-shadow: 0 2px 8px 0 rgba(120, 76, 192, 0.09);
         }
         .choices-form input[type="number"] {
             width: 7em;
-            padding: 6px 8px;
-            border-radius: 7px;
-            border: 1px solid #bb90e9;
-            margin-right: 10px;
+            padding: 7px 9px;
+            border-radius: 8px;
+            border: 1.5px solid #bb90e9;
+            margin-right: 13px;
             font-size: 1em;
-            color: #471b5b;
+            color: #784cc0;
         }
         .flashes {
-            margin: 0.6em 0;
+            margin: 0.8em 0;
             padding: 0;
             list-style: none;
-        }
-        .flashes .flash-error { color: #ff6c94; }
-        .flashes .flash-info  { color: #8bf2d4; }
-
-        .char-sheet-container {
-            width: 18vw;
-            min-width: 200px;
-            padding-left: 2vw;
-            display: flex;
-            flex-direction: column;
+            color: #d73268;
         }
         .char-sheet-box {
-            background: #471b5b;
-            color: #fff;
-            border-radius: 16px;
-            padding: 1.5em 1.1em 1.2em 1.1em;
-            font-size: 1em;
-            margin-top: 4vh;
-            box-shadow: 0 3px 14px 0 rgba(50,15,85,0.09);
+            margin: 0 auto;
+            margin-bottom: 3vh;
+            background: #f6f5fd;
+            color: #784cc0;
+            border-radius: 18px;
+            padding: 1.3em 2em 1.1em 2em;
+            font-size: 1.08em;
+            box-shadow: 0 4px 20px 0 rgba(120, 76, 192, 0.07);
+            width: 330px;
+            max-width: 96vw;
+            text-align: left;
+            border: 1.5px solid #ece2f8;
         }
         .mascot {
             position: fixed;
             right: 2vw;
             bottom: 2vh;
             width: 70px;
-            opacity: 0.93;
+            opacity: 0.92;
         }
         @media (max-width: 900px) {
-            .dashboard-flex { flex-direction: column; align-items: center; }
-            .global-event-container, .char-sheet-container { width: 92vw; min-width: 0; padding: 0; }
-            .story-center-panel { width: 98vw; }
-            .story-main-box { width: 97vw; min-width: 0; }
+            .story-main-box, .global-event-box, .char-sheet-box {
+                width: 98vw;
+                max-width: 99vw;
+                padding-left: 7vw;
+                padding-right: 7vw;
+            }
         }
     </style>
 </head>
@@ -175,72 +172,62 @@
         </div>
     </div>
     <div class="dashboard-flex">
-        <!-- Global Event (Left) -->
-        <aside class="global-event-container">
-            <div class="global-event-box">
-                <strong>Global Event</strong><br>
-                <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
-                <div class="event-timer">
-                    <b>Next event in:</b> <span id="global-timer"></span>
-                </div>
+        <div class="global-event-box">
+            <strong>Global Event</strong><br>
+            <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
+            <div class="event-timer">
+                <b>Next event in:</b> <span id="global-timer"></span>
             </div>
-        </aside>
-        <!-- Main Story (Center) -->
-        <main class="story-center-panel">
-            <div class="story-main-box">
-                <div class="story-main-title">Story</div>
-                <div class="story-content-scroll" id="story-box">
-                    {% for item in history %}
-                        {{ item|safe }}<br>
+        </div>
+        <div class="story-main-box">
+            <div class="story-main-title">Story</div>
+            <div class="story-content-scroll" id="story-box">
+                {% for item in history %}
+                    {{ item|safe }}<br>
+                {% endfor %}
+            </div>
+            <div id="button-zone">
+                {% if not user["Story"]["started"] %}
+                    <form id="begin-form" class="begin-adventure-form">
+                        <input type="hidden" name="begin" value="1">
+                        <button type="submit" class="begin-btn">Begin Adventure</button>
+                    </form>
+                {% else %}
+                    <form id="choice-form" class="choices-form">
+                        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                        <button type="submit">Choose</button>
+                    </form>
+                {% endif %}
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flashes">
+                    {% for category, msg in messages %}
+                        <li class="flash-{{ category }}">{{ msg }}</li>
                     {% endfor %}
-                </div>
-                <div id="button-zone">
-                    {% if not user["Story"]["started"] %}
-                        <form id="begin-form" class="begin-adventure-form">
-                            <input type="hidden" name="begin" value="1">
-                            <button type="submit" class="begin-btn">Begin Adventure</button>
-                        </form>
-                    {% else %}
-                        <form id="choice-form" class="choices-form">
-                            <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-                            <button type="submit">Choose</button>
-                        </form>
-                    {% endif %}
-                </div>
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        <ul class="flashes">
-                        {% for category, msg in messages %}
-                            <li class="flash-{{ category }}">{{ msg }}</li>
-                        {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endwith %}
-            </div>
-        </main>
-        <!-- Character Sheet (Right) -->
-        <aside class="char-sheet-container">
-            <div class="char-sheet-box">
-                <h3>Character Sheet</h3>
-                <strong>Tier:</strong> {{ user.Tier }}<br>
-                <strong>HP:</strong> {{ user.HP }}<br>
-                <strong>Origin Essence:</strong> {{ user['Origin Essence'] }}<br>
-                <strong>Inventory:</strong>
-                <ul>
-                    {% for item in user.Inventory %}
-                        <li>{{ item }}</li>
-                    {% else %}
-                        <li>None</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </aside>
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div class="char-sheet-box">
+            <h3 style="margin-top: 0;">Character Sheet</h3>
+            <strong>Tier:</strong> {{ user.Tier }}<br>
+            <strong>HP:</strong> {{ user.HP }}<br>
+            <strong>Origin Essence:</strong> {{ user['Origin Essence'] }}<br>
+            <strong>Inventory:</strong>
+            <ul>
+                {% for item in user.Inventory %}
+                    <li>{{ item }}</li>
+                {% else %}
+                    <li>None</li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
 
     <!-- JS -->
     <script>
-    // Global Event Timer
     (function() {
         const nextEventTs = {{ next_event_ts|tojson }};
         function pad(n){ return n < 10 ? '0'+n : n; }
@@ -258,7 +245,6 @@
         setInterval(updateTimer, 1000);
     })();
 
-    // Typewriter Streaming
     function streamTypewriterAppend(element, stream) {
         const reader = stream.getReader();
         let text = "";
