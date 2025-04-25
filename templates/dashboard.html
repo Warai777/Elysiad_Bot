@@ -29,7 +29,7 @@
                 <div class="story-main-title">Story</div>
                 <div class="story-content-scroll" id="story-box">
                     {% for item in history %}
-                        {{ item|safe }}<br>
+                        <div class="new-chapter">{{ item|safe }}</div>
                     {% endfor %}
                 </div>
                 <div id="button-zone">
@@ -77,7 +77,7 @@
 
     <!-- JS -->
     <script>
-    // Global Event Timer (no change)
+    // Global Event Timer
     (function() {
         const nextEventTs = {{ next_event_ts|tojson }};
         function pad(n){ return n < 10 ? '0'+n : n; }
@@ -95,11 +95,10 @@
         setInterval(updateTimer, 1000);
     })();
 
-    // Typewriter Streaming
+    // Streaming story + typewriter
     function streamTypewriterAppend(element, stream) {
         const reader = stream.getReader();
         let text = "";
-        // Add a separating line for clarity
         let appendDiv = document.createElement("div");
         appendDiv.className = "new-chapter";
         element.appendChild(appendDiv);
@@ -107,13 +106,12 @@
         function read() {
             reader.read().then(({done, value}) => {
                 if (done) {
-                    // After streaming, scroll to bottom
                     element.scrollTop = element.scrollHeight;
                     return;
                 }
                 const chunk = new TextDecoder().decode(value);
                 text += chunk;
-                appendDiv.innerHTML = text; // Typing effect could be made per-character, but streaming is already incremental.
+                appendDiv.innerHTML = text;
                 element.scrollTop = element.scrollHeight;
                 read();
             });
@@ -127,7 +125,7 @@
             beginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const box = document.getElementById('story-box');
-                box.innerHTML = ""; // Start fresh on new adventure!
+                box.innerHTML = ""; // Clear for new adventure
                 fetch('/stream_story', {
                     method: 'POST',
                     body: new FormData(beginForm),
@@ -152,7 +150,6 @@
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const box = document.getElementById('story-box');
-                // Instead of clearing, we **append** new chapter
                 fetch('/stream_story', {
                     method: 'POST',
                     body: new FormData(form),
@@ -166,7 +163,6 @@
     attachChoiceListener();
     </script>
     <style>
-    /* Optional: visually separate chapters */
     .new-chapter {
         margin-top: 1.25em;
         padding-top: .5em;
