@@ -6,14 +6,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <!-- MOBILE NAV ONLY (hidden on desktop) -->
+   <body>
+   <body>
+    <!-- MOBILE NAV (hidden on desktop) -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
         <div class="nav-title">Elysiad</div>
         <button class="nav-logout" onclick="location.href='{{ url_for('logout') }}'">Logout</button>
     </nav>
     <div class="sidebar-drawer" id="sidebarDrawer">
-        <a href="#" id="closeSidebar">&times;</a>
+        <a href="#" id="closeSidebar" class="sidebar-close">&times;</a>
         <a href="#" id="showGlobalEvent">Global Event</a>
         <a href="{{ url_for('char_sheet', username=current_user.username) }}">Character</a>
         <a href="{{ url_for('lore_index') }}">Lore</a>
@@ -38,6 +40,7 @@
             <a href="{{ url_for('logout') }}" class="signup-btn logout">Logout</a>
         </div>
     </div>
+    <!-- ...rest of your content (unchanged)... -->
     <div class="dashboard-flex">
         <aside class="global-event-container">
             <div class="global-event-box">
