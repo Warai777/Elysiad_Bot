@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title>Elysiad Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
-    <!-- MOBILE NAV ONLY (hidden on desktop) -->
+    <!-- MOBILE NAVIGATION (Only visible on mobile) -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
         <div class="nav-title">Elysiad</div>
@@ -29,7 +30,7 @@
         </div>
     </div>
 
-    <!-- DESKTOP NAV AND LAYOUT -->
+    <!-- DESKTOP LAYOUT (hidden on mobile) -->
     <div class="top-bar">
         <div class="logo">Elysiad</div>
         <div>
