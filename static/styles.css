@@ -18,7 +18,6 @@ body::before {
     background-size: cover;
     pointer-events: none;
 }
-
 /* --- Top Bar --- */
 .top-bar {
     display: flex;
@@ -315,6 +314,7 @@ body::before {
     margin-left: 3px;
 }
 
+/* --- Responsive --- */
 @media (max-width: 1200px) {
     .dashboard-flex { flex-direction: column; gap: 24px; align-items: stretch; }
     .story-center-panel { align-items: stretch; }
@@ -323,67 +323,15 @@ body::before {
         justify-content: center; align-items: center; margin-top: 10px;
     }
 }
+/* Improved Mobile Layout: Story box full width, more height */
 @media (max-width: 700px) {
     .top-bar { flex-direction: column; gap: 14px; padding: 22px 10px 0 12px; }
     .dashboard-flex { flex-direction: column; gap: 12px; align-items: stretch; }
     .mascot { width: 100px; right: 1vw; }
-    .story-main-box { padding: 17px 6px 18px 6px; min-width: 90vw; }
-    .char-sheet-box, .global-event-box { max-width: 98vw; min-width: 0; }
-    .login-form { min-width: 80vw; }
-}
-/* ...existing universal styles... */
-
-/* --- Responsive: Tablet --- */
-@media (max-width: 1200px) {
-    .dashboard-flex { flex-direction: column; gap: 24px; align-items: stretch; }
-    .story-center-panel { align-items: stretch; }
-    .story-main-box { margin-left: auto; margin-right: auto; }
-    .global-event-container, .char-sheet-container {
-        justify-content: center; align-items: center; margin-top: 10px;
-    }
-}
-
-/* --- Responsive: Mobile --- */
-@media (max-width: 700px) {
-    .top-bar {
-        flex-direction: column;
-        gap: 14px;
-        padding: 18px 7px 0 7px;
-        align-items: flex-start;
-    }
-    .logo {
-        font-size: 1.45em;
-        padding-bottom: 4px;
-    }
-    .signup-btn {
-        font-size: 1em;
-        padding: 8px 20px;
-    }
-    .dashboard-flex {
-        flex-direction: column;
-        gap: 10px;
-        align-items: stretch;
-        margin-top: 16px;
-        min-height: unset;
-    }
-    .global-event-container, .char-sheet-container {
-        flex: 1 1 auto;
-        max-width: 98vw;
-        margin: 0 auto 10px auto;
-        padding: 0;
-    }
-    .global-event-box,
-    .char-sheet-box {
-        max-width: 98vw;
-        min-width: 0;
-        margin: 0 auto 8px auto;
-        font-size: 0.97em;
-        padding: 10px 7px;
-    }
     .story-center-panel {
         width: 100vw;
         align-items: stretch;
-        padding: 0 1vw;
+        padding: 0 0vw;
         min-height: 65vh;
     }
     .story-main-box {
@@ -393,22 +341,18 @@ body::before {
         margin-left: 0 !important;
         margin-right: 0 !important;
         border-radius: 13px;
-        /* For nearly full width and to fix left/right gap */
-    
     }
-    .story-main-title {
-        font-size: 1.12em;
-    }
+    .char-sheet-box, .global-event-box { max-width: 98vw; min-width: 0; }
+    .login-form { min-width: 80vw; }
+    .story-main-title { font-size: 1.12em; }
     .story-content-scroll {
-        max-height: 53vh !important;
-        min-height: 30vh !important;
-        font-size: 1.03em !important;
+        min-height: 32vh !important;
+        max-height: 54vh !important;
+        font-size: 1.05em !important;
         padding: 3vw 2vw !important;
-    }
-    .mascot {
-        width: 76px;
-        right: 1vw;
-        bottom: 2vw;
+        width: 100% !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
     }
 }
 /* Choices form row stays side-by-side, always aligned left */
