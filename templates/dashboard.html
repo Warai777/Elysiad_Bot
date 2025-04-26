@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Elysiad Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
-    <!-- MOBILE NAVIGATION (Only visible on mobile) -->
+    <!-- MOBILE NAV ONLY (hidden on desktop) -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
         <div class="nav-title">Elysiad</div>
         <button class="nav-logout" onclick="location.href='{{ url_for('logout') }}'">Logout</button>
     </nav>
     <div class="sidebar-drawer" id="sidebarDrawer">
-        <a href="#" id="closeSidebar" class="sidebar-close">&times;</a>
+        <a href="#" id="closeSidebar">&times;</a>
         <a href="#" id="showGlobalEvent">Global Event</a>
         <a href="{{ url_for('char_sheet', username=current_user.username) }}">Character</a>
         <a href="{{ url_for('lore_index') }}">Lore</a>
@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    <!-- DESKTOP LAYOUT (hidden on mobile) -->
+    <!-- DESKTOP NAV AND LAYOUT -->
     <div class="top-bar">
         <div class="logo">Elysiad</div>
         <div>
@@ -119,7 +119,7 @@
             showGlobalEvent.onclick = function(e) {
                 e.preventDefault();
                 sidebar.classList.remove('open');
-                globalModal.style.display = "flex";
+                globalModal.style.display = "block";
             };
             closeModal.onclick = function() { globalModal.style.display = "none"; };
             globalModal.onclick = function(e) { if(e.target === globalModal) globalModal.style.display = "none"; };
