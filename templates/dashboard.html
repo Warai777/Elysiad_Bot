@@ -6,9 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-   <body>
-   <body>
-    <!-- MOBILE NAV (hidden on desktop) -->
+    <!-- MOBILE NAV ONLY (hidden on desktop) -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
         <div class="nav-title">Elysiad</div>
@@ -40,7 +38,6 @@
             <a href="{{ url_for('logout') }}" class="signup-btn logout">Logout</a>
         </div>
     </div>
-    <!-- ...rest of your content (unchanged)... -->
     <div class="dashboard-flex">
         <aside class="global-event-container">
             <div class="global-event-box">
@@ -121,7 +118,7 @@
             showGlobalEvent.onclick = function(e) {
                 e.preventDefault();
                 sidebar.classList.remove('open');
-                globalModal.style.display = "block";
+                globalModal.style.display = "flex";
             };
             closeModal.onclick = function() { globalModal.style.display = "none"; };
             globalModal.onclick = function(e) { if(e.target === globalModal) globalModal.style.display = "none"; };
