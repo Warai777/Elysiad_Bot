@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Elysiad Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <!-- MOBILE NAV ONLY (hidden on desktop) -->
+    <!-- MOBILE NAV ONLY -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
         <div class="nav-title">Elysiad</div>
@@ -39,6 +38,7 @@
             <a href="{{ url_for('logout') }}" class="signup-btn logout">Logout</a>
         </div>
     </div>
+    <!-- Main Dashboard -->
     <div class="dashboard-flex">
         <aside class="global-event-container">
             <div class="global-event-box">
@@ -100,7 +100,7 @@
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
 
-    <!-- JS -->
+    <!-- JS (unchanged, as before) -->
     <script>
     // Mobile nav logic
     document.addEventListener('DOMContentLoaded', function() {
@@ -126,7 +126,7 @@
         }
     });
 
-    // Global Event Timer
+    // Global Event Timer (unchanged)
     (function() {
         const nextEventTs = {{ next_event_ts|tojson }};
         function pad(n){ return n < 10 ? '0'+n : n; }
