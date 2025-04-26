@@ -261,3 +261,152 @@ body::before {
     background: rgba(35, 14, 50, 0.97);
     border-radius: 18px;
     box
+
+    /* --- MOBILE NAVIGATION & SIDEBAR OVERRIDES --- */
+.mobile-nav {
+    display: none;
+}
+
+.sidebar-drawer,
+#globalEventModal {
+    display: none;
+}
+
+/* Only show mobile nav and hide desktop top bar on small screens */
+@media (max-width: 700px) {
+    .top-bar { display: none !important; }
+    .mobile-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: transparent;
+        padding: 17px 14px 0 12px;
+        position: relative;
+        z-index: 22;
+        min-height: 52px;
+    }
+    .nav-hamburger {
+        font-size: 2.3em;
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        background: none;
+        border: none;
+        margin-right: 15px;
+        user-select: none;
+    }
+    .nav-title {
+        flex: 1 1 auto;
+        text-align: center;
+        font-size: 2em;
+        font-weight: bold;
+        color: #fff;
+        letter-spacing: 2.5px;
+        text-shadow: 0 2px 10px #d18bff99;
+        margin-left: 10px;
+    }
+    .nav-logout {
+        background: #fd7ed7;
+        color: #fff;
+        border: none;
+        border-radius: 18px;
+        font-weight: bold;
+        font-size: 1.08em;
+        padding: 8px 22px;
+        box-shadow: 0 1.5px 8px #cf9fff33;
+        cursor: pointer;
+        transition: background .16s, color .16s;
+    }
+    .nav-logout:active { background: #c562bb; }
+    /* --- Hamburger drawer --- */
+    .sidebar-drawer {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        left: -80vw;
+        top: 0; bottom: 0;
+        width: 72vw;
+        max-width: 350px;
+        background: rgba(40,18,65,0.98);
+        z-index: 30;
+        padding: 28px 28px 28px 18px;
+        transition: left 0.27s cubic-bezier(0.72,0.08,0.24,0.99);
+        box-shadow: 2px 0 22px #5a2a9638;
+        font-size: 1.13em;
+    }
+    .sidebar-drawer.open { left: 0; }
+    .sidebar-drawer a {
+        color: #fff;
+        text-decoration: none;
+        padding: 15px 0 10px 0;
+        font-weight: 600;
+        font-size: 1.13em;
+        border-bottom: 1px solid #b06fff33;
+        margin-bottom: 6px;
+        display: block;
+        transition: color 0.14s;
+    }
+    .sidebar-drawer a:hover { color: #fd7ed7; }
+    .sidebar-drawer .sidebar-close {
+        position: absolute;
+        right: 20px; top: 8px;
+        font-size: 2.1em;
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        text-align: right;
+        padding: 0;
+        margin: 0;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 100;
+        left: 0; top: 0; width: 100vw; height: 100vh;
+        overflow: auto;
+        background: rgba(30,0,50,0.39);
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content {
+        background: rgba(52,0,90,0.98);
+        margin: 10vh auto;
+        padding: 30px 20px 18px 20px;
+        border-radius: 17px;
+        width: 84vw;
+        max-width: 360px;
+        position: relative;
+        box-shadow: 0 2px 18px #0007;
+        color: #fff;
+    }
+    .close-modal {
+        color: #fff;
+        position: absolute;
+        right: 14px;
+        top: 10px;
+        font-size: 2.1em;
+        font-weight: bold;
+        cursor: pointer;
+        background: none;
+        border: none;
+        outline: none;
+        z-index: 11;
+    }
+}
+
+/* Prevent overflow for global event modal */
+@media (max-width: 700px) {
+    .global-event-box {
+        max-width: 92vw;
+        min-width: 0;
+        font-size: 1.05em;
+    }
+}
+
+/* Desktop keeps normal sidebar/modal hidden */
+@media (min-width: 701px) {
+    .mobile-nav,
+    .sidebar-drawer,
+    .modal { display: none !important; }
+}
