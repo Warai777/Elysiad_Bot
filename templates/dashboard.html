@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <!-- MOBILE NAV ONLY -->
+    <!-- MOBILE NAV ONLY (hidden on desktop) -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
         <div class="nav-title">Elysiad</div>
@@ -38,7 +38,6 @@
             <a href="{{ url_for('logout') }}" class="signup-btn logout">Logout</a>
         </div>
     </div>
-    <!-- Main Dashboard -->
     <div class="dashboard-flex">
         <aside class="global-event-container">
             <div class="global-event-box">
@@ -100,7 +99,7 @@
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
 
-    <!-- JS (unchanged, as before) -->
+    <!-- JS -->
     <script>
     // Mobile nav logic
     document.addEventListener('DOMContentLoaded', function() {
@@ -126,7 +125,7 @@
         }
     });
 
-    // Global Event Timer (unchanged)
+    // Global Event Timer
     (function() {
         const nextEventTs = {{ next_event_ts|tojson }};
         function pad(n){ return n < 10 ? '0'+n : n; }
@@ -170,27 +169,27 @@
     }
 
     function attachBeginListener() {
-    const beginForm = document.getElementById('begin-form');
-    if (beginForm) {
-        beginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const box = document.getElementById('story-box');
-            box.innerHTML = ""; // Start fresh!
-            document.getElementById('button-zone').innerHTML = `
-                <form id="choice-form" class="choices-form">
-                    <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-                    <button type="submit">Choose</button>
-                </form>
-            `;
-            attachChoiceListener();
-            fetch('/stream_story', {
-                method: 'POST',
-                body: new FormData(beginForm),
-            }).then(response => {
-                streamTypewriterAppend(box, response.body);
+        const beginForm = document.getElementById('begin-form');
+        if (beginForm) {
+            beginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const box = document.getElementById('story-box');
+                box.innerHTML = ""; // Start fresh!
+                document.getElementById('button-zone').innerHTML = `
+                    <form id="choice-form" class="choices-form">
+                        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                        <button type="submit">Choose</button>
+                    </form>
+                `;
+                attachChoiceListener();
+                fetch('/stream_story', {
+                    method: 'POST',
+                    body: new FormData(beginForm),
+                }).then(response => {
+                    streamTypewriterAppend(box, response.body);
+                });
             });
-        });
-    }
+        }
     }
     function attachChoiceListener() {
         const form = document.getElementById('choice-form');
