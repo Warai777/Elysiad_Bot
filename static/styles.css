@@ -1,3 +1,4 @@
+/* --- Universal Gradient Background & Pattern --- */
 body {
     min-height: 100vh;
     margin: 0;
@@ -66,7 +67,6 @@ body::before {
 @media (max-width: 700px) {
     .mascot { width: 100px; right: 1vw; }
 }
-
 /* --- Dashboard Flex Layout --- */
 .dashboard-flex {
     display: flex;
@@ -155,6 +155,168 @@ body::before {
     word-break: break-word;
 }
 
+/* Only story box is scrollable on mobile! */
+@media (max-width: 700px) {
+    html, body {
+        height: 100vh !important;
+        overflow: hidden !important;
+        max-height: 100vh !important;
+    }
+    .dashboard-flex {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        margin: 0 !important;
+        min-height: 0 !important;
+        width: 100vw;
+        height: 100vh;
+    }
+    .global-event-container, .char-sheet-container { display: none !important; }
+    .top-bar { display: none !important; }
+    .mobile-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: transparent;
+        padding: 17px 14px 0 12px;
+        position: relative;
+        z-index: 22;
+        min-height: 52px;
+    }
+    .nav-hamburger {
+        font-size: 2.3em;
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        background: none;
+        border: none;
+        margin-right: 15px;
+        user-select: none;
+    }
+    .nav-title {
+        flex: 1 1 auto;
+        text-align: center;
+        font-size: 2em;
+        font-weight: bold;
+        color: #fff;
+        letter-spacing: 2.5px;
+        text-shadow: 0 2px 10px #d18bff99;
+        margin-left: 10px;
+    }
+    .nav-logout {
+        background: #fd7ed7;
+        color: #fff;
+        border: none;
+        border-radius: 18px;
+        font-weight: bold;
+        font-size: 1.08em;
+        padding: 8px 22px;
+        box-shadow: 0 1.5px 8px #cf9fff33;
+        cursor: pointer;
+        transition: background .16s, color .16s;
+    }
+    .nav-logout:active { background: #c562bb; }
+    .sidebar-drawer {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        left: -80vw;
+        top: 0; bottom: 0;
+        width: 72vw;
+        max-width: 350px;
+        background: rgba(40,18,65,0.98);
+        z-index: 30;
+        padding: 28px 28px 28px 18px;
+        transition: left 0.27s cubic-bezier(0.72,0.08,0.24,0.99);
+        box-shadow: 2px 0 22px #5a2a9638;
+        font-size: 1.13em;
+    }
+    .sidebar-drawer.open { left: 0; }
+    .sidebar-drawer a {
+        color: #fff;
+        text-decoration: none;
+        padding: 15px 0 10px 0;
+        font-weight: 600;
+        font-size: 1.13em;
+        border-bottom: 1px solid #b06fff33;
+        margin-bottom: 6px;
+        display: block;
+        transition: color 0.14s;
+    }
+    .sidebar-drawer a:hover { color: #fd7ed7; }
+    .sidebar-drawer #closeSidebar {
+        position: absolute;
+        right: 20px; top: 8px;
+        font-size: 2em;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0; top: 0; width: 100vw; height: 100vh;
+        background: rgba(40, 18, 65, 0.83);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: #381056ee;
+        border-radius: 18px;
+        box-shadow: 0 4px 26px #0007;
+        padding: 32px 24px;
+        max-width: 95vw;
+        min-width: 70vw;
+        margin: 0 auto;
+        color: #fff;
+        font-size: 1.1em;
+    }
+    .close-modal {
+        position: absolute;
+        top: 18px; right: 26px;
+        font-size: 2em;
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        z-index: 2;
+    }
+    .story-center-panel {
+        width: 100vw;
+        align-items: stretch;
+        padding: 0;
+        min-height: 0 !important;
+        flex: 1 1 auto;
+        justify-content: flex-start;
+        margin-top: 5vw;
+    }
+    .story-main-box {
+        min-width: 96vw !important;
+        max-width: 98vw !important;
+        padding: 2vw 1.5vw 2vw 1.5vw !important;
+        min-height: 320px !important;
+        max-height: 420px !important;
+        margin-top: 12vw;
+        border-radius: 10px;
+        box-sizing: border-box !important;
+        margin-left: auto;
+        margin-right: auto;
+        overflow: visible;
+    }
+    .story-content-scroll {
+        min-height: 140px !important;
+        max-height: 210px !important;
+        font-size: 1.08em !important;
+        padding: 4vw 2vw !important;
+        width: 100% !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+        overflow-y: auto !important;
+        margin-bottom: 16px;
+        background: #35125ba8 !important;
+    }
+}
+
+/* (rest of your existing styles such as flashes, login-form, etc. unchanged) */
 /* --- Character Sheet (Right) --- */
 .char-sheet-box {
     background: rgba(52,0,90,0.93);
