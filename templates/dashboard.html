@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Elysiad Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link your CSS file here -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -169,27 +171,27 @@
     }
 
     function attachBeginListener() {
-        const beginForm = document.getElementById('begin-form');
-        if (beginForm) {
-            beginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const box = document.getElementById('story-box');
-                box.innerHTML = ""; // Start fresh!
-                document.getElementById('button-zone').innerHTML = `
-                    <form id="choice-form" class="choices-form">
-                        <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
-                        <button type="submit">Choose</button>
-                    </form>
-                `;
-                attachChoiceListener();
-                fetch('/stream_story', {
-                    method: 'POST',
-                    body: new FormData(beginForm),
-                }).then(response => {
-                    streamTypewriterAppend(box, response.body);
-                });
+    const beginForm = document.getElementById('begin-form');
+    if (beginForm) {
+        beginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const box = document.getElementById('story-box');
+            box.innerHTML = ""; // Start fresh!
+            document.getElementById('button-zone').innerHTML = `
+                <form id="choice-form" class="choices-form">
+                    <input type="number" name="choice" min="1" max="5" placeholder="Choice #" required>
+                    <button type="submit">Choose</button>
+                </form>
+            `;
+            attachChoiceListener();
+            fetch('/stream_story', {
+                method: 'POST',
+                body: new FormData(beginForm),
+            }).then(response => {
+                streamTypewriterAppend(box, response.body);
             });
-        }
+        });
+    }
     }
     function attachChoiceListener() {
         const form = document.getElementById('choice-form');
