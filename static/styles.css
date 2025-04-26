@@ -18,6 +18,7 @@ body::before {
     background-size: cover;
     pointer-events: none;
 }
+
 /* --- Top Bar --- */
 .top-bar {
     display: flex;
@@ -66,6 +67,7 @@ body::before {
 @media (max-width: 700px) {
     .mascot { width: 100px; right: 1vw; }
 }
+
 /* --- Dashboard Flex Layout --- */
 .dashboard-flex {
     display: flex;
@@ -77,7 +79,6 @@ body::before {
     position: relative;
     z-index: 1;
     gap: 36px;
-    overflow: hidden;
 }
 .global-event-container, .char-sheet-container {
     flex: 0 0 265px;
@@ -155,7 +156,7 @@ body::before {
     word-break: break-word;
 }
 
-/* --- Begin Adventure Button --- */
+/* --- Begin Adventure Form --- */
 .begin-adventure-form {
     display: flex;
     justify-content: center;
@@ -327,7 +328,7 @@ body::before {
 }
 /* Improved Mobile Layout: Story box full width, more height */
 @media (max-width: 700px) {
-    .top-bar { display: none !important; }
+    .top-bar { flex-direction: column; gap: 14px; padding: 22px 10px 0 12px; }
     .dashboard-flex { flex-direction: column; gap: 12px; align-items: stretch; }
     .mascot { width: 100px; right: 1vw; }
     .story-center-panel {
@@ -358,7 +359,6 @@ body::before {
         box-sizing: border-box !important;
     }
 }
-
 /* Choices form row stays side-by-side, always aligned left */
 .choices-form {
     display: flex;
@@ -367,6 +367,8 @@ body::before {
     gap: 10px;
     margin-top: 10px;
 }
+
+/* Input and button sizes for desktop */
 .choices-form input[type="number"] {
     width: 90px;
     max-width: 120px;
@@ -378,6 +380,7 @@ body::before {
     font-size: 1.05em;
     box-sizing: border-box;
 }
+
 .choices-form button {
     padding: 11px 24px;
     border: none;
@@ -412,46 +415,10 @@ body::before {
 .mobile-nav {
     display: none;
 }
-.sidebar-drawer {
-    display: none; /* Hidden by default */
+.sidebar-drawer,
+#globalEventModal {
+    display: none;
 }
-.sidebar-drawer.open {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    left: 0;
-    top: 0; bottom: 0;
-    width: 72vw;
-    max-width: 350px;
-    background: rgba(40,18,65,0.98);
-    z-index: 30;
-    padding: 28px 28px 28px 18px;
-    transition: left 0.27s cubic-bezier(0.72,0.08,0.24,0.99);
-    box-shadow: 2px 0 22px #5a2a9638;
-    font-size: 1.13em;
-}
-.sidebar-drawer a {
-    color: #fff;
-    text-decoration: none;
-    padding: 15px 0 10px 0;
-    font-weight: 600;
-    font-size: 1.13em;
-    border-bottom: 1px solid #b06fff33;
-    margin-bottom: 6px;
-    display: block;
-    transition: color 0.14s;
-}
-.sidebar-drawer a:hover { color: #fd7ed7; }
-.sidebar-drawer #closeSidebar {
-    position: absolute;
-    right: 20px; top: 8px;
-    font-size: 2.2em;
-    font-weight: bold;
-    color: #fff;
-    cursor: pointer;
-    text-decoration: none;
-}
-
 /* --- Only show mobile nav and hide desktop top bar on small screens --- */
 @media (max-width: 700px) {
     .top-bar { display: none !important; }
@@ -498,4 +465,57 @@ body::before {
         transition: background .16s, color .16s;
     }
     .nav-logout:active { background: #c562bb; }
+    /* --- Hamburger drawer --- */
+    .sidebar-drawer {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        left: -80vw;
+        top: 0; bottom: 0;
+        width: 72vw;
+        max-width: 350px;
+        background: rgba(40,18,65,0.98);
+        z-index: 30;
+        padding: 28px 28px 28px 18px;
+        transition: left 0.27s cubic-bezier(0.72,0.08,0.24,0.99);
+        box-shadow: 2px 0 22px #5a2a9638;
+        font-size: 1.13em;
+        pointer-events: auto;
+        overflow-y: auto;
+    }
+    .sidebar-drawer.open { left: 0; }
+    .sidebar-drawer a {
+        color: #fff;
+        text-decoration: none;
+        padding: 15px 0 10px 0;
+        font-weight: 600;
+        font-size: 1.13em;
+        border-bottom: 1px solid #b06fff33;
+        margin-bottom: 6px;
+        display: block;
+        transition: color 0.14s;
+    }
+    .sidebar-drawer a:hover { color: #fd7ed7; }
+    .sidebar-drawer #closeSidebar {
+        position: absolute;
+        right: 20px; top: 8px;
+        font-size: 2.3em;
+        color: #fff;
+        cursor: pointer;
+        background: none;
+        border: none;
+        line-height: 1;
+    }
+}
+
+/* Hide closed sidebar, only show it if .open */
+.sidebar-drawer:not(.open) {
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+}
+.sidebar-drawer.open {
+    pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
 }
