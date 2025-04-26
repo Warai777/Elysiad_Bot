@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Elysiad Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link your CSS file here -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <!-- MOBILE NAV ONLY (hidden on desktop) -->
+    <!-- MOBILE NAV ONLY -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
         <div class="nav-title">Elysiad</div>
@@ -16,19 +14,28 @@
     </nav>
     <div class="sidebar-drawer" id="sidebarDrawer">
         <a href="#" id="closeSidebar">&times;</a>
-        <a href="#" id="showGlobalEvent">Global Event</a>
+        <!-- Mobile sidebar content: show global event and char sheet here -->
+        <div class="global-event-box mobile-sidebar-box">
+            <strong>Global Event</strong><br>
+            <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
+            <div class="event-timer"><b>Next event in:</b> <span id="global-timer"></span></div>
+        </div>
+        <div class="char-sheet-box mobile-sidebar-box">
+            <h3>Character Sheet</h3>
+            <strong>Tier:</strong> {{ user.Tier }}<br>
+            <strong>HP:</strong> {{ user.HP }}<br>
+            <strong>Origin Essence:</strong> {{ user['Origin Essence'] }}<br>
+            <strong>Inventory:</strong>
+            <ul>
+                {% for item in user.Inventory %}
+                    <li>{{ item }}</li>
+                {% else %}
+                    <li>None</li>
+                {% endfor %}
+            </ul>
+        </div>
         <a href="{{ url_for('char_sheet', username=current_user.username) }}">Character</a>
         <a href="{{ url_for('lore_index') }}">Lore</a>
-    </div>
-    <div class="modal" id="globalEventModal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeModal">&times;</span>
-            <div class="global-event-box">
-                <strong>Global Event</strong><br>
-                <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
-                <div class="event-timer"><b>Next event in:</b> <span id="global-timer"></span></div>
-            </div>
-        </div>
     </div>
 
     <!-- DESKTOP NAV AND LAYOUT -->
@@ -45,9 +52,7 @@
             <div class="global-event-box">
                 <strong>Global Event</strong><br>
                 <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
-                <div class="event-timer">
-                    <b>Next event in:</b> <span id="global-timer"></span>
-                </div>
+                <div class="event-timer"><b>Next event in:</b> <span id="global-timer"></span></div>
             </div>
         </aside>
         <main class="story-center-panel">
@@ -108,22 +113,9 @@
         var hamburger = document.getElementById('hamburger');
         var sidebar = document.getElementById('sidebarDrawer');
         var closeSidebar = document.getElementById('closeSidebar');
-        var showGlobalEvent = document.getElementById('showGlobalEvent');
-        var globalModal = document.getElementById('globalEventModal');
-        var closeModal = document.getElementById('closeModal');
-
         if (hamburger && sidebar) {
             hamburger.onclick = function() { sidebar.classList.add('open'); };
             closeSidebar.onclick = function() { sidebar.classList.remove('open'); };
-        }
-        if (showGlobalEvent && globalModal && closeModal) {
-            showGlobalEvent.onclick = function(e) {
-                e.preventDefault();
-                sidebar.classList.remove('open');
-                globalModal.style.display = "block";
-            };
-            closeModal.onclick = function() { globalModal.style.display = "none"; };
-            globalModal.onclick = function(e) { if(e.target === globalModal) globalModal.style.display = "none"; };
         }
     });
 
