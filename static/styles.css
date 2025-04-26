@@ -387,19 +387,23 @@ body::before {
         min-height: 65vh;
     }
     .story-main-box {
-        min-height: 350px;
-        padding: 17px 6vw 18px 6vw;
-        min-width: 90vw;
-        max-width: 98vw;
-        margin: 0 auto 16px auto;
+        min-width: 97vw !important;
+        max-width: 99vw !important;
+        padding: 9vw 1vw 6vw 1vw !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-radius: 13px;
+        /* For nearly full width and to fix left/right gap */
+    
     }
     .story-main-title {
         font-size: 1.12em;
     }
     .story-content-scroll {
-        max-height: 180px;
-        padding: 10px;
-        font-size: 0.98em;
+        max-height: 53vh !important;
+        min-height: 30vh !important;
+        font-size: 1.03em !important;
+        padding: 3vw 2vw !important;
     }
     .mascot {
         width: 76px;
