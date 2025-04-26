@@ -242,22 +242,4 @@ body::before {
     font-size: 1em;
     font-weight: 500;
     box-shadow: 0 1px 7px #8b54e711;
-    border: 1.2px solid #f5e7ff2e;
-}
-.flash-info  { background: #3a85d6; color: #fff; border-color: #3a85d6bb; }
-.flash-error { background: #ff3c6e; color: #fff; border-color: #ff3c6eaa; }
-.flash-game  { background: #b93c3c; color: #fff; border-color: #b93c3caa; }
-
-/* --- Login/Register Shared Styles --- */
-.center-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 78vh;
-    position: relative;
-    z-index: 2;
-}
-.login-form {
-    background: rgba(35, 14, 50, 0.97);
-    border-radius: 18px;
-    box-shadow: 0 
+    border:
