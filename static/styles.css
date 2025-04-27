@@ -1,6 +1,6 @@
 /* --- Universal Gradient Background & Pattern --- */
 body {
-    min-height: calc(var(--vh, 1vh) * 100);    /* Dynamic viewport height */
+    min-height: calc(var(--vh, 1vh) * 100);
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
     background: linear-gradient(135deg, #a678f5 0%, #fd7ed7 60%, #8b54e7 100%);
@@ -11,7 +11,7 @@ body::before {
     content: "";
     position: fixed;
     left: 0; top: 0; width: 100vw;
-    height: calc(var(--vh, 1vh) * 100);   /* Dynamic */
+    height: calc(var(--vh, 1vh) * 100);
     z-index: 0;
     opacity: 0.18;
     background: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 1440 810" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 600Q360 500 720 600T1440 600V810H0Z" fill="white" fill-opacity="0.09"/><path d="M0 500Q360 600 720 500T1440 500V810H0Z" fill="white" fill-opacity="0.09"/><path d="M0 400Q360 500 720 400T1440 400V810H0Z" fill="white" fill-opacity="0.09"/></svg>');
@@ -298,6 +298,10 @@ body::before {
         background: none;
         border: none;
         line-height: 1;
+        display: none; /* Hide by default, shown via JS */
+    }
+    .sidebar-drawer.open #closeSidebar {
+        display: block; /* Only show × when open */
     }
 }
 
