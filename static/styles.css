@@ -108,7 +108,7 @@ body::before {
     font-size: 1.18em;
     line-height: 1.63;
     min-height: 120px;
-    max-height: calc(var(--vh, 1vh) * 43); /* <--- UPDATED, was 35 */
+    max-height: calc(var(--vh, 1vh) * 50); /* <--- UPDATED, was 35 */
     overflow-y: auto;
     margin-bottom: 16px;
     white-space: pre-line;
@@ -197,7 +197,7 @@ body::before {
     .story-main-title { font-size: 1.12em; }
     .story-content-scroll {
         min-height: calc(var(--vh, 1vh) * 14) !important;
-        max-height: calc(var(--vh, 1vh) * 36) !important;  /* <--- UPDATED, was 24 */
+        max-height: calc(var(--vh, 1vh) * 30) !important;  /* <--- UPDATED, was 24 */
         font-size: 1.10em !important;
         padding: 4vw 2vw 60px 2vw !important;
         border-radius: 10px !important;
