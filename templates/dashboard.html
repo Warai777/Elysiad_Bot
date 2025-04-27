@@ -23,13 +23,15 @@
         <div class="nav-title">Elysiad</div>
         <button class="nav-logout" onclick="location.href='{{ url_for('logout') }}'">Logout</button>
     </nav>
+    <!-- Sidebar: Hidden by default unless .open is added -->
     <div class="sidebar-drawer" id="sidebarDrawer">
-        <a href="#" id="closeSidebar">&times;</a>
+        <a href="#" id="closeSidebar" style="display:none;">&times;</a>
         <a href="#" id="showGlobalEvent">Global Event</a>
         <a href="{{ url_for('char_sheet', username=current_user.username) }}">Character</a>
         <a href="{{ url_for('lore_index') }}">Lore</a>
     </div>
-    <div class="modal" id="globalEventModal">
+    <!-- Modal: Hidden by default -->
+    <div class="modal" id="globalEventModal" style="display:none;">
         <div class="modal-content">
             <span class="close-modal" id="closeModal">&times;</span>
             <div class="global-event-box">
@@ -73,7 +75,7 @@
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
         <!-- JS -->
     <script>
-    // Mobile nav logic
+    // Sidebar toggle (show/hide × only when open)
     document.addEventListener('DOMContentLoaded', function() {
         var hamburger = document.getElementById('hamburger');
         var sidebar = document.getElementById('sidebarDrawer');
@@ -82,14 +84,22 @@
         var globalModal = document.getElementById('globalEventModal');
         var closeModal = document.getElementById('closeModal');
 
-        if (hamburger && sidebar) {
-            hamburger.onclick = function() { sidebar.classList.add('open'); };
-            closeSidebar.onclick = function() { sidebar.classList.remove('open'); };
+        if (hamburger && sidebar && closeSidebar) {
+            hamburger.onclick = function() {
+                sidebar.classList.add('open');
+                closeSidebar.style.display = '';
+            };
+            closeSidebar.onclick = function(e) {
+                e.preventDefault();
+                sidebar.classList.remove('open');
+                closeSidebar.style.display = 'none';
+            };
         }
         if (showGlobalEvent && globalModal && closeModal) {
             showGlobalEvent.onclick = function(e) {
                 e.preventDefault();
                 sidebar.classList.remove('open');
+                closeSidebar.style.display = 'none';
                 globalModal.style.display = "block";
             };
             closeModal.onclick = function() { globalModal.style.display = "none"; };
@@ -184,15 +194,13 @@
     attachChoiceListener();
 
     // --- Mobile Keyboard Resize Fix ---
-    // Ensure story scroll area remains visible when the keyboard closes/opens
     window.addEventListener('resize', function() {
-        // Use the updated --vh variable for sizing, if using in your CSS
         setTimeout(function() {
             const storyBox = document.getElementById('story-box');
             if(storyBox) {
                 storyBox.scrollTop = storyBox.scrollHeight;
             }
-        }, 350); // Delay helps after the keyboard animation finishes
+        }, 350);
     });
     </script>
 </body>
