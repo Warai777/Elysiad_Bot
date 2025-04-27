@@ -127,7 +127,6 @@
 
     // Global Event Timer (optional)
     (function() {
-        const nextEventTs = {{ next_event_ts|tojson }};
         function pad(n){ return n < 10 ? '0'+n : n; }
         function updateTimer() {
             const now = Math.floor(Date.now()/1000);
