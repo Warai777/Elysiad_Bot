@@ -401,7 +401,7 @@ body, html {
     }
     .story-content-scroll {
         min-height: calc(var(--vh, 1vh) * 14) !important;
-        max-height: calc(var(--vh, 1vh) * 30) !important;
+        max-height: calc(var(--vh, 1vh) * 36) !important;
         font-size: 1.07em !important;
         padding: 3vw 1.5vw 60px 1.5vw !important;
         border-radius: 10px !important;
