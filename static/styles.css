@@ -409,6 +409,7 @@ body, html {
     .begin-adventure-form,
     .choices-form {
         margin-bottom: 2vh;
+        justify-content: center !important;
     }
 }
 
