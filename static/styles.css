@@ -113,7 +113,6 @@ body::before {
     white-space: pre-line;
     word-break: break-word;
 }
-
 /* --- Begin Adventure Form --- */
 .begin-adventure-form {
     display: flex;
