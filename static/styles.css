@@ -1,4 +1,11 @@
 /* --- Universal Gradient Background & Pattern --- */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent main page scroll */
+}
+
 body {
     min-height: 100vh;
     margin: 0;
@@ -68,79 +75,38 @@ body::before {
     .mascot { width: 100px; right: 1vw; }
 }
 
-/* --- Dashboard Flex Layout --- */
-.dashboard-flex {
+/* --- Fullscreen Story Layout (add this for new layout) --- */
+.story-fullscreen-panel {
+    width: 100vw;
+    height: calc(100vh - 90px); /* adjust top bar height if needed */
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    margin-top: 40px;
-    width: 100vw;
-    min-height: 80vh;
     position: relative;
     z-index: 1;
-    gap: 36px;
-}
-.global-event-container, .char-sheet-container {
-    flex: 0 0 265px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-top: 24px;
 }
 
-/* --- Global Event Box --- */
-.global-event-box {
-    background: rgba(52,0,90,0.93);
-    color: #ffd6ff;
-    border-radius: 14px;
-    box-shadow: 0 2px 12px #0002;
-    padding: 18px 18px 14px 18px;
-    font-size: 1.08em;
-    min-width: 200px;
-    max-width: 330px;
-    word-break: break-word;
-    margin-bottom: 18px;
-}
-.event-content {
-    font-size: 1em;
-    margin-top: 6px;
-}
-.event-timer {
-    font-size: 1em;
-    margin-top: 10px;
-    color: #fff;
-}
-
-/* --- Main Story Box Center --- */
-.story-center-panel {
-    flex: 1 1 680px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-width: 0;
-    min-height: 65vh;
-}
+/* --- Main Story Box Center (adjust for fullscreen) --- */
 .story-main-box {
     background: rgba(35, 14, 50, 0.97);
     border-radius: 18px;
     box-shadow: 0 2px 20px #0003, 0 1.5px 0px #cf9fff33 inset;
     padding: 36px 32px 28px 32px;
-    max-width: 670px;
-    width: 100%;
-    min-width: 340px;
-    min-height: 350px;
-    margin-bottom: 24px;
+    max-width: 700px;
+    width: 96vw;
+    margin-top: 32px;
     display: flex;
     flex-direction: column;
     overflow: visible;
 }
+
 .story-main-title {
     color: #fff;
     margin-bottom: 16px;
     font-size: 1.32em;
     letter-spacing: 1px;
 }
+
 .story-content-scroll {
     background: #432067a8;
     color: #fff;
@@ -148,14 +114,13 @@ body::before {
     padding: 17px;
     font-size: 1.09em;
     line-height: 1.63;
-    min-height: 120px;
-    max-height: 350px;
+    min-height: 350px;
+    max-height: 48vh;
     overflow-y: auto;
     margin-bottom: 16px;
     white-space: pre-line;
     word-break: break-word;
 }
-
 /* --- Begin Adventure Form --- */
 .begin-adventure-form {
     display: flex;
@@ -213,23 +178,12 @@ body::before {
     color: #7a32b8;
 }
 
-/* --- Character Sheet (Right) --- */
+/* --- Remove Character Sheet & Event Box for this layout --- */
+.global-event-container,
+.char-sheet-container,
+.global-event-box,
 .char-sheet-box {
-    background: rgba(52,0,90,0.93);
-    color: #e7d7ff;
-    border-radius: 12px;
-    padding: 15px 17px;
-    font-size: 1.05em;
-    margin-bottom: 16px;
-    min-width: 150px;
-    max-width: 220px;
-    word-break: break-word;
-}
-.char-sheet-box h3 {
-    margin-top: 0;
-    margin-bottom: 8px;
-    font-size: 1.13em;
-    color: #d9bfff;
+    display: none !important;
 }
 
 /* --- Flashes/Alerts (info, error, game) --- */
@@ -251,92 +205,12 @@ body::before {
 .flash-error { background: #ff3c6e; color: #fff; border-color: #ff3c6eaa; }
 .flash-game  { background: #b93c3c; color: #fff; border-color: #b93c3caa; }
 
-/* --- Login/Register Shared Styles --- */
-.center-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 78vh;
-    position: relative;
-    z-index: 2;
-}
-.login-form {
-    background: rgba(35, 14, 50, 0.97);
-    border-radius: 18px;
-    box-shadow: 0 2px 20px #0003, 0 1.5px 0px #cf9fff33 inset;
-    padding: 42px 38px 32px 38px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 330px;
-    max-width: 95vw;
-}
-.login-form h2 {
-    color: #fff;
-    margin-bottom: 26px;
-    font-size: 1.5em;
-    letter-spacing: 1px;
-}
-.login-form input {
-    width: 90%;
-    padding: 12px;
-    margin-bottom: 18px;
-    border: 1.2px solid #bb93ff;
-    border-radius: 8px;
-    font-size: 1em;
-    background: #321c50;
-    color: #fff;
-}
-.login-form button {
-    padding: 10px 26px;
-    border: none;
-    background: #b26dff;
-    color: #fff;
-    border-radius: 7px;
-    font-weight: bold;
-    font-size: 1.1em;
-    letter-spacing: 1px;
-    box-shadow: 0 2px 10px #cf9fff1c;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.18s;
-}
-.login-form button:hover {
-    background: #fff;
-    color: #7a32b8;
-}
-.switch-auth {
-    margin-top: 17px;
-    color: #bb93ff;
-    font-size: 1em;
-}
-.switch-auth a {
-    color: #fff;
-    text-decoration: underline;
-    font-weight: bold;
-    margin-left: 3px;
-}
-
 /* --- Responsive --- */
 @media (max-width: 1200px) {
-    .dashboard-flex { flex-direction: column; gap: 24px; align-items: stretch; }
-    .story-center-panel { align-items: stretch; }
     .story-main-box { margin-left: auto; margin-right: auto; }
-    .global-event-container, .char-sheet-container {
-        justify-content: center; align-items: center; margin-top: 10px;
-    }
 }
-/* Improved Mobile Layout: Story box full width, more height */
 @media (max-width: 700px) {
-    .top-bar { flex-direction: column; gap: 14px; padding: 22px 10px 0 12px; }
-    .dashboard-flex { flex-direction: column; gap: 12px; align-items: stretch; }
-    .mascot { width: 100px; right: 1vw; }
-    .story-center-panel {
-        width: 100vw;
-        align-items: stretch;
-        padding: 0;
-        min-height: 65vh;
-    }
+    .story-fullscreen-panel { padding: 0; }
     .story-main-box {
         min-width: 99vw !important;
         max-width: 100vw !important;
@@ -346,9 +220,6 @@ body::before {
         border-radius: 10px;
         box-sizing: border-box !important;
     }
-    .char-sheet-box, .global-event-box { max-width: 98vw; min-width: 0; }
-    .login-form { min-width: 80vw; }
-    .story-main-title { font-size: 1.12em; }
     .story-content-scroll {
         min-height: 38vh !important;
         max-height: 60vh !important;
@@ -357,57 +228,6 @@ body::before {
         width: 100% !important;
         border-radius: 10px !important;
         box-sizing: border-box !important;
-    }
-}
-/* Choices form row stays side-by-side, always aligned left */
-.choices-form {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-/* Input and button sizes for desktop */
-.choices-form input[type="number"] {
-    width: 90px;
-    max-width: 120px;
-    border-radius: 8px;
-    border: 1.3px solid #bb93ff;
-    padding: 9px;
-    background: #321c50;
-    color: #fff;
-    font-size: 1.05em;
-    box-sizing: border-box;
-}
-
-.choices-form button {
-    padding: 11px 24px;
-    border: none;
-    background: #b26dff;
-    color: #fff;
-    border-radius: 7px;
-    font-weight: bold;
-    font-size: 1.11em;
-    letter-spacing: 1px;
-    box-shadow: 0 2px 10px #cf9fff1c;
-    cursor: pointer;
-    transition: background 0.18s, color 0.18s;
-}
-
-/* Responsive for mobile: shrink and keep side-by-side */
-@media (max-width: 600px) {
-    .choices-form input[type="number"] {
-        width: 68px !important;
-        padding: 7px 5px !important;
-        font-size: 1em !important;
-    }
-    .choices-form button {
-        font-size: 0.99em !important;
-        padding: 7px 14px !important;
-    }
-    .choices-form {
-        gap: 6px;
     }
 }
 
@@ -419,7 +239,6 @@ body::before {
 #globalEventModal {
     display: none;
 }
-/* --- Only show mobile nav and hide desktop top bar on small screens --- */
 @media (max-width: 700px) {
     .top-bar { display: none !important; }
     .mobile-nav {
@@ -465,7 +284,6 @@ body::before {
         transition: background .16s, color .16s;
     }
     .nav-logout:active { background: #c562bb; }
-    /* --- Hamburger drawer --- */
     .sidebar-drawer {
         display: flex;
         flex-direction: column;
@@ -508,7 +326,7 @@ body::before {
     }
 }
 
-/* Hide closed sidebar, only show it if .open */
+/* Hide closed sidebar, only show if .open */
 .sidebar-drawer:not(.open) {
     pointer-events: none;
     opacity: 0;
