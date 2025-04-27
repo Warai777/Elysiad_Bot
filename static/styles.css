@@ -1,6 +1,7 @@
 /* --- Universal Gradient Background & Pattern --- */
 body {
-    min-height: 100vh;
+    min-height: 100dvh;   /* Use dynamic viewport height */
+    min-height: 100vh;    /* Fallback for old browsers */
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
     background: linear-gradient(135deg, #a678f5 0%, #fd7ed7 60%, #8b54e7 100%);
@@ -10,7 +11,8 @@ body {
 body::before {
     content: "";
     position: fixed;
-    left: 0; top: 0; width: 100vw; height: 100vh;
+    left: 0; top: 0; width: 100vw; height: 100dvh;
+    height: 100vh; /* Fallback */
     z-index: 0;
     opacity: 0.18;
     background: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 1440 810" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 600Q360 500 720 600T1440 600V810H0Z" fill="white" fill-opacity="0.09"/><path d="M0 500Q360 600 720 500T1440 500V810H0Z" fill="white" fill-opacity="0.09"/><path d="M0 400Q360 500 720 400T1440 400V810H0Z" fill="white" fill-opacity="0.09"/></svg>');
@@ -74,6 +76,7 @@ body::before {
     justify-content: center;
     align-items: flex-start;
     width: 100vw;
+    min-height: 80dvh;
     min-height: 80vh;
     position: relative;
     z-index: 1;
@@ -107,6 +110,7 @@ body::before {
     font-size: 1.18em;
     line-height: 1.63;
     min-height: 120px;
+    max-height: 35dvh;
     max-height: 350px;
     overflow-y: auto;
     margin-bottom: 16px;
@@ -183,6 +187,7 @@ body::before {
         width: 100vw;
         align-items: stretch;
         padding: 0;
+        min-height: 65dvh;
         min-height: 65vh;
     }
     .story-main-box {
@@ -196,13 +201,15 @@ body::before {
     }
     .story-main-title { font-size: 1.12em; }
     .story-content-scroll {
+        min-height: 24dvh !important;
         min-height: 24vh !important;
+        max-height: 24dvh !important;
         max-height: 24vh !important; /* Make box smaller on mobile! */
         font-size: 1.10em !important;
         padding: 4vw 2vw 60px 2vw !important; /* Extra bottom padding for keyboard/input */
         border-radius: 10px !important;
         box-sizing: border-box !important;
-        scroll-padding-bottom: 70px; /* Helps keep bottom text visible when scrolling with keyboard */
+        scroll-padding-bottom: 70px;
     }
     .begin-adventure-form,
     .choices-form {
@@ -314,10 +321,12 @@ body::before {
 
 /* --- Make body/content unscrollable except story box --- */
 body, html {
-    height: 100%;
+    height: 100dvh;
+    height: 100vh;
     overflow: hidden;
 }
 .story-fullscreen-panel {
+    min-height: 100dvh;
     min-height: 100vh;
     width: 100vw;
     display: flex;
@@ -346,6 +355,7 @@ body, html {
     font-size: 1.13em;
     line-height: 1.63;
     min-height: 90px;
+    max-height: 54dvh;
     max-height: 54vh;
     overflow-y: auto;
     margin-bottom: 17px;
@@ -395,8 +405,10 @@ body, html {
         border-radius: 10px;
     }
     .story-content-scroll {
+        min-height: 14dvh !important;
         min-height: 14vh !important;
-        max-height: 24vh !important; /* keep small for keyboard */
+        max-height: 24dvh !important;
+        max-height: 24vh !important;
         font-size: 1.07em !important;
         padding: 3vw 1.5vw 60px 1.5vw !important;
         border-radius: 10px !important;
