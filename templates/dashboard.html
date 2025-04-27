@@ -5,20 +5,18 @@
     <title>Elysiad Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Mobile viewport height fix (in head or top of body is fine) -->
+    <script>
+      function setVh() {
+          let vh = window.innerHeight * 0.01;
+          document.documentElement.style.setProperty('--vh', `${vh}px`);
+      }
+      window.addEventListener('resize', setVh);
+      window.addEventListener('orientationchange', setVh);
+      setVh();
+    </script>
 </head>
 <body>
-    <!-- Mobile viewport height fix -->
-    <script>
-    // Set --vh to the actual viewport height on load/resize/orientation
-    function setVh() {
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-    window.addEventListener('resize', setVh);
-    window.addEventListener('orientationchange', setVh);
-    setVh();
-    </script>
-
     <!-- MOBILE NAV ONLY (hidden on desktop) -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
@@ -75,15 +73,6 @@
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
         <!-- JS -->
     <script>
-     function setVh() {
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-}
-window.addEventListener('resize', setVh);
-window.addEventListener('orientationchange', setVh);
-setVh();
-
-        }
     // Mobile nav logic
     document.addEventListener('DOMContentLoaded', function() {
         var hamburger = document.getElementById('hamburger');
