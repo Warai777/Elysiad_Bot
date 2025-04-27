@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -31,7 +31,6 @@
     </div>
 
     <!-- DESKTOP NAV AND LAYOUT -->
-    <body>
     <div class="top-bar">
         <div class="logo">Elysiad</div>
         <div>
@@ -46,7 +45,7 @@
                     {{ item|safe }}<br>
                 {% endfor %}
             </div>
-            <div id="button-zone">
+                        <div id="button-zone">
                 {% if not user["Story"]["started"] %}
                     <form id="begin-form" class="begin-adventure-form">
                         <input type="hidden" name="begin" value="1">
@@ -62,8 +61,7 @@
         </div>
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
-    <!-- Your JS goes here -->
-</body>
+
     <!-- JS -->
     <script>
     // Mobile nav logic
