@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <!-- Mobile viewport height fix -->
+    <script>
+    // Set --vh to the actual viewport height on load/resize/orientation
+    function setVh() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+    setVh();
+    </script>
+
     <!-- MOBILE NAV ONLY (hidden on desktop) -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
@@ -172,6 +184,18 @@
 
     attachBeginListener();
     attachChoiceListener();
+
+    // --- Mobile Keyboard Resize Fix ---
+    // Ensure story scroll area remains visible when the keyboard closes/opens
+    window.addEventListener('resize', function() {
+        // Use the updated --vh variable for sizing, if using in your CSS
+        setTimeout(function() {
+            const storyBox = document.getElementById('story-box');
+            if(storyBox) {
+                storyBox.scrollTop = storyBox.scrollHeight;
+            }
+        }, 350); // Delay helps after the keyboard animation finishes
+    });
     </script>
 </body>
 </html>
