@@ -26,7 +26,7 @@
         <a href="#" id="closeSidebar">&times;</a>
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('char_sheet', username=current_user.username) }}">Character</a>
-        <a href="#" id="showGlobalEvent">Global Events</a> <!-- ADDED -->
+        <a href="#" id="showGlobalEvent">Global Events</a>
     </div>
     <!-- MODAL FOR GLOBAL EVENT -->
     <div class="modal" id="globalEventModal">
@@ -45,7 +45,7 @@
             <a href="{{ url_for('dashboard') }}" class="signup-btn">Dashboard</a>
             <a href="{{ url_for('char_sheet', username=current_user.username) }}" class="signup-btn">Character</a>
             <a href="{{ url_for('logout') }}" class="signup-btn logout">Logout</a>
-            <a href="#" id="showGlobalEventDesktop" class="signup-btn" style="margin-left:18px;">Global Events</a> <!-- Optional: for desktop nav -->
+            <a href="#" id="showGlobalEventDesktop" class="signup-btn" style="margin-left:18px;">Global Events</a>
         </div>
     </div>
     <div class="story-fullscreen-panel">
@@ -66,7 +66,7 @@
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
 
-    <!-- SIDEBAR/HAMBURGER + MODAL JS -->
+    <!-- SIDEBAR/HAMBURGER + MODAL + TIMER JS -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         var hamburger = document.getElementById('hamburger');
@@ -90,7 +90,7 @@
                 document.body.style.overflow = "hidden";
             };
         }
-        // Desktop topbar modal (optional)
+        // Desktop topbar modal
         if (showGlobalEventDesktop && globalModal && closeModal) {
             showGlobalEventDesktop.onclick = function(e) {
                 e.preventDefault();
@@ -113,10 +113,10 @@
         }
     });
 
-    // Optional: global event timer
-    // (Add a JS timer function here if you want, as before)
+    // Global event timer
     (function() {
-        const nextEventTs = {{ next_event_ts|tojson }};
+        // next_event_ts must be passed from Flask as an integer
+        const nextEventTs = {{ next_event_ts|int }};
         function pad(n){ return n < 10 ? '0'+n : n; }
         function updateTimer() {
             const now = Math.floor(Date.now()/1000);
@@ -128,6 +128,10 @@
             var timerElems = document.querySelectorAll('#global-timer');
             for(let t of timerElems)
                 t.textContent = pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+        }
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    })();
     </script>
 </body>
 </html>
