@@ -5,6 +5,51 @@
     <title>Character Sheet | Elysiad</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* --- ADDED: Modal & overlay styling --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.5); /* Faded/opaque bg */
+        }
+        .modal-content {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #24203a;
+            color: #e7d7ff;
+            border-radius: 20px;
+            padding: 2.2rem 2rem 1.5rem 2rem;
+            min-width: 320px;
+            box-shadow: 0 8px 48px #0009;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .close-modal {
+            position: absolute;
+            right: 18px;
+            top: 16px;
+            font-size: 2.2rem;
+            color: #ad7fed;
+            cursor: pointer;
+            border: none;
+            background: none;
+            z-index: 10001;
+        }
+        @media (max-width: 500px) {
+            .modal-content {
+                min-width: unset;
+                width: 90vw;
+                padding: 1.2rem 0.8rem 1rem 0.8rem;
+            }
+            .close-modal {
+                top: 9px; right: 11px;
+            }
+        }
+    </style>
     <script>
       function setVh() {
           let vh = window.innerHeight * 0.01;
@@ -26,11 +71,12 @@
         <a href="#" id="closeSidebar">&times;</a>
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('lore_index') }}">Lore</a>
+        <a href="#" id="showGlobalEvent"><!-- ADDED -->Global Events</a>
     </div>
-    <!-- Optional: Modal for global event, only if you use this feature -->
-    <div class="modal" id="globalEventModal">
+    <!-- Modal for global event -->
+    <div class="modal" id="globalEventModal"><!-- MODIFIED/ENHANCED -->
         <div class="modal-content">
-            <span class="close-modal" id="closeModal">&times;</span>
+            <button class="close-modal" id="closeModal">&times;</button>
             <div class="global-event-box">
                 <strong>Global Event</strong><br>
                 <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
@@ -113,14 +159,25 @@
             hamburger.onclick = function() { sidebar.classList.add('open'); };
             closeSidebar.onclick = function() { sidebar.classList.remove('open'); };
         }
+        // --- MODIFIED: modal logic ---
         if (showGlobalEvent && globalModal && closeModal) {
             showGlobalEvent.onclick = function(e) {
                 e.preventDefault();
                 sidebar.classList.remove('open');
                 globalModal.style.display = "block";
+                document.body.style.overflow = "hidden"; // Prevent background scroll
             };
-            closeModal.onclick = function() { globalModal.style.display = "none"; };
-            globalModal.onclick = function(e) { if(e.target === globalModal) globalModal.style.display = "none"; };
+            closeModal.onclick = function() { 
+                globalModal.style.display = "none"; 
+                document.body.style.overflow = "";
+            };
+            // Clicking the overlay itself also closes modal
+            globalModal.onclick = function(e) { 
+                if(e.target === globalModal) {
+                    globalModal.style.display = "none"; 
+                    document.body.style.overflow = "";
+                }
+            };
         }
     });
 
@@ -143,4 +200,4 @@
     })();
     </script>
 </body>
-</html>
+</html> 
