@@ -95,10 +95,28 @@ Context:
 - The world can be affected by current global events: {GLOBAL_EVENT}
 - Player's journey so far: {HISTORY}
 
-Respond in a detailed and thought-out light-novel style.
-Present next set of 5 choices at the end of the message (list as "Choices: 1. ... 2. ... etc.")
+You must dynamically generate a unique, context-aware chapter name for each scene based on current events, recent choices, or story tone. Format your output as follows at the very top (before the story):
+
+<b>Chapter {CHAPTER}: {CHAPTER_NAME}</b><br>
+<b>Scene {SCENE}</b><br>
+
+Then continue with the story and choices. Mark every choice in the output as <b> to make it prominent.
 If any new lore is discovered, mention it clearly as: 'Lore Discovered: ...'
 """
+
+def generate_chapter_name(story_context, scene_num):
+    # Example dynamic chapter name generator (improve for your project!)
+    themes = ["Lost in the Library", "Chains of Fate", "Shadows in the Hall", "Dawn of Awakening",
+              "Call of the Unknown", "A World Unseen", "First Steps", "The Archivist Watches", "The Fateful Choice"]
+    # Context-aware: pick something matching history, current event, or scene number for variety
+    if "death" in story_context.lower():
+        return "A Narrow Escape"
+    if "lore" in story_context.lower():
+        return "Secrets Revealed"
+    if "choice" in story_context.lower() or scene_num == 1:
+        return "First Decision"
+    # Default: random or themed by scene
+    return themes[(scene_num - 1) % len(themes)]
 
 def default_stat_sheet():
     return {
@@ -115,7 +133,7 @@ def default_stat_sheet():
         "HP": 100,
         "Origin Essence": 0,
         "Inventory": [],
-        "Story": {"chapter": 1, "scene": 1, "history": [], "recent": [], "started": False},
+        "Story": {"chapter": 1, "scene": 1, "history": [], "recent": [], "started": False, "chapter_names": {}},
         "Lore": [],
         "LastStory": ""
     }
@@ -185,7 +203,7 @@ def dashboard():
         "dashboard.html",
         user=u,
         global_event=global_state.get("current_event"),
-        timer=0,  # not used in this HTML
+        timer=0,
         users=users,
         history=u['Story'].get("history", []),
         next_event_ts=next_event_ts
@@ -195,8 +213,12 @@ def dashboard():
 @login_required
 def stream_story():
     u = get_user_data(current_user.username)
+    story = u["Story"]
+    chapter = story.get("chapter", 1)
+    scene = story.get("scene", 1)
+    chapter_names = story.setdefault("chapter_names", {})
 
-    def stream_openai_response(prompt):
+    def stream_openai_response(prompt, chapter, scene):
         response = openai.chat.completions.create(
             model="gpt-4o",
             messages=[{"role": "system", "content": prompt}],
@@ -209,36 +231,64 @@ def stream_story():
             content = getattr(chunk.choices[0].delta, "content", "") or ""
             full_story += content
             yield content
-        # Update user after streaming
-        if "Lore Discovered:" in full_story:
-            new_lore = full_story.split("Lore Discovered:", 1)[1].split("\n")[0].strip()
+        # Find dynamic chapter name for this scene (context-aware)
+        chapter_name = chapter_names.get(str(chapter))
+        if not chapter_name:
+            # Try to dynamically generate chapter name based on story so far
+            context = "\n".join(u['Story'].get("history", [])[-3:])
+            chapter_name = generate_chapter_name(context, scene)
+            chapter_names[str(chapter)] = chapter_name
+            save_users()
+        # Prepend with chapter/scene
+        decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
+
+        # Make choices bold using regex (to ensure all "Choices: ...1." lines are marked bold)
+        import re
+        def bold_choices(text):
+            # Replace "Choices:\n1. ..." to make all choices bold
+            return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
+        decorated = bold_choices(decorated)
+
+        # Lore integration (unchanged)
+        if "Lore Discovered:" in decorated:
+            new_lore = decorated.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
             if new_lore not in lore:
                 lore.append(new_lore)
                 save_lore()
             if new_lore not in u["Lore"]:
                 u["Lore"].append(new_lore)
-        if not u["Story"].get("started"):
-            u["Story"]["started"] = True
-        u["Story"]["history"].append(full_story)
-        u["LastStory"] = full_story
-        u["Story"]["scene"] += 1
+
+        if not story.get("started"):
+            story["started"] = True
+        story["history"].append(decorated)
+        u["LastStory"] = decorated
+        story["scene"] += 1
         save_users()
+        yield ""  # end of stream
 
     if request.form.get("begin") == "1":
         INTRO_TEMPLATES = [
             "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
-            # Add more intros if you wish
         ]
         selected_intro = random.choice(INTRO_TEMPLATES)
+        # Generate dynamic chapter name for the intro
+        chapter = 1
+        scene = 1
+        chapter_names = u["Story"].setdefault("chapter_names", {})
+        chapter_name = generate_chapter_name(selected_intro, scene)
+        chapter_names[str(chapter)] = chapter_name
+        save_users()
         prompt = (
+            f"<b>Chapter {chapter}: {chapter_name}</b><br>"
+            f"<b>Scene {scene}</b><br>"
             f"{selected_intro}\n\n"
             "Narrate the scene as a light novel. Immediately follow with a scenario and list FIVE possible actions, numbered. Format strictly as:\n"
             "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...'\n"
             "End your message with the 5 choices, no extras."
         )
         u["Story"]["started"] = True
-        u["Story"]["chapter"] = 1
-        u["Story"]["scene"] = 1
+        u["Story"]["chapter"] = chapter
+        u["Story"]["scene"] = scene
         u["Story"]["history"] = []
         u["LastStory"] = ""
         save_users()
@@ -247,13 +297,21 @@ def stream_story():
             number = int(request.form["choice"])
         except:
             number = 1
+        # Use previous story as context for chapter name
         history = "\n".join(u['Story'].get("history", [])[-5:])
+        chapter = u["Story"]["chapter"]
+        scene = u["Story"]["scene"]
+        chapter_names = u["Story"].setdefault("chapter_names", {})
+        if str(chapter) not in chapter_names:
+            chapter_name = generate_chapter_name(history, scene)
+            chapter_names[str(chapter)] = chapter_name
+            save_users()
         prompt = ELY_PROMPT.replace("{HISTORY}", history)\
                           .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
-        prompt += f"\nCurrent scene: Chapter {u['Story']['chapter']} Scene {u['Story']['scene']}\n"
+        prompt += f"\nCurrent scene: Chapter {chapter} Scene {scene}\n"
         prompt += f"User chose: {number}"
 
-    return Response(stream_with_context(stream_openai_response(prompt)), mimetype='text/plain')
+    return Response(stream_with_context(stream_openai_response(prompt, chapter, scene)), mimetype='text/html')
 
 @app.route("/char_sheet/<username>")
 @login_required
