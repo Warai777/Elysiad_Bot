@@ -150,8 +150,8 @@
             if (full[pos] === "<") {
                 let close = full.indexOf(">", pos);
                 if (close >= 0) {
-                    toDisplay += full.substring(pos, close+1);
-                    pos = close+1;
+                    toDisplay += full.substring(pos, close + 1);
+                    pos = close + 1;
                 } else {
                     break;
                 }
@@ -172,7 +172,7 @@
     }
 
     function read() {
-        reader.read().then(({done, value}) => {
+        reader.read().then(({ done, value }) => {
             if (done) {
                 element.scrollTop = element.scrollHeight;
                 return;
