@@ -215,38 +215,40 @@ def stream_story():
     chapter_names = story.setdefault("chapter_names", {})
 
     def stream_openai_response(prompt, chapter, scene):
+        # OpenAI API request to stream the story content
         response = openai.chat.completions.create(
             model="gpt-4o",
             messages=[{"role": "system", "content": prompt}],
             max_tokens=700,
             temperature=0.95,
-            stream=True,
+            stream=True,  # Ensure we are streaming data
         )
-        full_story = ""
+        
         buffer = ""
+        full_story = ""
         header_found = False
 
         for chunk in response:
             content = getattr(chunk.choices[0].delta, "content", "") or ""
             buffer += content
+
+            # Wait for the full header before sending it
             if not header_found:
-                # Wait until we have the full header before yielding
                 import re
                 m = re.match(r'((<b>Chapter.+?<br><b>Scene.+?<br>)+)', buffer, re.DOTALL)
                 if m:
                     header_found = True
                     full_header = m.group(1)
                     rest = buffer[len(full_header):]
-                    yield full_header  # send header instantly
+                    yield full_header  # Send header instantly
                     if rest:
-                        yield rest
-                    full_story += buffer
-                    buffer = ""
-            else:
-                yield content
-                full_story += content
+                        yield rest  # Send the rest of the content
+                    buffer = ""  # Reset buffer after sending header
 
-            # Decorate with chapter/scene before storing in user history
+            else:
+                yield content  # Stream the content as it arrives
+
+            # Get chapter name if not set
             chapter_name = chapter_names.get(str(chapter))
             if not chapter_name:
                 context = "\n".join(u['Story'].get("history", [])[-3:])
@@ -254,15 +256,16 @@ def stream_story():
                 chapter_names[str(chapter)] = chapter_name
                 save_users()
 
+            # Format the story with chapter and scene
             decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
 
-            # Bold choices
+            # Bold choices section (in case there are choices after the story)
             import re
             def bold_choices(text):
                 return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
             decorated = bold_choices(decorated)
 
-            # Lore integration
+            # Check for new lore discovered
             if "Lore Discovered:" in decorated:
                 new_lore = decorated.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
                 if new_lore not in lore:
@@ -277,8 +280,10 @@ def stream_story():
             u["LastStory"] = decorated
             story["scene"] += 1
             save_users()
-            yield ""  # end of stream
 
+            yield ""  # End of stream after each chunk
+
+    # Handle the initial choice form submission
     if request.form.get("begin") == "1":
         INTRO_TEMPLATES = [
             "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
@@ -290,14 +295,11 @@ def stream_story():
         chapter_name = generate_chapter_name(selected_intro, scene)
         chapter_names[str(chapter)] = chapter_name
         save_users()
-        prompt = (
-            f"<b>Chapter {chapter}: {chapter_name}</b><br>"
-            f"<b>Scene {scene}</b><br>"
-            f"{selected_intro}\n\n"
-            "Narrate the scene as a light novel. Immediately follow with a scenario and list FIVE possible actions, numbered. Format strictly as:\n"
-            "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...'\n"
-            "End your message with the 5 choices, no extras."
-        )
+
+        prompt = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{selected_intro}\n\n"
+        prompt += "Narrate the scene as a light novel. Immediately follow with a scenario and list FIVE possible actions, numbered. Format strictly as:\n"
+        prompt += "'Choices:\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...'\nEnd your message with the 5 choices, no extras."
+
         u["Story"]["started"] = True
         u["Story"]["chapter"] = chapter
         u["Story"]["scene"] = scene
@@ -309,19 +311,23 @@ def stream_story():
             number = int(request.form["choice"])
         except:
             number = 1
+
         history = "\n".join(u['Story'].get("history", [])[-5:])
         chapter = u["Story"]["chapter"]
         scene = u["Story"]["scene"]
         chapter_names = u["Story"].setdefault("chapter_names", {})
+        
         if str(chapter) not in chapter_names:
             chapter_name = generate_chapter_name(history, scene)
             chapter_names[str(chapter)] = chapter_name
             save_users()
+
         prompt = ELY_PROMPT.replace("{HISTORY}", history)\
                           .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
         prompt += f"\nCurrent scene: Chapter {chapter} Scene {scene}\n"
         prompt += f"User chose: {number}"
 
+    # Return the streamed response to the client
     return Response(stream_with_context(stream_openai_response(prompt, chapter, scene)), mimetype='text/html')
 
 # --- CHAR SHEET ROUTE ---
