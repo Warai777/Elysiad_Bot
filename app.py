@@ -215,13 +215,12 @@ def stream_story():
     chapter_names = story.setdefault("chapter_names", {})
 
     def stream_openai_response(prompt, chapter, scene):
-        # OpenAI API request to stream the story content
         response = openai.chat.completions.create(
             model="gpt-4o",
             messages=[{"role": "system", "content": prompt}],
             max_tokens=700,
             temperature=0.95,
-            stream=True,  # Ensure we are streaming data
+            stream=True,
         )
 
         buffer = ""
@@ -259,7 +258,7 @@ def stream_story():
             # Format the story with chapter and scene
             decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
 
-            # Bold choices section (in case there are choices after the story)
+            # Bold choices
             import re
             def bold_choices(text):
                 return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
@@ -283,7 +282,6 @@ def stream_story():
 
             yield ""  # End of stream
 
-    # Handle the initial choice form submission
     if request.form.get("begin") == "1":
         INTRO_TEMPLATES = [
             "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
