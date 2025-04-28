@@ -231,6 +231,9 @@ def stream_story():
             content = getattr(chunk.choices[0].delta, "content", "") or ""
             buffer += content
 
+            # Log content for debugging purposes
+            print(f"OpenAI Response Chunk: {content}")
+
             # Wait for the full header before sending it
             if not header_found:
                 import re
