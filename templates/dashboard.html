@@ -67,8 +67,7 @@
         </div>
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
-
-    <!-- JS -->
+        <!-- JS -->
     <script>
     // Sidebar toggle (show/hide × only when open)
     document.addEventListener('DOMContentLoaded', function() {
@@ -120,7 +119,8 @@
         updateTimer();
         setInterval(updateTimer, 1000);
     })();
-            // --- TYPEWRITER STREAMING: instant header, fast, fixes restart/duplicate ---
+
+    // --- TYPEWRITER STREAMING: instant header, fast, fixes restart/duplicate ---
     function streamTypewriterAppend(element, stream, typingDelay = 16) {
         const reader = stream.getReader();
         let appendDiv = document.createElement("div");
