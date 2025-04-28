@@ -69,7 +69,7 @@
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
     <!-- JS -->
     <script>
-           // Sidebar toggle (show/hide × only when open)
+    // Sidebar toggle (show/hide × only when open)
     document.addEventListener('DOMContentLoaded', function() {
         var hamburger = document.getElementById('hamburger');
         var sidebar = document.getElementById('sidebarDrawer');
@@ -120,23 +120,25 @@
         setInterval(updateTimer, 1000);
     })();
 
-    // --- TYPEWRITER STREAMING WITH CONTEXT-AWARE HEADER & FASTER SPEED ---
+    // --- TYPEWRITER STREAMING: instant header, fast, fixes restart/duplicate ---
     function streamTypewriterAppend(element, stream, typingDelay = 16) {
         const reader = stream.getReader();
-        let html = "";
         let appendDiv = document.createElement("div");
         appendDiv.className = "new-chapter";
         element.appendChild(appendDiv);
 
-        let chapterHeaderShown = false;
+        let headerDisplayed = false;
+        let header = "";
+        let rest = "";
 
         function extractHeaderAndRest(chunk) {
-            // This assumes your API returns <b>Chapter ...<br><b>Scene ...<br>Story...
+            // Expects <b>Chapter ...<br><b>Scene ...<br>
             let headerMatch = chunk.match(/^((<b>Chapter.+?<br><b>Scene.+?<br>)+)/);
             if (headerMatch) {
-                let header = headerMatch[1];
-                let rest = chunk.substring(header.length);
-                return { header, rest };
+                return {
+                    header: headerMatch[1],
+                    rest: chunk.slice(headerMatch[1].length)
+                };
             }
             return { header: "", rest: chunk };
         }
@@ -165,7 +167,7 @@
             if (i < chunk.length) {
                 setTimeout(() => typeHTMLChunk(chunk, i + 2, prefix), typingDelay);
             } else {
-                html += chunk;
+                if (prefix) headerDisplayed = true;
                 read();
             }
         }
@@ -177,13 +179,12 @@
                     return;
                 }
                 const chunk = new TextDecoder().decode(value);
-                if (!chapterHeaderShown) {
-                    // Only for the first chunk, try to display the header instantly
-                    let { header, rest } = extractHeaderAndRest(chunk);
-                    if (header) {
-                        appendDiv.innerHTML = header;
-                        chapterHeaderShown = true;
-                        typeHTMLChunk(rest, 0, header);
+                if (!headerDisplayed) {
+                    let res = extractHeaderAndRest(chunk);
+                    if (res.header) {
+                        appendDiv.innerHTML = res.header;
+                        headerDisplayed = true;
+                        typeHTMLChunk(res.rest, 0, res.header);
                     } else {
                         typeHTMLChunk(chunk, 0, "");
                     }
@@ -248,4 +249,4 @@
     });
     </script>
 </body>
-</html> 
+</html>
