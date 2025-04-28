@@ -115,6 +115,30 @@ body::before {
     word-break: break-word;
 }
 
+/* --- Bold/Strong Highlight for Story Box --- */
+.story-content-scroll b,
+.story-content-scroll strong {
+    color: #ffe680;
+    font-weight: bold;
+    background: rgba(130, 60, 255, 0.11); /* soft highlight */
+    padding: 0 2px;
+    border-radius: 4px;
+}
+
+/* --- CHOICE HIGHLIGHT: for AI output like <b class="choice">...</b> --- */
+.story-content-scroll b.choice,
+.story-content-scroll strong.choice {
+    color: #fff;
+    font-size: 1.16em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    background: #b06fff33;
+    padding: 2px 6px;
+    border-radius: 5px;
+    display: block;
+    margin: 9px 0 6px 0;
+}
+
 /* --- Begin Adventure Form --- */
 .begin-adventure-form {
     display: flex;
@@ -176,7 +200,6 @@ body::before {
     .story-fullscreen-panel { flex-direction: column; gap: 24px; align-items: stretch; }
     .story-main-box { margin-left: auto; margin-right: auto; }
 }
-/* Improved Mobile Layout: Story box full width, more height */
 @media (max-width: 700px) {
     .top-bar { flex-direction: column; gap: 14px; padding: 22px 10px 0 12px; }
     .story-fullscreen-panel {
@@ -197,7 +220,7 @@ body::before {
     .story-main-title { font-size: 1.12em; }
     .story-content-scroll {
         min-height: calc(var(--vh, 1vh) * 14) !important;
-        max-height: calc(var(--vh, 1vh) * 30) !important;  /* <--- UPDATED, was 24 */
+        max-height: calc(var(--vh, 1vh) * 30) !important;  /* was 24 */
         font-size: 1.10em !important;
         padding: 4vw 2vw 60px 2vw !important;
         border-radius: 10px !important;
@@ -258,7 +281,6 @@ body::before {
         transition: background .16s, color .16s;
     }
     .nav-logout:active { background: #c562bb; }
-    /* Sidebar Drawer (hidden by default unless .open) */
     .sidebar-drawer {
         display: flex;
         flex-direction: column;
@@ -298,14 +320,12 @@ body::before {
         background: none;
         border: none;
         line-height: 1;
-        display: none; /* Hide by default, shown via JS */
+        display: none;
     }
     .sidebar-drawer.open #closeSidebar {
-        display: block; /* Only show × when open */
+        display: block;
     }
 }
-
-/* Hide closed sidebar, only show if .open */
 .sidebar-drawer:not(.open) {
     pointer-events: none;
     opacity: 0;
@@ -316,7 +336,6 @@ body::before {
     opacity: 1;
     visibility: visible;
 }
-
 /* --- Make body/content unscrollable except story box --- */
 body, html {
     height: calc(var(--vh, 1vh) * 100);
@@ -418,13 +437,14 @@ body, html {
 .char-sheet-container {
     display: none !important;
 }
+
 /* --- MODAL OVERLAY & CONTENT (for Global Event) --- */
 .modal {
     display: none;
     position: fixed;
     z-index: 30000;
     left: 0; top: 0; width: 100vw; height: 100vh;
-    background: rgba(29,18,40,0.61); /* glassy violet-black fade */
+    background: rgba(29,18,40,0.61);
     transition: opacity .24s cubic-bezier(0.66,0,0.34,1);
 }
 .modal-content {
