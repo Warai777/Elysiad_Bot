@@ -127,28 +127,36 @@
     })();
 
     // Typewriter Streaming (unchanged)
-    function streamTypewriterAppend(element, stream) {
-        const reader = stream.getReader();
-        let text = "";
-        let appendDiv = document.createElement("div");
-        appendDiv.className = "new-chapter";
-        element.appendChild(appendDiv);
+    function streamTypewriterAppend(element, stream, typingDelay = 40) {
+    const reader = stream.getReader();
+    let text = "";
+    let appendDiv = document.createElement("div");
+    appendDiv.className = "new-chapter";
+    element.appendChild(appendDiv);
 
-        function read() {
-            reader.read().then(({done, value}) => {
-                if (done) {
-                    element.scrollTop = element.scrollHeight;
-                    return;
-                }
-                const chunk = new TextDecoder().decode(value);
-                text += chunk;
-                appendDiv.innerHTML = text;
-                element.scrollTop = element.scrollHeight;
-                read();
-            });
+    function typeText(chunk, i = 0) {
+        if (i < chunk.length) {
+            text += chunk[i];
+            appendDiv.innerHTML = text;
+            element.scrollTop = element.scrollHeight;
+            setTimeout(() => typeText(chunk, i + 1), typingDelay);
+        } else {
+            read();
         }
-        read();
     }
+
+    function read() {
+        reader.read().then(({done, value}) => {
+            if (done) {
+                element.scrollTop = element.scrollHeight;
+                return;
+            }
+            const chunk = new TextDecoder().decode(value);
+            typeText(chunk);
+        });
+    }
+    read();
+}
 
     function attachBeginListener() {
         const beginForm = document.getElementById('begin-form');
