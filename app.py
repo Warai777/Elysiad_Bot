@@ -223,7 +223,7 @@ def stream_story():
             temperature=0.95,
             stream=True,  # Ensure we are streaming data
         )
-        
+
         buffer = ""
         full_story = ""
         header_found = False
@@ -265,7 +265,7 @@ def stream_story():
                 return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
             decorated = bold_choices(decorated)
 
-            # Check for new lore discovered
+            # Lore integration
             if "Lore Discovered:" in decorated:
                 new_lore = decorated.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
                 if new_lore not in lore:
@@ -281,7 +281,7 @@ def stream_story():
             story["scene"] += 1
             save_users()
 
-            yield ""  # End of stream after each chunk
+            yield ""  # End of stream
 
     # Handle the initial choice form submission
     if request.form.get("begin") == "1":
