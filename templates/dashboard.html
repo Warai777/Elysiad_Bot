@@ -67,7 +67,7 @@
         </div>
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
-        <!-- JS -->
+    <!-- JS -->
     <script>
     // Sidebar toggle (show/hide × only when open)
     document.addEventListener('DOMContentLoaded', function() {
@@ -122,78 +122,78 @@
 
     // --- TYPEWRITER STREAMING: instant header, fast, fixes restart/duplicate ---
     function streamTypewriterAppend(element, stream, typingDelay = 16) {
-    const reader = stream.getReader();
-    let appendDiv = document.createElement("div");
-    appendDiv.className = "new-chapter";
-    element.appendChild(appendDiv);
+        const reader = stream.getReader();
+        let appendDiv = document.createElement("div");
+        appendDiv.className = "new-chapter";
+        element.appendChild(appendDiv);
 
-    let headerDisplayed = false;
-    let header = "";
-    let rest = "";
+        let headerDisplayed = false;
+        let header = "";
+        let rest = "";
 
-    function extractHeaderAndRest(chunk) {
-        let headerMatch = chunk.match(/^((<b>Chapter.+?<br><b>Scene.+?<br>)+)/);
-        if (headerMatch) {
-            return {
-                header: headerMatch[1],
-                rest: chunk.slice(headerMatch[1].length)
-            };
+        function extractHeaderAndRest(chunk) {
+            let headerMatch = chunk.match(/^((<b>Chapter.+?<br><b>Scene.+?<br>)+)/);
+            if (headerMatch) {
+                return {
+                    header: headerMatch[1],
+                    rest: chunk.slice(headerMatch[1].length)
+                };
+            }
+            return { header: "", rest: chunk };
         }
-        return { header: "", rest: chunk };
-    }
 
-    function typeHTMLChunk(chunk, i = 0, prefix = "") {
-        let full = prefix + chunk;
-        let toDisplay = "";
-        let pos = 0, outLen = 0;
-        while (outLen < i && pos < full.length) {
-            if (full[pos] === "<") {
-                let close = full.indexOf(">", pos);
-                if (close >= 0) {
-                    toDisplay += full.substring(pos, close + 1);
-                    pos = close + 1;
+        function typeHTMLChunk(chunk, i = 0, prefix = "") {
+            let full = prefix + chunk;
+            let toDisplay = "";
+            let pos = 0, outLen = 0;
+            while (outLen < i && pos < full.length) {
+                if (full[pos] === "<") {
+                    let close = full.indexOf(">", pos);
+                    if (close >= 0) {
+                        toDisplay += full.substring(pos, close + 1);
+                        pos = close + 1;
+                    } else {
+                        break;
+                    }
                 } else {
-                    break;
+                    toDisplay += full[pos];
+                    pos++;
+                    outLen++;
                 }
+            }
+            appendDiv.innerHTML = toDisplay;
+            element.scrollTop = element.scrollHeight;
+            if (i < chunk.length) {
+                setTimeout(() => typeHTMLChunk(chunk, i + 2, prefix), typingDelay);
             } else {
-                toDisplay += full[pos];
-                pos++;
-                outLen++;
+                if (prefix) headerDisplayed = true;
+                read();
             }
         }
-        appendDiv.innerHTML = toDisplay;
-        element.scrollTop = element.scrollHeight;
-        if (i < chunk.length) {
-            setTimeout(() => typeHTMLChunk(chunk, i + 2, prefix), typingDelay);
-        } else {
-            if (prefix) headerDisplayed = true;
-            read();
-        }
-    }
 
-    function read() {
-        reader.read().then(({ done, value }) => {
-            if (done) {
-                element.scrollTop = element.scrollHeight;
-                return;
-            }
-            const chunk = new TextDecoder().decode(value);
-            if (!headerDisplayed) {
-                let res = extractHeaderAndRest(chunk);
-                if (res.header) {
-                    appendDiv.innerHTML = res.header;
-                    headerDisplayed = true;
-                    typeHTMLChunk(res.rest, 0, res.header);
+        function read() {
+            reader.read().then(({ done, value }) => {
+                if (done) {
+                    element.scrollTop = element.scrollHeight;
+                    return;
+                }
+                const chunk = new TextDecoder().decode(value);
+                if (!headerDisplayed) {
+                    let res = extractHeaderAndRest(chunk);
+                    if (res.header) {
+                        appendDiv.innerHTML = res.header;
+                        headerDisplayed = true;
+                        typeHTMLChunk(res.rest, 0, res.header);
+                    } else {
+                        typeHTMLChunk(chunk, 0, "");
+                    }
                 } else {
                     typeHTMLChunk(chunk, 0, "");
                 }
-            } else {
-                typeHTMLChunk(chunk, 0, "");
-            }
-        });
+            });
+        }
+        read();
     }
-    read();
-}
 
     function attachBeginListener() {
         const beginForm = document.getElementById('begin-form');
