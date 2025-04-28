@@ -148,7 +148,8 @@ def update_recent_action(username, action):
     if len(recent) > 10:
         recent.pop(0)
     save_users()
-    # --- ROUTES ---
+
+# --- ROUTES ---
 
 @app.route("/")
 def home():
@@ -224,61 +225,61 @@ def stream_story():
             stream=True,
         )
         full_story = ""
-buffer = ""
-header_found = False
+        buffer = ""
+        header_found = False
 
-for chunk in response:
-    content = getattr(chunk.choices[0].delta, "content", "") or ""
-    buffer += content
-    if not header_found:
-        # Wait until we have the full header before yielding
-        import re
-        m = re.match(r'((<b>Chapter.+?<br><b>Scene.+?<br>)+)', buffer, re.DOTALL)
-        if m:
-            header_found = True
-            full_header = m.group(1)
-            rest = buffer[len(full_header):]
-            yield full_header  # send header instantly
-            if rest:
-                yield rest
-            full_story += buffer
-            buffer = ""
-    else:
-        yield content
-        full_story += content
-        # Find/generate chapter name for this scene
-        chapter_name = chapter_names.get(str(chapter))
-        if not chapter_name:
-            context = "\n".join(u['Story'].get("history", [])[-3:])
-            chapter_name = generate_chapter_name(context, scene)
-            chapter_names[str(chapter)] = chapter_name
+        for chunk in response:
+            content = getattr(chunk.choices[0].delta, "content", "") or ""
+            buffer += content
+            if not header_found:
+                # Wait until we have the full header before yielding
+                import re
+                m = re.match(r'((<b>Chapter.+?<br><b>Scene.+?<br>)+)', buffer, re.DOTALL)
+                if m:
+                    header_found = True
+                    full_header = m.group(1)
+                    rest = buffer[len(full_header):]
+                    yield full_header  # send header instantly
+                    if rest:
+                        yield rest
+                    full_story += buffer
+                    buffer = ""
+            else:
+                yield content
+                full_story += content
+                            # Find/generate chapter name for this scene
+            chapter_name = chapter_names.get(str(chapter))
+            if not chapter_name:
+                context = "\n".join(u['Story'].get("history", [])[-3:])
+                chapter_name = generate_chapter_name(context, scene)
+                chapter_names[str(chapter)] = chapter_name
+                save_users()
+            # Prepend with chapter/scene before storing in user history
+            decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
+
+            # Make choices bold using regex
+            import re
+            def bold_choices(text):
+                # Bold every numbered choice line after "Choices:"
+                return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
+            decorated = bold_choices(decorated)
+
+            # Lore integration
+            if "Lore Discovered:" in decorated:
+                new_lore = decorated.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
+                if new_lore not in lore:
+                    lore.append(new_lore)
+                    save_lore()
+                if new_lore not in u["Lore"]:
+                    u["Lore"].append(new_lore)
+
+            if not story.get("started"):
+                story["started"] = True
+            story["history"].append(decorated)
+            u["LastStory"] = decorated
+            story["scene"] += 1
             save_users()
-        # Prepend with chapter/scene before storing in user history
-        decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
-
-        # Make choices bold using regex
-        import re
-        def bold_choices(text):
-            # Bold every numbered choice line after "Choices:"
-            return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
-        decorated = bold_choices(decorated)
-
-        # Lore integration
-        if "Lore Discovered:" in decorated:
-            new_lore = decorated.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
-            if new_lore not in lore:
-                lore.append(new_lore)
-                save_lore()
-            if new_lore not in u["Lore"]:
-                u["Lore"].append(new_lore)
-
-        if not story.get("started"):
-            story["started"] = True
-        story["history"].append(decorated)
-        u["LastStory"] = decorated
-        story["scene"] += 1
-        save_users()
-        yield ""  # end of stream
+            yield ""  # end of stream
 
     if request.form.get("begin") == "1":
         INTRO_TEMPLATES = [
