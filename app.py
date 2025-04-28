@@ -48,6 +48,17 @@ def save_users(): save_json(USER_FILE, users)
 def save_global(): save_json(GLOBAL_FILE, global_state)
 def save_lore(): save_json(LORE_FILE, lore)
 
+# --- GLOBAL EVENT TIMER UTILITY ---
+def get_next_event_ts():
+    last_event = global_state.get("last_event_time")
+    if last_event:
+        last_dt = datetime.datetime.fromisoformat(last_event)
+        next_event_dt = last_dt + datetime.timedelta(days=1)
+        return int(next_event_dt.timestamp())
+    else:
+        # If never set, next event is "now"
+        return int(time.time())
+
 # --- USER MODEL ---
 class User(UserMixin):
     def __init__(self, username):
@@ -122,8 +133,7 @@ def update_recent_action(username, action):
     if len(recent) > 10:
         recent.pop(0)
     save_users()
-
-# --- ROUTES ---
+    # --- ROUTES ---
 
 @app.route("/")
 def home():
@@ -170,14 +180,7 @@ def logout():
 @login_required
 def dashboard():
     u = get_user_data(current_user.username)
-    last_event = global_state.get("last_event_time")
-    if last_event:
-        last_dt = datetime.datetime.fromisoformat(last_event)
-        next_event_dt = last_dt + datetime.timedelta(days=1)
-        next_event_ts = int(next_event_dt.timestamp())
-    else:
-        next_event_ts = int(time.time())
-
+    next_event_ts = get_next_event_ts()
     return render_template(
         "dashboard.html",
         user=u,
@@ -258,12 +261,25 @@ def char_sheet(username):
     if username not in users:
         return "Not found", 404
     u = get_user_data(username)
-    return render_template("char_sheet.html", user=u, username=username)
+    next_event_ts = get_next_event_ts()
+    return render_template(
+        "char_sheet.html",
+        user=u,
+        username=username,
+        global_event=global_state.get("current_event"),
+        next_event_ts=next_event_ts
+    )
 
 @app.route("/lore")
 @login_required
 def lore_index():
-    return render_template("lore_index.html", lore=lore)
+    next_event_ts = get_next_event_ts()
+    return render_template(
+        "lore_index.html",
+        lore=lore,
+        global_event=global_state.get("current_event"),
+        next_event_ts=next_event_ts
+    )
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
