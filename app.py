@@ -230,13 +230,14 @@ def stream_story():
             content = getattr(chunk.choices[0].delta, "content", "") or ""
             buffer += content
             if not header_found:
+                # Wait until we have the full header before yielding
                 import re
                 m = re.match(r'((<b>Chapter.+?<br><b>Scene.+?<br>)+)', buffer, re.DOTALL)
                 if m:
                     header_found = True
                     full_header = m.group(1)
                     rest = buffer[len(full_header):]
-                    yield full_header
+                    yield full_header  # send header instantly
                     if rest:
                         yield rest
                     full_story += buffer
@@ -244,6 +245,8 @@ def stream_story():
             else:
                 yield content
                 full_story += content
+
+            # Decorate with chapter/scene before storing in user history
             chapter_name = chapter_names.get(str(chapter))
             if not chapter_name:
                 context = "\n".join(u['Story'].get("history", [])[-3:])
