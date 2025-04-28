@@ -5,7 +5,6 @@
     <title>Elysiad Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- Mobile viewport height fix (in head or top of body is fine) -->
     <script>
       function setVh() {
           let vh = window.innerHeight * 0.01;
@@ -17,20 +16,17 @@
     </script>
 </head>
 <body>
-    <!-- MOBILE NAV ONLY (hidden on desktop) -->
     <nav class="mobile-nav">
         <div class="nav-hamburger" id="hamburger">&#9776;</div>
         <div class="nav-title">Elysiad</div>
         <button class="nav-logout" onclick="location.href='{{ url_for('logout') }}'">Logout</button>
     </nav>
-    <!-- Sidebar: Hidden by default unless .open is added -->
     <div class="sidebar-drawer" id="sidebarDrawer">
         <a href="#" id="closeSidebar" style="display:none;">&times;</a>
         <a href="#" id="showGlobalEvent">Global Event</a>
         <a href="{{ url_for('char_sheet', username=current_user.username) }}">Character</a>
         <a href="{{ url_for('lore_index') }}">Lore</a>
     </div>
-    <!-- Modal: Hidden by default -->
     <div class="modal" id="globalEventModal" style="display:none;">
         <div class="modal-content">
             <span class="close-modal" id="closeModal">&times;</span>
@@ -41,14 +37,12 @@
             </div>
         </div>
     </div>
-    <!-- DESKTOP NAV AND LAYOUT -->
     <div class="top-bar">
         <div class="logo">Elysiad</div>
         <div>
             <a href="{{ url_for('logout') }}" class="signup-btn logout">Logout</a>
         </div>
     </div>
-    <!-- Story Panel (centered, takes up all available space) -->
     <div class="story-fullscreen-panel">
         <div class="story-main-box">
             <div class="story-main-title">Story</div>
@@ -73,9 +67,9 @@
         </div>
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
-        <!-- JS -->
+    <!-- JS -->
     <script>
-    // Sidebar toggle (show/hide × only when open)
+           // Sidebar toggle (show/hide × only when open)
     document.addEventListener('DOMContentLoaded', function() {
         var hamburger = document.getElementById('hamburger');
         var sidebar = document.getElementById('sidebarDrawer');
@@ -126,20 +120,29 @@
         setInterval(updateTimer, 1000);
     })();
 
-    // --- TYPEWRITER STREAMING WITH HTML SUPPORT ---
-    function streamTypewriterAppend(element, stream, typingDelay = 40) {
+    // --- TYPEWRITER STREAMING WITH CONTEXT-AWARE HEADER & FASTER SPEED ---
+    function streamTypewriterAppend(element, stream, typingDelay = 16) {
         const reader = stream.getReader();
         let html = "";
         let appendDiv = document.createElement("div");
         appendDiv.className = "new-chapter";
         element.appendChild(appendDiv);
 
-        function typeHTMLChunk(chunk, i = 0) {
-            // Stream in one character at a time, preserving HTML
-            let plain = chunk.replace(/<[^>]+>/g, ''); // If you want literal text only
-            // But we want to allow bold/HTML! So do this smartly:
-            let full = html + chunk;
-            // For safety, show only up to i-th character (across tags)
+        let chapterHeaderShown = false;
+
+        function extractHeaderAndRest(chunk) {
+            // This assumes your API returns <b>Chapter ...<br><b>Scene ...<br>Story...
+            let headerMatch = chunk.match(/^((<b>Chapter.+?<br><b>Scene.+?<br>)+)/);
+            if (headerMatch) {
+                let header = headerMatch[1];
+                let rest = chunk.substring(header.length);
+                return { header, rest };
+            }
+            return { header: "", rest: chunk };
+        }
+
+        function typeHTMLChunk(chunk, i = 0, prefix = "") {
+            let full = prefix + chunk;
             let toDisplay = "";
             let pos = 0, outLen = 0;
             while (outLen < i && pos < full.length) {
@@ -160,7 +163,7 @@
             appendDiv.innerHTML = toDisplay;
             element.scrollTop = element.scrollHeight;
             if (i < chunk.length) {
-                setTimeout(() => typeHTMLChunk(chunk, i + 1), typingDelay);
+                setTimeout(() => typeHTMLChunk(chunk, i + 2, prefix), typingDelay);
             } else {
                 html += chunk;
                 read();
@@ -174,7 +177,19 @@
                     return;
                 }
                 const chunk = new TextDecoder().decode(value);
-                typeHTMLChunk(chunk, 0);
+                if (!chapterHeaderShown) {
+                    // Only for the first chunk, try to display the header instantly
+                    let { header, rest } = extractHeaderAndRest(chunk);
+                    if (header) {
+                        appendDiv.innerHTML = header;
+                        chapterHeaderShown = true;
+                        typeHTMLChunk(rest, 0, header);
+                    } else {
+                        typeHTMLChunk(chunk, 0, "");
+                    }
+                } else {
+                    typeHTMLChunk(chunk, 0, "");
+                }
             });
         }
         read();
@@ -198,7 +213,7 @@
                     method: 'POST',
                     body: new FormData(beginForm),
                 }).then(response => {
-                    streamTypewriterAppend(box, response.body);
+                    streamTypewriterAppend(box, response.body, 16); // FAST TYPING
                 });
             });
         }
@@ -214,7 +229,7 @@
                     method: 'POST',
                     body: new FormData(form),
                 }).then(response => {
-                    streamTypewriterAppend(box, response.body);
+                    streamTypewriterAppend(box, response.body, 16); // FAST TYPING
                 });
             });
         }
@@ -223,7 +238,6 @@
     attachBeginListener();
     attachChoiceListener();
 
-    // --- Mobile Keyboard Resize Fix ---
     window.addEventListener('resize', function() {
         setTimeout(function() {
             const storyBox = document.getElementById('story-box');
@@ -234,4 +248,4 @@
     });
     </script>
 </body>
-</html>
+</html> 
