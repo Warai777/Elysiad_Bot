@@ -418,3 +418,54 @@ body, html {
 .char-sheet-container {
     display: none !important;
 }
+/* --- MODAL OVERLAY & CONTENT (for Global Event) --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 30000;
+    left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(29,18,40,0.61); /* glassy violet-black fade */
+    transition: opacity .24s cubic-bezier(0.66,0,0.34,1);
+}
+.modal-content {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(45, 16, 68, 0.96);
+    color: #e7d7ff;
+    border-radius: 22px;
+    padding: 2.1rem 2.2rem 1.6rem 2.2rem;
+    min-width: 320px;
+    max-width: 92vw;
+    box-shadow: 0 8px 48px #7f42ad81, 0 1.5px 0px #ad7fed38 inset;
+    max-height: 80vh;
+    overflow-y: auto;
+    font-size: 1.13em;
+    line-height: 1.62;
+    z-index: 30100;
+}
+.close-modal {
+    position: absolute;
+    right: 22px;
+    top: 18px;
+    font-size: 2.25rem;
+    color: #fd7ed7;
+    cursor: pointer;
+    border: none;
+    background: none;
+    z-index: 30200;
+    opacity: 0.92;
+    transition: color 0.13s;
+}
+.close-modal:hover { color: #fff; }
+
+@media (max-width: 600px) {
+    .modal-content {
+        min-width: unset;
+        width: 94vw;
+        padding: 1.2rem 0.8rem 1rem 0.8rem;
+    }
+    .close-modal {
+        top: 9px; right: 11px;
+    }
+}
