@@ -105,17 +105,14 @@ If any new lore is discovered, mention it clearly as: 'Lore Discovered: ...'
 """
 
 def generate_chapter_name(story_context, scene_num):
-    # Example dynamic chapter name generator (improve for your project!)
     themes = ["Lost in the Library", "Chains of Fate", "Shadows in the Hall", "Dawn of Awakening",
               "Call of the Unknown", "A World Unseen", "First Steps", "The Archivist Watches", "The Fateful Choice"]
-    # Context-aware: pick something matching history, current event, or scene number for variety
     if "death" in story_context.lower():
         return "A Narrow Escape"
     if "lore" in story_context.lower():
         return "Secrets Revealed"
     if "choice" in story_context.lower() or scene_num == 1:
         return "First Decision"
-    # Default: random or themed by scene
     return themes[(scene_num - 1) % len(themes)]
 
 def default_stat_sheet():
@@ -231,25 +228,24 @@ def stream_story():
             content = getattr(chunk.choices[0].delta, "content", "") or ""
             full_story += content
             yield content
-        # Find dynamic chapter name for this scene (context-aware)
+        # Find/generate chapter name for this scene
         chapter_name = chapter_names.get(str(chapter))
         if not chapter_name:
-            # Try to dynamically generate chapter name based on story so far
             context = "\n".join(u['Story'].get("history", [])[-3:])
             chapter_name = generate_chapter_name(context, scene)
             chapter_names[str(chapter)] = chapter_name
             save_users()
-        # Prepend with chapter/scene
+        # Prepend with chapter/scene before storing in user history
         decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
 
-        # Make choices bold using regex (to ensure all "Choices: ...1." lines are marked bold)
+        # Make choices bold using regex
         import re
         def bold_choices(text):
-            # Replace "Choices:\n1. ..." to make all choices bold
+            # Bold every numbered choice line after "Choices:"
             return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
         decorated = bold_choices(decorated)
 
-        # Lore integration (unchanged)
+        # Lore integration
         if "Lore Discovered:" in decorated:
             new_lore = decorated.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
             if new_lore not in lore:
@@ -271,7 +267,6 @@ def stream_story():
             "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
         ]
         selected_intro = random.choice(INTRO_TEMPLATES)
-        # Generate dynamic chapter name for the intro
         chapter = 1
         scene = 1
         chapter_names = u["Story"].setdefault("chapter_names", {})
@@ -297,7 +292,6 @@ def stream_story():
             number = int(request.form["choice"])
         except:
             number = 1
-        # Use previous story as context for chapter name
         history = "\n".join(u['Story'].get("history", [])[-5:])
         chapter = u["Story"]["chapter"]
         scene = u["Story"]["scene"]
