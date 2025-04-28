@@ -229,10 +229,8 @@ def stream_story():
 
         for chunk in response:
             content = getattr(chunk.choices[0].delta, "content", "") or ""
+            print(f"OpenAI Response Chunk: {content}")  # Debugging line
             buffer += content
-
-            # Log content for debugging purposes
-            print(f"OpenAI Response Chunk: {content}")
 
             # Wait for the full header before sending it
             if not header_found:
@@ -328,7 +326,6 @@ def stream_story():
         prompt += f"\nCurrent scene: Chapter {chapter} Scene {scene}\n"
         prompt += f"User chose: {number}"
 
-    # Return the streamed response to the client
     return Response(stream_with_context(stream_openai_response(prompt, chapter, scene)), mimetype='text/html')
 
 # --- CHAR SHEET ROUTE ---
