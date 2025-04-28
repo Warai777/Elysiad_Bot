@@ -230,14 +230,13 @@ def stream_story():
             content = getattr(chunk.choices[0].delta, "content", "") or ""
             buffer += content
             if not header_found:
-                # Wait until we have the full header before yielding
                 import re
                 m = re.match(r'((<b>Chapter.+?<br><b>Scene.+?<br>)+)', buffer, re.DOTALL)
                 if m:
                     header_found = True
                     full_header = m.group(1)
                     rest = buffer[len(full_header):]
-                    yield full_header  # send header instantly
+                    yield full_header
                     if rest:
                         yield rest
                     full_story += buffer
@@ -252,7 +251,6 @@ def stream_story():
                 chapter_names[str(chapter)] = chapter_name
                 save_users()
 
-            # Decorate with chapter/scene before storing in user history
             decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
 
             # Bold choices
@@ -322,31 +320,34 @@ def stream_story():
         prompt += f"User chose: {number}"
 
     return Response(stream_with_context(stream_openai_response(prompt, chapter, scene)), mimetype='text/html')
-    @app.route("/char_sheet/<username>")
-    @login_required
-    def char_sheet(username):
-        if username not in users:
-            return "Not found", 404
-            u = get_user_data(username)
-            next_event_ts = get_next_event_ts()
-            return render_template(
-                "char_sheet.html",
-                user=u,
-                username=username,
-                global_event=global_state.get("current_event"),
-                next_event_ts=next_event_ts
-            )
 
-    @app.route("/lore")
-    @login_required
-    def lore_index():
-        next_event_ts = get_next_event_ts()
-        return render_template(
-            "lore_index.html",
-            lore=lore,
-            global_event=global_state.get("current_event"),
-            next_event_ts=next_event_ts
-       )
+# --- CHAR SHEET ROUTE ---
+@app.route("/char_sheet/<username>")
+@login_required
+def char_sheet(username):
+    if username not in users:
+        return "Not found", 404
+    u = get_user_data(username)
+    next_event_ts = get_next_event_ts()
+    return render_template(
+        "char_sheet.html",
+        user=u,
+        username=username,
+        global_event=global_state.get("current_event"),
+        next_event_ts=next_event_ts
+    )
+
+# --- LORE ROUTE ---
+@app.route("/lore")
+@login_required
+def lore_index():
+    next_event_ts = get_next_event_ts()
+    return render_template(
+        "lore_index.html",
+        lore=lore,
+        global_event=global_state.get("current_event"),
+        next_event_ts=next_event_ts
+    )
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
