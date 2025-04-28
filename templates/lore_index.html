@@ -26,7 +26,18 @@
         <a href="#" id="closeSidebar">&times;</a>
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('char_sheet', username=current_user.username) }}">Character</a>
-        
+        <a href="#" id="showGlobalEvent">Global Events</a> <!-- ADDED -->
+    </div>
+    <!-- MODAL FOR GLOBAL EVENT -->
+    <div class="modal" id="globalEventModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <div class="global-event-box">
+                <strong>Global Event</strong><br>
+                <div class="event-content">{{ global_event or 'No global event at the moment.' }}</div>
+                <div class="event-timer"><b>Next event in:</b> <span id="global-timer"></span></div>
+            </div>
+        </div>
     </div>
     <div class="top-bar">
         <div class="logo">Elysiad</div>
@@ -34,6 +45,7 @@
             <a href="{{ url_for('dashboard') }}" class="signup-btn">Dashboard</a>
             <a href="{{ url_for('char_sheet', username=current_user.username) }}" class="signup-btn">Character</a>
             <a href="{{ url_for('logout') }}" class="signup-btn logout">Logout</a>
+            <a href="#" id="showGlobalEventDesktop" class="signup-btn" style="margin-left:18px;">Global Events</a> <!-- Optional: for desktop nav -->
         </div>
     </div>
     <div class="story-fullscreen-panel">
@@ -54,13 +66,14 @@
     </div>
     <img src="{{ url_for('static', filename='elysiad-mascot.png') }}" class="mascot" alt="mascot">
 
-    <!-- SIDEBAR/HAMBURGER JS -->
+    <!-- SIDEBAR/HAMBURGER + MODAL JS -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         var hamburger = document.getElementById('hamburger');
         var sidebar = document.getElementById('sidebarDrawer');
         var closeSidebar = document.getElementById('closeSidebar');
         var showGlobalEvent = document.getElementById('showGlobalEvent');
+        var showGlobalEventDesktop = document.getElementById('showGlobalEventDesktop');
         var globalModal = document.getElementById('globalEventModal');
         var closeModal = document.getElementById('closeModal');
 
@@ -68,16 +81,40 @@
             hamburger.onclick = function() { sidebar.classList.add('open'); };
             closeSidebar.onclick = function() { sidebar.classList.remove('open'); };
         }
+        // Mobile sidebar modal
         if (showGlobalEvent && globalModal && closeModal) {
             showGlobalEvent.onclick = function(e) {
                 e.preventDefault();
                 sidebar.classList.remove('open');
                 globalModal.style.display = "block";
+                document.body.style.overflow = "hidden";
             };
-            closeModal.onclick = function() { globalModal.style.display = "none"; };
-            globalModal.onclick = function(e) { if(e.target === globalModal) globalModal.style.display = "none"; };
+        }
+        // Desktop topbar modal (optional)
+        if (showGlobalEventDesktop && globalModal && closeModal) {
+            showGlobalEventDesktop.onclick = function(e) {
+                e.preventDefault();
+                globalModal.style.display = "block";
+                document.body.style.overflow = "hidden";
+            };
+        }
+        // Closing modal (shared)
+        if (closeModal && globalModal) {
+            closeModal.onclick = function() { 
+                globalModal.style.display = "none";
+                document.body.style.overflow = "";
+            };
+            globalModal.onclick = function(e) {
+                if (e.target === globalModal) {
+                    globalModal.style.display = "none";
+                    document.body.style.overflow = "";
+                }
+            };
         }
     });
+
+    // Optional: global event timer
+    // (Add a JS timer function here if you want, as before)
     </script>
 </body>
 </html>
