@@ -126,37 +126,59 @@
         setInterval(updateTimer, 1000);
     })();
 
-    // Typewriter Streaming (unchanged)
+    // --- TYPEWRITER STREAMING WITH HTML SUPPORT ---
     function streamTypewriterAppend(element, stream, typingDelay = 40) {
-    const reader = stream.getReader();
-    let text = "";
-    let appendDiv = document.createElement("div");
-    appendDiv.className = "new-chapter";
-    element.appendChild(appendDiv);
+        const reader = stream.getReader();
+        let html = "";
+        let appendDiv = document.createElement("div");
+        appendDiv.className = "new-chapter";
+        element.appendChild(appendDiv);
 
-    function typeText(chunk, i = 0) {
-        if (i < chunk.length) {
-            text += chunk[i];
-            appendDiv.innerHTML = text;
-            element.scrollTop = element.scrollHeight;
-            setTimeout(() => typeText(chunk, i + 1), typingDelay);
-        } else {
-            read();
-        }
-    }
-
-    function read() {
-        reader.read().then(({done, value}) => {
-            if (done) {
-                element.scrollTop = element.scrollHeight;
-                return;
+        function typeHTMLChunk(chunk, i = 0) {
+            // Stream in one character at a time, preserving HTML
+            let plain = chunk.replace(/<[^>]+>/g, ''); // If you want literal text only
+            // But we want to allow bold/HTML! So do this smartly:
+            let full = html + chunk;
+            // For safety, show only up to i-th character (across tags)
+            let toDisplay = "";
+            let pos = 0, outLen = 0;
+            while (outLen < i && pos < full.length) {
+                if (full[pos] === "<") {
+                    let close = full.indexOf(">", pos);
+                    if (close >= 0) {
+                        toDisplay += full.substring(pos, close+1);
+                        pos = close+1;
+                    } else {
+                        break;
+                    }
+                } else {
+                    toDisplay += full[pos];
+                    pos++;
+                    outLen++;
+                }
             }
-            const chunk = new TextDecoder().decode(value);
-            typeText(chunk);
-        });
+            appendDiv.innerHTML = toDisplay;
+            element.scrollTop = element.scrollHeight;
+            if (i < chunk.length) {
+                setTimeout(() => typeHTMLChunk(chunk, i + 1), typingDelay);
+            } else {
+                html += chunk;
+                read();
+            }
+        }
+
+        function read() {
+            reader.read().then(({done, value}) => {
+                if (done) {
+                    element.scrollTop = element.scrollHeight;
+                    return;
+                }
+                const chunk = new TextDecoder().decode(value);
+                typeHTMLChunk(chunk, 0);
+            });
+        }
+        read();
     }
-    read();
-}
 
     function attachBeginListener() {
         const beginForm = document.getElementById('begin-form');
