@@ -324,18 +324,18 @@ def stream_story():
     return Response(stream_with_context(stream_openai_response(prompt, chapter, scene)), mimetype='text/html')
     @app.route("/char_sheet/<username>")
     @login_required
-        def char_sheet(username):
+    def char_sheet(username):
         if username not in users:
-        return "Not found", 404
-        u = get_user_data(username)
-        next_event_ts = get_next_event_ts()
-        return render_template(
-            "char_sheet.html",
-            user=u,
-            username=username,
-            global_event=global_state.get("current_event"),
-            next_event_ts=next_event_ts
-        )
+            return "Not found", 404
+            u = get_user_data(username)
+            next_event_ts = get_next_event_ts()
+            return render_template(
+                "char_sheet.html",
+                user=u,
+                username=username,
+                global_event=global_state.get("current_event"),
+                next_event_ts=next_event_ts
+            )
 
     @app.route("/lore")
     @login_required
