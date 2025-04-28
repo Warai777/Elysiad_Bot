@@ -215,73 +215,77 @@ def stream_story():
     chapter_names = story.setdefault("chapter_names", {})
 
     def stream_openai_response(prompt, chapter, scene):
-        response = openai.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": prompt}],
-            max_tokens=700,
-            temperature=0.95,
-            stream=True,
-        )
+        try:
+            response = openai.chat.completions.create(
+                model="gpt-4o",
+                messages=[{"role": "system", "content": prompt}],
+                max_tokens=700,
+                temperature=0.95,
+                stream=True,
+            )
 
-        buffer = ""
-        full_story = ""
-        header_found = False
+            buffer = ""
+            full_story = ""
+            header_found = False
 
-        for chunk in response:
-            content = getattr(chunk.choices[0].delta, "content", "") or ""
-            print(f"OpenAI Response Chunk: {content}")  # Debugging line
-            buffer += content
+            for chunk in response:
+                content = getattr(chunk.choices[0].delta, "content", "") or ""
+                print(f"OpenAI Response Chunk: {content}")  # Debugging line
+                buffer += content
 
-            # Wait for the full header before sending it
-            if not header_found:
+                # Wait for the full header before sending it
+                if not header_found:
+                    import re
+                    m = re.match(r'((<b>Chapter.+?<br><b>Scene.+?<br>)+)', buffer, re.DOTALL)
+                    if m:
+                        header_found = True
+                        full_header = m.group(1)
+                        rest = buffer[len(full_header):]
+                        yield full_header  # Send header instantly
+                        if rest:
+                            yield rest  # Send the rest of the content
+                        buffer = ""  # Reset buffer after sending header
+
+                else:
+                    yield content  # Stream the content as it arrives
+
+                # Get chapter name if not set
+                chapter_name = chapter_names.get(str(chapter))
+                if not chapter_name:
+                    context = "\n".join(u['Story'].get("history", [])[-3:])
+                    chapter_name = generate_chapter_name(context, scene)
+                    chapter_names[str(chapter)] = chapter_name
+                    save_users()
+
+                # Format the story with chapter and scene
+                decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
+
+                # Bold choices
                 import re
-                m = re.match(r'((<b>Chapter.+?<br><b>Scene.+?<br>)+)', buffer, re.DOTALL)
-                if m:
-                    header_found = True
-                    full_header = m.group(1)
-                    rest = buffer[len(full_header):]
-                    yield full_header  # Send header instantly
-                    if rest:
-                        yield rest  # Send the rest of the content
-                    buffer = ""  # Reset buffer after sending header
+                def bold_choices(text):
+                    return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
+                decorated = bold_choices(decorated)
 
-            else:
-                yield content  # Stream the content as it arrives
+                # Lore integration
+                if "Lore Discovered:" in decorated:
+                    new_lore = decorated.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
+                    if new_lore not in lore:
+                        lore.append(new_lore)
+                        save_lore()
+                    if new_lore not in u["Lore"]:
+                        u["Lore"].append(new_lore)
 
-            # Get chapter name if not set
-            chapter_name = chapter_names.get(str(chapter))
-            if not chapter_name:
-                context = "\n".join(u['Story'].get("history", [])[-3:])
-                chapter_name = generate_chapter_name(context, scene)
-                chapter_names[str(chapter)] = chapter_name
+                if not story.get("started"):
+                    story["started"] = True
+                story["history"].append(decorated)
+                u["LastStory"] = decorated
+                story["scene"] += 1
                 save_users()
 
-            # Format the story with chapter and scene
-            decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
-
-            # Bold choices
-            import re
-            def bold_choices(text):
-                return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
-            decorated = bold_choices(decorated)
-
-            # Lore integration
-            if "Lore Discovered:" in decorated:
-                new_lore = decorated.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
-                if new_lore not in lore:
-                    lore.append(new_lore)
-                    save_lore()
-                if new_lore not in u["Lore"]:
-                    u["Lore"].append(new_lore)
-
-            if not story.get("started"):
-                story["started"] = True
-            story["history"].append(decorated)
-            u["LastStory"] = decorated
-            story["scene"] += 1
-            save_users()
-
-            yield ""  # End of stream
+                yield ""  # End of stream
+        except Exception as e:
+            print(f"Error streaming OpenAI response: {e}")
+            yield "Error occurred during streaming."
 
     if request.form.get("begin") == "1":
         INTRO_TEMPLATES = [
