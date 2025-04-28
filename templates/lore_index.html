@@ -115,6 +115,19 @@
 
     // Optional: global event timer
     // (Add a JS timer function here if you want, as before)
+    (function() {
+        const nextEventTs = {{ next_event_ts|tojson }};
+        function pad(n){ return n < 10 ? '0'+n : n; }
+        function updateTimer() {
+            const now = Math.floor(Date.now()/1000);
+            let diff = nextEventTs - now;
+            if (diff < 0) diff = 0;
+            let hours = Math.floor(diff/3600);
+            let minutes = Math.floor((diff % 3600)/60);
+            let seconds = diff % 60;
+            var timerElems = document.querySelectorAll('#global-timer');
+            for(let t of timerElems)
+                t.textContent = pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
     </script>
 </body>
 </html>
