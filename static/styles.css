@@ -489,3 +489,9 @@ body, html {
         top: 9px; right: 11px;
     }
 }
+
+/* --- Add this to the very end of your styles.css --- */
+.story-content-scroll b {
+    font-weight: 700;
+    color: #ffe48b;
+}
