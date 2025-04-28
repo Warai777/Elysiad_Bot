@@ -4,7 +4,7 @@ import datetime
 import threading
 import random
 import time
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, Response, stream_with_context
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, Response
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from flask_bcrypt import Bcrypt
 import openai
@@ -214,87 +214,12 @@ def stream_story():
     scene = story.get("scene", 1)
     chapter_names = story.setdefault("chapter_names", {})
 
-    def stream_openai_response(prompt, chapter, scene):
-        try:
-            response = openai.chat.completions.create(
-                model="gpt-4o",
-                messages=[{"role": "system", "content": prompt}],
-                max_tokens=700,
-                temperature=0.95,
-                stream=True,
-            )
-
-            buffer = ""
-            full_story = ""
-            header_found = False
-
-            for chunk in response:
-                content = getattr(chunk.choices[0].delta, "content", "") or ""
-                print(f"OpenAI Response Chunk: {content}")  # Debugging line
-                buffer += content
-
-                # Wait for the full header before sending it
-                if not header_found:
-                    import re
-                    m = re.match(r'((<b>Chapter.+?<br><b>Scene.+?<br>)+)', buffer, re.DOTALL)
-                    if m:
-                        header_found = True
-                        full_header = m.group(1)
-                        rest = buffer[len(full_header):]
-                        yield full_header  # Send header instantly
-                        if rest:
-                            yield rest  # Send the rest of the content
-                        buffer = ""  # Reset buffer after sending header
-
-                else:
-                    yield content  # Stream the content as it arrives
-
-                # Get chapter name if not set
-                chapter_name = chapter_names.get(str(chapter))
-                if not chapter_name:
-                    context = "\n".join(u['Story'].get("history", [])[-3:])
-                    chapter_name = generate_chapter_name(context, scene)
-                    chapter_names[str(chapter)] = chapter_name
-                    save_users()
-
-                # Format the story with chapter and scene
-                decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
-
-                # Bold choices
-                import re
-                def bold_choices(text):
-                    return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
-                decorated = bold_choices(decorated)
-
-                # Lore integration
-                if "Lore Discovered:" in decorated:
-                    new_lore = decorated.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
-                    if new_lore not in lore:
-                        lore.append(new_lore)
-                        save_lore()
-                    if new_lore not in u["Lore"]:
-                        u["Lore"].append(new_lore)
-
-                if not story.get("started"):
-                    story["started"] = True
-                story["history"].append(decorated)
-                u["LastStory"] = decorated
-                story["scene"] += 1
-                save_users()
-
-                yield ""  # End of stream
-        except Exception as e:
-            print(f"Error streaming OpenAI response: {e}")
-            yield "Error occurred during streaming."
-
+    # Handle the 'begin' request to start the adventure
     if request.form.get("begin") == "1":
         INTRO_TEMPLATES = [
             "You wake up beneath an iron sky, the taste of bitter sand on your tongue. Chains rattle in the distance. You remember being ordinary—now you are here, lost. A pale door shimmers nearby, inscribed: 'Library of Beginnings.'",
         ]
         selected_intro = random.choice(INTRO_TEMPLATES)
-        chapter = 1
-        scene = 1
-        chapter_names = u["Story"].setdefault("chapter_names", {})
         chapter_name = generate_chapter_name(selected_intro, scene)
         chapter_names[str(chapter)] = chapter_name
         save_users()
@@ -325,41 +250,53 @@ def stream_story():
             chapter_names[str(chapter)] = chapter_name
             save_users()
 
-        prompt = ELY_PROMPT.replace("{HISTORY}", history)\
-                          .replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
+        prompt = ELY_PROMPT.replace("{HISTORY}", history).replace("{GLOBAL_EVENT}", global_state.get("current_event") or "None")
         prompt += f"\nCurrent scene: Chapter {chapter} Scene {scene}\n"
         prompt += f"User chose: {number}"
 
-    return Response(stream_with_context(stream_openai_response(prompt, chapter, scene)), mimetype='text/html')
+    # Fetch the full response from OpenAI (no streaming)
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "system", "content": prompt}],
+            max_tokens=700,
+            temperature=0.95,
+        )
 
-# --- CHAR SHEET ROUTE ---
-@app.route("/char_sheet/<username>")
-@login_required
-def char_sheet(username):
-    if username not in users:
-        return "Not found", 404
-    u = get_user_data(username)
-    next_event_ts = get_next_event_ts()
-    return render_template(
-        "char_sheet.html",
-        user=u,
-        username=username,
-        global_event=global_state.get("current_event"),
-        next_event_ts=next_event_ts
-    )
+        # Use the response text (no streaming)
+        full_response = response['choices'][0]['message']['content']
 
-# --- LORE ROUTE ---
-@app.route("/lore")
-@login_required
-def lore_index():
-    next_event_ts = get_next_event_ts()
-    return render_template(
-        "lore_index.html",
-        lore=lore,
-        global_event=global_state.get("current_event"),
-        next_event_ts=next_event_ts
-    )
+        # Process and display the content all at once
+        chapter_name = chapter_names.get(str(chapter), "Unknown")
+        decorated_content = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_response}"
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+        # Bold choices and handle lore integration if present
+        decorated_content = bold_choices(decorated_content)
+
+        # Lore integration (if any)
+        if "Lore Discovered:" in decorated_content:
+            new_lore = decorated_content.split("Lore Discovered:", 1)[1].split("<br>")[0].strip()
+            if new_lore not in lore:
+                lore.append(new_lore)
+                save_lore()
+            if new_lore not in u["Lore"]:
+                u["Lore"].append(new_lore)
+
+        # Update story and user state
+        story["history"].append(decorated_content)
+        u["LastStory"] = decorated_content
+        story["scene"] += 1
+        save_users()
+
+        # Now break the content into chunks for typewriter effect
+        chunks = [decorated_content[i:i+200] for i in range(0, len(decorated_content), 200)]  # Adjust chunk size as needed
+
+        # Return the full response to the client, but break it into chunks for typewriter effect
+        return render_template("dashboard.html", 
+                               user=u,
+                               global_event=global_state.get("current_event"),
+                               history=chunks,
+                               next_event_ts=get_next_event_ts())
+    except Exception as e:
+        print(f"Error fetching story from OpenAI: {e}")
+        return jsonify({"error": "There was an error generating the story."})
