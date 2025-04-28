@@ -56,7 +56,6 @@ def get_next_event_ts():
         next_event_dt = last_dt + datetime.timedelta(days=1)
         return int(next_event_dt.timestamp())
     else:
-        # If never set, next event is "now"
         return int(time.time())
 
 # --- USER MODEL ---
@@ -150,7 +149,6 @@ def update_recent_action(username, action):
     save_users()
 
 # --- ROUTES ---
-
 @app.route("/")
 def home():
     if current_user.is_authenticated:
@@ -247,20 +245,19 @@ def stream_story():
             else:
                 yield content
                 full_story += content
-                            # Find/generate chapter name for this scene
             chapter_name = chapter_names.get(str(chapter))
             if not chapter_name:
                 context = "\n".join(u['Story'].get("history", [])[-3:])
                 chapter_name = generate_chapter_name(context, scene)
                 chapter_names[str(chapter)] = chapter_name
                 save_users()
-            # Prepend with chapter/scene before storing in user history
+
+            # Decorate with chapter/scene before storing in user history
             decorated = f"<b>Chapter {chapter}: {chapter_name}</b><br><b>Scene {scene}</b><br>{full_story}"
 
-            # Make choices bold using regex
+            # Bold choices
             import re
             def bold_choices(text):
-                # Bold every numbered choice line after "Choices:"
                 return re.sub(r"(Choices:\s*\n)((\d\..+\n?)+)", lambda m: m.group(1) + ''.join(f"<b>{line.strip()}</b><br>" if line.strip() else "" for line in m.group(2).split('\n')), text, flags=re.MULTILINE)
             decorated = bold_choices(decorated)
 
@@ -325,8 +322,7 @@ def stream_story():
         prompt += f"User chose: {number}"
 
     return Response(stream_with_context(stream_openai_response(prompt, chapter, scene)), mimetype='text/html')
-
-@app.route("/char_sheet/<username>")
+    @app.route("/char_sheet/<username>")
 @login_required
 def char_sheet(username):
     if username not in users:
