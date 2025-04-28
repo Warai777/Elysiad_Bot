@@ -224,10 +224,28 @@ def stream_story():
             stream=True,
         )
         full_story = ""
-        for chunk in response:
-            content = getattr(chunk.choices[0].delta, "content", "") or ""
-            full_story += content
-            yield content
+buffer = ""
+header_found = False
+
+for chunk in response:
+    content = getattr(chunk.choices[0].delta, "content", "") or ""
+    buffer += content
+    if not header_found:
+        # Wait until we have the full header before yielding
+        import re
+        m = re.match(r'((<b>Chapter.+?<br><b>Scene.+?<br>)+)', buffer, re.DOTALL)
+        if m:
+            header_found = True
+            full_header = m.group(1)
+            rest = buffer[len(full_header):]
+            yield full_header  # send header instantly
+            if rest:
+                yield rest
+            full_story += buffer
+            buffer = ""
+    else:
+        yield content
+        full_story += content
         # Find/generate chapter name for this scene
         chapter_name = chapter_names.get(str(chapter))
         if not chapter_name:
