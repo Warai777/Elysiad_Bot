@@ -74,3 +74,11 @@ def adjust_loyalty(player, amount, cause=""):
                 companion["memories"].append(cause)
 
     player.save()
+
+def record_memory(player, memory_text):
+    for companion in getattr(player, "companions", []):
+        if "memories" not in companion:
+            companion["memories"] = []
+        companion["memories"].append(memory_text)
+
+    player.save()
