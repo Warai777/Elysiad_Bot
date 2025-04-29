@@ -95,6 +95,8 @@ def world_scene():
         session["progress_choice"] = progress
         session["lore_choices"] = lore
         session["random_choice"] = random_c
+        session["survived_minutes"] = survived_minutes
+
 
         # ⏳ Add survival timer calculation
         world_entry_time = player.world_entry_time
