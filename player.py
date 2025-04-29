@@ -82,3 +82,16 @@ def record_memory(player, memory_text):
         companion["memories"].append(memory_text)
 
     player.save()
+
+def kill_companion(player, companion_name):
+    dead = None
+    for comp in player.companions:
+        if comp["name"] == companion_name:
+            dead = comp
+            break
+
+    if dead:
+        player.companions.remove(dead)
+        record_memory(player, f"{dead['name']} fell in battle. Their memory haunts you.")
+        adjust_loyalty(player, -20, cause=f"Grief from losing {dead['name']}")
+        player.save()
