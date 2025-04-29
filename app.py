@@ -8,6 +8,7 @@ from genre_manager import GenreManager
 from world_manager import WorldManager
 from choice_engine import ChoiceEngine
 from companion_manager import CompanionManager
+from archivist_lore import ARCHIVIST_LORE
 
 # --- CONFIG ---
 app = Flask(__name__)
