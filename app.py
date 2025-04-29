@@ -83,8 +83,8 @@ def world_scene():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+    
     player = Player.load(player_name)
-
     if not player:
         return redirect(url_for("home"))
 
@@ -134,37 +134,36 @@ def world_scene():
 
     session["survived_minutes"] = survived_minutes
 
-    # 🌟 Grit and Survival Milestone Rewards
-if survived_minutes >= 10 and "Milestone10" not in player.memory:
-    player.memory.setdefault("Milestones", []).append("Milestone10")
-    player.grit += 1
-    record_memory(player, "Survived 10 minutes. A faint resilience is born.")
-    player.save()
+    # --- Grit and Survival Milestones ---
+    if survived_minutes >= 10 and "Milestone10" not in player.memory.get("Milestones", []):
+        player.memory.setdefault("Milestones", []).append("Milestone10")
+        player.grit += 1
+        record_memory(player, "Survived 10 minutes. A faint resilience is born.")
+        player.save()
 
-if survived_minutes >= 30 and "Milestone30" not in player.memory:
-    player.memory.setdefault("Milestones", []).append("Milestone30")
-    player.grit += 2
-    record_memory(player, "Survived 30 minutes. Second Wind awakened.")
-    player.save()
+    if survived_minutes >= 30 and "Milestone30" not in player.memory.get("Milestones", []):
+        player.memory.setdefault("Milestones", []).append("Milestone30")
+        player.grit += 2
+        record_memory(player, "Survived 30 minutes. Second Wind awakened.")
+        player.save()
 
-if survived_minutes >= 60 and "Milestone60" not in player.memory:
-    player.memory.setdefault("Milestones", []).append("Milestone60")
-    player.grit += 3
-    record_memory(player, "Survived 60 minutes. Armor of Determination earned.")
-    player.save()
+    if survived_minutes >= 60 and "Milestone60" not in player.memory.get("Milestones", []):
+        player.memory.setdefault("Milestones", []).append("Milestone60")
+        player.grit += 3
+        record_memory(player, "Survived 60 minutes. Armor of Determination earned.")
+        player.save()
 
-if survived_minutes >= 120 and "Milestone120" not in player.memory:
-    player.memory.setdefault("Milestones", []).append("Milestone120")
-    player.grit += 5
-    record_memory(player, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
-    player.save()
+    if survived_minutes >= 120 and "Milestone120" not in player.memory.get("Milestones", []):
+        player.memory.setdefault("Milestones", []).append("Milestone120")
+        player.grit += 5
+        record_memory(player, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
+        player.save()
 
     # --- Loyalty Bond Unlock ---
     high_loyalty_companions = []
-    if player:
-        for comp in player.companions:
-            if comp.get("loyalty", 0) >= 80:
-                high_loyalty_companions.append(comp["name"])
+    for comp in player.companions:
+        if comp.get("loyalty", 0) >= 80:
+            high_loyalty_companions.append(comp["name"])
 
     if high_loyalty_companions:
         secret_choice_text = f"A mysterious chance... inspired by {random.choice(high_loyalty_companions)}"
@@ -172,11 +171,7 @@ if survived_minutes >= 120 and "Milestone120" not in player.memory:
         session["secret_choice"] = True
     else:
         session["secret_choice"] = False
-if "Milestone30" in player.memory.get("Milestones", []):
-    # Second Wind Active (Survive death once)
 
-if "Milestone120" in player.memory.get("Milestones", []):
-    # Last Stand Active (Auto-resurrect once)
     # --- Companion Encounter Check ---
     companion_encounter = companion_manager.random_companion_encounter()
     if companion_encounter:
