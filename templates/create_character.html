@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Character - Elysiad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Create Your Character</h1>
+        <form method="POST">
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="background">Background:</label><br>
+            <select id="background" name="background" required>
+                <option value="Wanderer">Wanderer</option>
+                <option value="Scholar">Scholar</option>
+                <option value="Warrior">Warrior</option>
+                <option value="Mystic">Mystic</option>
+            </select><br><br>
+
+            <label for="genre">Preferred Story Tone:</label><br>
+            <select id="genre" name="genre" required>
+                {% for genre in genres %}
+                <option value="{{ genre }}">{{ genre }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <button type="submit" class="button">Enter Elysiad</button>
+        </form>
+    </div>
+</body>
+</html>
