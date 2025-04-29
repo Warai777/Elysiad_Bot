@@ -58,6 +58,7 @@ def choose_world():
     else:
         books = world_manager.generate_books()
         return render_template("choose_world.html", books=books, player=player)
+
 @app.route("/world_scene", methods=["GET", "POST"])
 def world_scene():
     player_name = session.get("player_name")
@@ -72,18 +73,19 @@ def world_scene():
         lore_choices = session.get("lore_choices")
         random_choice = session.get("random_choice")
 
-        if selected == death_choice:
-            return f"<h1>You met your end in {player.current_world}.</h1><a href='/'>Return Home</a>"
-        elif selected == progress_choice:
-            return f"<h1>You survived and progress deeper into {player.current_world}!</h1><a href='/library'>Return to Library</a>"
-        elif selected in lore_choices:
-            return f"<h1>You discovered hidden Lore in {player.current_world}!</h1><a href='/library'>Return to Library</a>"
-        elif selected == random_choice:
-            roll = random.randint(1, 100)
-            if roll >= 50:
-                return f"<h1>Good fortune shines on you in {player.current_world}!</h1><a href='/library'>Return to Library</a>"
-            else:
-                return f"<h1>Misfortune falls upon you in {player.current_world}!</h1><a href='/library'>Return to Library</a>"
+       if selected == death_choice:
+    return redirect(url_for('death_screen'))
+elif selected == progress_choice:
+    return "<h1>You progress deeper into the world!</h1><a href='/library'>Return</a>"
+elif selected in lore_choices:
+    return redirect(url_for('lore_found_screen'))
+elif selected == random_choice:
+    roll = random.randint(1, 100)
+    if roll >= 50:
+        return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
+    else:
+        return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
+
         else:
             return "<h1>Invalid Choice.</h1><a href='/library'>Return to Library</a>"
 
