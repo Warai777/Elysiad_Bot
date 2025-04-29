@@ -89,34 +89,34 @@ def world_scene():
             return "<h1>Invalid choice.</h1><a href='/library'>Return</a>"
 
     else:
-        choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
-        session["current_choices"] = choices
-        session["death_choice"] = death
-        session["progress_choice"] = progress
-        session["lore_choices"] = lore
-        session["random_choice"] = random_c
+    choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
+    session["current_choices"] = choices
+    session["death_choice"] = death
+    session["progress_choice"] = progress
+    session["lore_choices"] = lore
+    session["random_choice"] = random_c
 
-        # ⏳ Add survival timer calculation
-world_entry_time = player.world_entry_time
-if world_entry_time:
-    entry_dt = datetime.datetime.fromisoformat(world_entry_time)
-    now_dt = datetime.datetime.utcnow()
-    survived_seconds = int((now_dt - entry_dt).total_seconds())
-    survived_minutes = survived_seconds // 60
-else:
-    survived_minutes = 0  # <-- SAFETY fallback if player.world_entry_time is None
+    # ⏳ Add survival timer calculation
+    world_entry_time = player.world_entry_time
+    if world_entry_time:
+        entry_dt = datetime.datetime.fromisoformat(world_entry_time)
+        now_dt = datetime.datetime.utcnow()
+        survived_seconds = int((now_dt - entry_dt).total_seconds())
+        survived_minutes = survived_seconds // 60
+    else:
+        survived_minutes = 0  # SAFETY fallback if no entry time
 
-# Always set survived_minutes into session
-session["survived_minutes"] = survived_minutes
+    # Always set survived_minutes into session
+    session["survived_minutes"] = survived_minutes
 
+    return render_template(
+        "world_scene.html",
+        player=player,
+        world=session.get("current_world"),
+        choices=choices,
+        survived_minutes=survived_minutes
+    )
 
- return render_template(
-            "world_scene.html",
-            player=player,
-            world=session.get("current_world"),
-            choices=choices,
-            survived_minutes=survived_minutes
-        )
 
 
 @app.route("/death")
