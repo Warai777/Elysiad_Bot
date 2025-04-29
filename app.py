@@ -7,6 +7,7 @@ from player import Player
 from genre_manager import GenreManager
 from world_manager import WorldManager
 from choice_engine import ChoiceEngine
+from companion_manager import CompanionManager
 
 # --- CONFIG ---
 app = Flask(__name__)
@@ -15,6 +16,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "elysiad_secret_key")
 # --- SETUP ---
 genre_manager = GenreManager()
 world_manager = WorldManager()
+companion_manager = CompanionManager()
 
 # --- ROUTES ---
 
@@ -88,9 +90,7 @@ def world_scene():
         else:
             return "<h1>Invalid choice.</h1><a href='/library'>Return</a>"
 
-    # ⬇️⬇️⬇️ NOT `else:` HERE! Just continue normally!
-    
-    # This happens if request.method == "GET"
+    # 🌟 ADD THIS PART BELOW for companion encounter:
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
@@ -98,6 +98,7 @@ def world_scene():
     session["lore_choices"] = lore
     session["random_choice"] = random_c
 
+    # Survival timer
     world_entry_time = player.world_entry_time
     if world_entry_time:
         entry_dt = datetime.datetime.fromisoformat(world_entry_time)
@@ -109,6 +110,16 @@ def world_scene():
 
     session["survived_minutes"] = survived_minutes
 
+    # --- 🌟 Companion Encounter Check ---
+    companion_encounter = companion_manager.random_companion_encounter()
+    if companion_encounter:
+        session["pending_companion"] = companion_encounter
+        return render_template(
+            "companion_encounter.html",
+            companion=companion_encounter
+        )
+    # --- 🌟 End Companion Encounter Check ---
+
     return render_template(
         "world_scene.html",
         player=player,
@@ -116,6 +127,7 @@ def world_scene():
         choices=choices,
         survived_minutes=survived_minutes
     )
+
 
 @app.route("/death")
 def death_screen():
