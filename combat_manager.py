@@ -18,15 +18,16 @@ class CombatManager:
         ]
 
     def resolve_choice(self, choice_index):
-        # --- Randomize battle outcome ---
         roll = random.randint(1, 100)
+        success = roll >= 60
 
-        if roll >= 60:
-            success = True
-        else:
-            success = False
-
-        # --- Get dynamic combat story ---
         narrative, scar_text, instinct_text = self.story_manager.generate_combat_result(choice_index, success)
 
-        return narrative, scar_text, instinct_text
+        # --- Companion Assist Chance ---
+        assist_text = None
+        for comp in self.companions:
+            if comp.get("loyalty", 0) >= 70 and random.random() < 0.3:
+                assist_text = f"{comp['name']} assisted you with their {comp['ability']['name']}!"
+                break
+
+        return narrative, scar_text, instinct_text, assist_text
