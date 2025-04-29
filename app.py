@@ -94,6 +94,10 @@ def world_scene():
         progress_choice = session.get("progress_choice")
         lore_choices = session.get("lore_choices")
         random_choice = session.get("random_choice")
+        secret_unlocked = session.get("secret_choice", False)
+
+        if secret_unlocked and selected == 6:
+            return redirect(url_for("secret_event"))
 
         if selected == death_choice:
             return redirect(url_for('death_screen'))
@@ -104,13 +108,13 @@ def world_scene():
         elif selected == random_choice:
             roll = random.randint(1, 100)
             if roll >= 50:
-                 adjust_loyalty(player, +5, cause="Survived random danger")
-                 return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
+                adjust_loyalty(player, +5, cause="Survived random danger")
+                return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
             else:
-                 adjust_loyalty(player, -5, cause="Random misfortune struck")
-                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
+                adjust_loyalty(player, -5, cause="Random misfortune struck")
+                return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
 
-    # 🌟 ADD THIS PART BELOW for companion encounter:
+    # --- Normal choice generation ---
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
@@ -118,7 +122,7 @@ def world_scene():
     session["lore_choices"] = lore
     session["random_choice"] = random_c
 
-    # Survival timer
+    # --- Survival timer ---
     world_entry_time = player.world_entry_time
     if world_entry_time:
         entry_dt = datetime.datetime.fromisoformat(world_entry_time)
@@ -130,7 +134,21 @@ def world_scene():
 
     session["survived_minutes"] = survived_minutes
 
-    # --- 🌟 Companion Encounter Check ---
+    # --- Loyalty Bond Unlock ---
+    high_loyalty_companions = []
+    if player:
+        for comp in player.companions:
+            if comp.get("loyalty", 0) >= 80:
+                high_loyalty_companions.append(comp["name"])
+
+    if high_loyalty_companions:
+        secret_choice_text = f"A mysterious chance... inspired by {random.choice(high_loyalty_companions)}"
+        choices.append(secret_choice_text)
+        session["secret_choice"] = True
+    else:
+        session["secret_choice"] = False
+
+    # --- Companion Encounter Check ---
     companion_encounter = companion_manager.random_companion_encounter()
     if companion_encounter:
         session["pending_companion"] = companion_encounter
@@ -138,7 +156,6 @@ def world_scene():
             "companion_encounter.html",
             companion=companion_encounter
         )
-    # --- 🌟 End Companion Encounter Check ---
 
     return render_template(
         "world_scene.html",
