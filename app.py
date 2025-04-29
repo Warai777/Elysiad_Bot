@@ -3,7 +3,7 @@ import json
 import random
 import datetime
 from flask import Flask, render_template, request, redirect, url_for, session
-from player import Player
+from player import Player, adjust_loyalty, record_memory
 from genre_manager import GenreManager
 from world_manager import WorldManager
 from choice_engine import ChoiceEngine
@@ -30,7 +30,7 @@ def create_character():
     if request.method == "POST":
         name = request.form["name"]
         background = request.form["background"]
-        genre = request.form.get("genre", "Mysterious")  # Default if none picked
+        genre = request.form.get("genre", "Mysterious")
         player = Player(name, background, genre)
         player.save()
         session["player_name"] = name
@@ -42,13 +42,11 @@ def library():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
 
     companions = getattr(player, "companions", [])
-
     return render_template("library.html", player=player, companions=companions)
 
 @app.route("/choose_world", methods=["GET", "POST"])
@@ -61,7 +59,7 @@ def choose_world():
     if not player:
         return redirect(url_for("home"))
 
-    books = world_manager.generate_books()  # Moved this to the top
+    books = world_manager.generate_books()
 
     if request.method == "POST":
         selected_world_name = request.form.get("world")
@@ -105,6 +103,9 @@ def world_scene():
         elif selected == progress_choice:
             return "<h1>You progress deeper into the world!</h1><a href='/library'>Return</a>"
         elif selected in lore_choices:
+            found_lore = random.choice(ARCHIVIST_LORE)
+            player.memory.setdefault("FoundLore", []).append(found_lore)
+            player.save()
             return redirect(url_for('lore_found_screen'))
         elif selected == random_choice:
             roll = random.randint(1, 100)
@@ -115,7 +116,6 @@ def world_scene():
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
 
-    # --- Normal choice generation ---
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
@@ -123,41 +123,73 @@ def world_scene():
     session["lore_choices"] = lore
     session["random_choice"] = random_c
 
-   # --- Survival Timer ---
-world_entry_time = player.world_entry_time
-survived_minutes = 0
+    # --- Survival Timer ---
+    world_entry_time = player.world_entry_time
+    survived_minutes = 0
+    if world_entry_time:
+        entry_dt = datetime.datetime.fromisoformat(world_entry_time)
+        now_dt = datetime.datetime.utcnow()
+        survived_seconds = int((now_dt - entry_dt).total_seconds())
+        survived_minutes = survived_seconds // 60
 
-if world_entry_time:
-    entry_dt = datetime.datetime.fromisoformat(world_entry_time)
-    now_dt = datetime.datetime.utcnow()
-    survived_seconds = int((now_dt - entry_dt).total_seconds())
-    survived_minutes = survived_seconds // 60
+    session["survived_minutes"] = survived_minutes
 
-session["survived_minutes"] = survived_minutes
+    # --- Milestone Grit Rewards ---
+    milestones = player.memory.setdefault("Milestones", [])
+    milestone_events = [
+        (10, 1, "Survived 10 minutes. A faint resilience is born."),
+        (30, 2, "Survived 30 minutes. Second Wind awakened."),
+        (60, 3, "Survived 60 minutes. Armor of Determination earned."),
+        (120, 5, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
+    ]
+    for minutes, grit_gain, message in milestone_events:
+        code = f"Milestone{minutes}"
+        if survived_minutes >= minutes and code not in milestones:
+            milestones.append(code)
+            player.grit += grit_gain
+            record_memory(player, message)
+            player.save()
 
-# --- Milestone Achievements ---
-milestones = player.memory.setdefault("Milestones", [])
+    # --- Loyalty bond secret unlock ---
+    high_loyalty_companions = [comp["name"] for comp in player.companions if comp.get("loyalty", 0) >= 80]
+    if high_loyalty_companions:
+        secret_choice_text = f"A mysterious chance... inspired by {random.choice(high_loyalty_companions)}"
+        choices.append(secret_choice_text)
+        session["secret_choice"] = True
+    else:
+        session["secret_choice"] = False
 
-milestone_events = [
-    (10, 1, "Survived 10 minutes. A faint resilience is born."),
-    (30, 2, "Survived 30 minutes. Second Wind awakened."),
-    (60, 3, "Survived 60 minutes. Armor of Determination earned."),
-    (120, 5, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
-]
+    # --- Random Companion Encounter ---
+    companion_encounter = companion_manager.random_companion_encounter()
+    if companion_encounter:
+        session["pending_companion"] = companion_encounter
+        return render_template("companion_encounter.html", companion=companion_encounter)
 
-for minutes, grit_gain, message in milestone_events:
-    code = f"Milestone{minutes}"
-    if survived_minutes >= minutes and code not in milestones:
-        milestones.append(code)
-        player.grit += grit_gain
-        record_memory(player, message)
-        player.save()
+    return render_template(
+        "world_scene.html",
+        player=player,
+        world=session.get("current_world"),
+        choices=choices,
+        survived_minutes=survived_minutes
+    )
 
-    # --- Otherwise: you really die ---
+@app.route("/death")
+def death_screen():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+    
+    player = Player.load(player_name)
+
+    # If player found all Archivist Lore
+    found = player.memory.get("FoundLore", [])
+    if sorted(found) == sorted(ARCHIVIST_LORE):
+        return redirect(url_for("rebirth_screen"))
+
+    # Otherwise: normal death
     cause_of_death = f"Died inside {player.current_world} after surviving {session.get('survived_minutes', 0)} minutes."
     player.memory.setdefault("Deaths", []).append(cause_of_death)
 
-    # Emotional impact for companions
     for comp in player.companions:
         if comp.get("loyalty", 0) >= 80:
             record_memory(player, f"You carry the grief of {comp['name']} losing you.")
@@ -166,13 +198,17 @@ for minutes, grit_gain, message in milestone_events:
 
     return render_template("death_screen.html", player=player)
 
-@app.route("/lore_found")
-def lore_found_screen():
+@app.route("/rebirth")
+def rebirth_screen():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
     player = Player.load(player_name)
-    return render_template("lore_found.html", player=player)
+    return render_template("rebirth.html", player=player)
+
+@app.route("/lore_found")
+def lore_found_screen():
+    return "<h1>New Lore Discovered!</h1><a href='/world_scene'>Continue</a>"
 
 @app.route("/handle_companion_choice", methods=["POST"])
 def handle_companion_choice():
@@ -193,9 +229,7 @@ def handle_companion_choice():
         player.companions.append(companion)
         player.save()
 
-    # Always remove from session (accepted or rejected)
     session.pop("pending_companion", None)
-
     return redirect(url_for("world_scene"))
 
 @app.route("/secret_event")
@@ -203,17 +237,12 @@ def secret_event():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+
     player = Player.load(player_name)
-
-    # 🌟 Add a powerful hidden memory
     record_memory(player, "You shared a bond stronger than fate.")
-
-    # 🌟 Loyalty boost for all companions
     adjust_loyalty(player, +10, cause="Forged deep bond through hidden event.")
-
-    return render_template("secret_event.html", player=player)
+    return "<h1>A Secret Bond Has Formed...</h1><a href='/world_scene'>Return</a>"
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host="0.0.0.0", port=port)
-
