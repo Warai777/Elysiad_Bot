@@ -10,6 +10,7 @@
         <h1>Facing the Unknown in {{ world }}</h1>
         <p>The shadows shift. The world watches your every move...</p>
         <h2>What will you do?</h2>
+        <p>You have survived for {{ survived_minutes }} minutes inside {{ world }}.</p>
 
         <form method="POST">
             {% for num, action in choices %}
