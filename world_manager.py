@@ -2,6 +2,7 @@ import random
 import datetime
 import os
 import json
+from choice_engine import ChoiceEngine   # <-- Import ChoiceEngine properly here
 
 PLAYER_FOLDER = "data/players"
 
@@ -36,3 +37,8 @@ class WorldManager:
 
         with open(filepath, "w") as f:
             json.dump(data, f, indent=2)
+
+    def generate_scene_choices(self):
+        engine = ChoiceEngine()
+        engine.generate_choices()
+        return engine.choices, engine.death_choice, engine.progress_choice, engine.lore_choices, engine.random_choice
