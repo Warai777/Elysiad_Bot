@@ -258,6 +258,17 @@ def secret_event():
     adjust_loyalty(player, +10, cause="Forged deep bond through hidden event.")
     return "<h1>A Secret Bond Has Formed...</h1><a href='/world_scene'>Return</a>"
 
+@app.route("/journal")
+def journal():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+    
+    player = Player.load(player_name)
+    journal = player.memory.get("Journal", {"Hints": [], "Lore": [], "Events": []})
+
+    return render_template("journal.html", player=player, journal=journal)
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host="0.0.0.0", port=port)
