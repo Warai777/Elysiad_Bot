@@ -123,99 +123,35 @@ def world_scene():
     session["lore_choices"] = lore
     session["random_choice"] = random_c
 
-    # --- Survival timer ---
-    world_entry_time = player.world_entry_time
-    if world_entry_time:
-        entry_dt = datetime.datetime.fromisoformat(world_entry_time)
-        now_dt = datetime.datetime.utcnow()
-        survived_seconds = int((now_dt - entry_dt).total_seconds())
-        survived_minutes = survived_seconds // 60
-    else:
-        survived_minutes = 0
+   # --- Survival Timer ---
+world_entry_time = player.world_entry_time
+survived_minutes = 0
 
-    session["survived_minutes"] = survived_minutes
+if world_entry_time:
+    entry_dt = datetime.datetime.fromisoformat(world_entry_time)
+    now_dt = datetime.datetime.utcnow()
+    survived_seconds = int((now_dt - entry_dt).total_seconds())
+    survived_minutes = survived_seconds // 60
 
-    # --- Grit and Survival Milestones ---
-    if survived_minutes >= 10 and "Milestone10" not in player.memory.get("Milestones", []):
-        player.memory.setdefault("Milestones", []).append("Milestone10")
-        player.grit += 1
-        record_memory(player, "Survived 10 minutes. A faint resilience is born.")
+session["survived_minutes"] = survived_minutes
+
+# --- Milestone Achievements ---
+milestones = player.memory.setdefault("Milestones", [])
+
+milestone_events = [
+    (10, 1, "Survived 10 minutes. A faint resilience is born."),
+    (30, 2, "Survived 30 minutes. Second Wind awakened."),
+    (60, 3, "Survived 60 minutes. Armor of Determination earned."),
+    (120, 5, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
+]
+
+for minutes, grit_gain, message in milestone_events:
+    code = f"Milestone{minutes}"
+    if survived_minutes >= minutes and code not in milestones:
+        milestones.append(code)
+        player.grit += grit_gain
+        record_memory(player, message)
         player.save()
-
-    if survived_minutes >= 30 and "Milestone30" not in player.memory.get("Milestones", []):
-        player.memory.setdefault("Milestones", []).append("Milestone30")
-        player.grit += 2
-        record_memory(player, "Survived 30 minutes. Second Wind awakened.")
-        player.save()
-
-    if survived_minutes >= 60 and "Milestone60" not in player.memory.get("Milestones", []):
-        player.memory.setdefault("Milestones", []).append("Milestone60")
-        player.grit += 3
-        record_memory(player, "Survived 60 minutes. Armor of Determination earned.")
-        player.save()
-
-    if survived_minutes >= 120 and "Milestone120" not in player.memory.get("Milestones", []):
-        player.memory.setdefault("Milestones", []).append("Milestone120")
-        player.grit += 5
-        record_memory(player, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
-        player.save()
-
-    # --- Loyalty Bond Unlock ---
-    high_loyalty_companions = []
-    for comp in player.companions:
-        if comp.get("loyalty", 0) >= 80:
-            high_loyalty_companions.append(comp["name"])
-
-    if high_loyalty_companions:
-        secret_choice_text = f"A mysterious chance... inspired by {random.choice(high_loyalty_companions)}"
-        choices.append(secret_choice_text)
-        session["secret_choice"] = True
-    else:
-        session["secret_choice"] = False
-
-    # --- Companion Encounter Check ---
-    companion_encounter = companion_manager.random_companion_encounter()
-    if companion_encounter:
-        session["pending_companion"] = companion_encounter
-        return render_template(
-            "companion_encounter.html",
-            companion=companion_encounter
-        )
-
-    return render_template(
-        "world_scene.html",
-        player=player,
-        world=session.get("current_world"),
-        choices=choices,
-        survived_minutes=survived_minutes
-    )
-
-
-@app.route("/death")
-def death_screen():
-    player_name = session.get("player_name")
-    if not player_name:
-        return redirect(url_for("home"))
-    
-    player = Player.load(player_name)
-    if not player:
-        return redirect(url_for("home"))
-
-    # 🌟 --- Check if Milestone30 ("Second Wind") saves you ---
-    if "Milestone30" in player.memory.get("Milestones", []) and not session.get("second_wind_used", False):
-        session["second_wind_used"] = True  # Mark it used
-        record_memory(player, "Second Wind triggered — death narrowly avoided!")
-        adjust_loyalty(player, +10, cause="Witnessed your miraculous survival.")
-        player.save()
-        return redirect(url_for("world_scene"))  # ❗️ Send them back into the world alive!
-
-    # 🌟 --- Check if Milestone120 ("Last Stand") saves you ---
-    if "Milestone120" in player.memory.get("Milestones", []) and not session.get("last_stand_used", False):
-        session["last_stand_used"] = True  # Mark it used
-        record_memory(player, "Last Stand activated — willpower defied death itself!")
-        adjust_loyalty(player, +15, cause="Felt the shock of your heroic revival.")
-        player.save()
-        return redirect(url_for("world_scene"))  # ❗️ Survive death once.
 
     # --- Otherwise: you really die ---
     cause_of_death = f"Died inside {player.current_world} after surviving {session.get('survived_minutes', 0)} minutes."
