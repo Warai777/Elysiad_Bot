@@ -159,18 +159,21 @@ def handle_companion_choice():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+
     player = Player.load(player_name)
+    if not player:
+        return redirect(url_for("home"))
 
     choice = request.form.get("choice")
     companion = session.get("pending_companion")
 
     if companion and choice == "accept":
-        player_data = player.__dict__
-        companions_list = player_data.get("companions", [])
-        companions_list.append(companion)
-        player_data["companions"] = companions_list
+        if not hasattr(player, "companions"):
+            player.companions = []
+        player.companions.append(companion)
         player.save()
 
+    # Always remove from session (accepted or rejected)
     session.pop("pending_companion", None)
 
     return redirect(url_for("world_scene"))
