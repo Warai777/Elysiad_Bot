@@ -46,7 +46,6 @@ def library():
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
-
     companions = getattr(player, "companions", [])
     return render_template("library.html", player=player, companions=companions)
 
@@ -89,8 +88,8 @@ def world_scene():
         return redirect(url_for("home"))
 
     # --- Check for Archivist Rebirth ---
-if set(player.memory.get("Lore", [])) >= set(ARCHIVIST_LORE):
-    return redirect(url_for("rebirth"))
+    if set(player.memory.get("FoundLore", [])) >= set(ARCHIVIST_LORE):
+        return redirect(url_for("rebirth_screen"))
 
     if request.method == "POST":
         selected = int(request.form.get("choice"))
@@ -121,6 +120,7 @@ if set(player.memory.get("Lore", [])) >= set(ARCHIVIST_LORE):
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
 
+    # --- Normal choice generation ---
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
@@ -136,7 +136,6 @@ if set(player.memory.get("Lore", [])) >= set(ARCHIVIST_LORE):
         now_dt = datetime.datetime.utcnow()
         survived_seconds = int((now_dt - entry_dt).total_seconds())
         survived_minutes = survived_seconds // 60
-
     session["survived_minutes"] = survived_minutes
 
     # --- Milestone Grit Rewards ---
@@ -155,7 +154,7 @@ if set(player.memory.get("Lore", [])) >= set(ARCHIVIST_LORE):
             record_memory(player, message)
             player.save()
 
-    # --- Loyalty bond secret unlock ---
+    # --- Loyalty Bond Secret Unlock ---
     high_loyalty_companions = [comp["name"] for comp in player.companions if comp.get("loyalty", 0) >= 80]
     if high_loyalty_companions:
         secret_choice_text = f"A mysterious chance... inspired by {random.choice(high_loyalty_companions)}"
@@ -185,13 +184,10 @@ def death_screen():
         return redirect(url_for("home"))
     
     player = Player.load(player_name)
-
-    # If player found all Archivist Lore
     found = player.memory.get("FoundLore", [])
     if sorted(found) == sorted(ARCHIVIST_LORE):
         return redirect(url_for("rebirth_screen"))
 
-    # Otherwise: normal death
     cause_of_death = f"Died inside {player.current_world} after surviving {session.get('survived_minutes', 0)} minutes."
     player.memory.setdefault("Deaths", []).append(cause_of_death)
 
@@ -203,7 +199,7 @@ def death_screen():
 
     return render_template("death_screen.html", player=player)
 
-@app.route("/rebirth")
+@app.route("/rebirth_screen")
 def rebirth_screen():
     player_name = session.get("player_name")
     if not player_name:
@@ -220,7 +216,6 @@ def handle_companion_choice():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
@@ -242,22 +237,16 @@ def secret_event():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-
     player = Player.load(player_name)
     record_memory(player, "You shared a bond stronger than fate.")
     adjust_loyalty(player, +10, cause="Forged deep bond through hidden event.")
     return "<h1>A Secret Bond Has Formed...</h1><a href='/world_scene'>Return</a>"
-
-@app.route("/rebirth")
-def rebirth():
-    return render_template("rebirth.html")
 
 @app.route("/combat", methods=["GET", "POST"])
 def combat():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
@@ -271,7 +260,6 @@ def combat():
         selected = int(request.form.get("choice"))
         outcome, scar, instinct_gain = combat_manager.resolve_choice(selected)
 
-        # Update player memory and state
         if scar:
             player.memory.setdefault("Scars", []).append("Wound from a fierce battle.")
             record_memory(player, "You earned a new mental scar from combat.")
