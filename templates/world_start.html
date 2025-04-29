@@ -11,6 +11,15 @@
         <p>The world folds around you, a whisper of realities lost and found.</p>
         <p><i>Your survival begins now...</i></p>
         <br>
+
+        <h2>Choose Your Action:</h2>
+        <form method="POST" action="{{ url_for('choose_world') }}">
+            {% for num, action in choices %}
+                <button type="submit" name="choice" value="{{ num }}" class="button">{{ num }}. {{ action }}</button><br><br>
+            {% endfor %}
+        </form>
+
+        <br>
         <p><b>Good luck, {{ player.name }}.</b></p>
     </div>
 </body>
