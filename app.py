@@ -50,51 +50,53 @@ def choose_world():
     player = Player.load(player_name)
 
     if request.method == "POST":
-        selected = request.form.get("choice")
-        if selected:  # Player clicked a choice
-            selected_choice = int(selected)
-            result = session.get("current_choice_result")
-
-            choice_engine = ChoiceEngine()
-            choice_engine.generate_choices()
-
-            death_choice = session.get("death_choice")
-            progress_choice = session.get("progress_choice")
-            lore_choices = session.get("lore_choices")
-            random_choice = session.get("random_choice")
-
-            if selected_choice == death_choice:
-                return f"<h1>You chose poorly and met your end in {player.current_world}.</h1><a href='/'>Return Home</a>"
-            elif selected_choice == progress_choice:
-                return f"<h1>You progress deeper into {player.current_world}!</h1><a href='/library'>Return to Library</a>"
-            elif selected_choice in lore_choices:
-                return f"<h1>You found hidden Lore in {player.current_world}!</h1><a href='/library'>Return to Library</a>"
-            elif selected_choice == random_choice:
-                roll = random.randint(1, 100)
-                if roll >= 50:
-                    return f"<h1>You encountered good fortune in {player.current_world}!</h1><a href='/library'>Return to Library</a>"
-                else:
-                    return f"<h1>Misfortune strikes in {player.current_world}!</h1><a href='/library'>Return to Library</a>"
-            else:
-                return f"<h1>Invalid choice.</h1><a href='/library'>Return to Library</a>"
-
-        # Otherwise player just landed here
+        chosen_world = request.form.get("world")
+        if chosen_world:
+            world_manager.start_world_timer(player_name, chosen_world)
+            session["current_world"] = chosen_world
+            return redirect(url_for("world_scene"))
+    else:
         books = world_manager.generate_books()
         return render_template("choose_world.html", books=books, player=player)
+@app.route("/world_scene", methods=["GET", "POST"])
+def world_scene():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+    player = Player.load(player_name)
+
+    if request.method == "POST":
+        selected = int(request.form.get("choice"))
+        death_choice = session.get("death_choice")
+        progress_choice = session.get("progress_choice")
+        lore_choices = session.get("lore_choices")
+        random_choice = session.get("random_choice")
+
+        if selected == death_choice:
+            return f"<h1>You met your end in {player.current_world}.</h1><a href='/'>Return Home</a>"
+        elif selected == progress_choice:
+            return f"<h1>You survived and progress deeper into {player.current_world}!</h1><a href='/library'>Return to Library</a>"
+        elif selected in lore_choices:
+            return f"<h1>You discovered hidden Lore in {player.current_world}!</h1><a href='/library'>Return to Library</a>"
+        elif selected == random_choice:
+            roll = random.randint(1, 100)
+            if roll >= 50:
+                return f"<h1>Good fortune shines on you in {player.current_world}!</h1><a href='/library'>Return to Library</a>"
+            else:
+                return f"<h1>Misfortune falls upon you in {player.current_world}!</h1><a href='/library'>Return to Library</a>"
+        else:
+            return "<h1>Invalid Choice.</h1><a href='/library'>Return to Library</a>"
 
     else:
-        # Fresh arrival to choose a world
-        choice_engine = ChoiceEngine()
-        choice_engine.generate_choices()
+        # Fresh arrival to survival scene
+        choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
+        session["current_choices"] = choices
+        session["death_choice"] = death
+        session["progress_choice"] = progress
+        session["lore_choices"] = lore
+        session["random_choice"] = random_c
 
-        session["current_choices"] = choice_engine.choices
-        session["death_choice"] = choice_engine.death_choice
-        session["progress_choice"] = choice_engine.progress_choice
-        session["lore_choices"] = choice_engine.lore_choices
-        session["random_choice"] = choice_engine.random_choice
-
-        books = world_manager.generate_books()
-        return render_template("choose_world.html", books=books, player=player)
+        return render_template("world_scene.html", player=player, world=session.get("current_world"), choices=choices)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
