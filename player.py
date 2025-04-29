@@ -26,6 +26,9 @@ class Player:
         }
         self.current_world = None
         self.world_entry_time = None
+        self.memory = {
+            "Deaths": []
+        }
 
     def assign_random_traits(self):
         traits = ["Curious", "Bold", "Quiet", "Impulsive", "Cautious", "Charming"]
