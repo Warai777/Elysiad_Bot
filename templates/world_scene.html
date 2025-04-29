@@ -10,7 +10,7 @@
         <h1>Facing the Unknown in {{ world }}</h1>
         <p>The shadows shift. The world watches your every move...</p>
         <h2>What will you do?</h2>
-        <p>You have survived for {{ survived_minutes }} minutes inside {{ world }}.</p>
+        <p id="survival-timer">You have survived for {{ survived_minutes }} minutes inside {{ world }}.</p>
 
         <form method="POST">
             {% for num, action in choices %}
@@ -21,5 +21,23 @@
         <br>
         <p><b>Choose wisely, {{ player.name }}...</b></p>
     </div>
+    <script>
+    // Start counting from survived_minutes passed from server
+    let minutes = {{ survived_minutes }};
+    let seconds = 0;
+
+    function updateSurvivalTimer() {
+        seconds++;
+        if (seconds >= 60) {
+            seconds = 0;
+            minutes++;
+        }
+        document.getElementById("survival-timer").innerText = 
+            `You have survived for ${minutes} minutes and ${seconds} seconds inside {{ world }}.`;
+    }
+
+    setInterval(updateSurvivalTimer, 1000);
+</script>
+
 </body>
 </html>
