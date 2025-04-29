@@ -43,6 +43,18 @@ class CompanionManager:
                 "loyalty": 50,
                 "ability": ability
             }
+            
+            TONE_ARCHETYPE_MAP = {
+    "mystical": ["Mystic Trickster", "Spirit Whisperer", "Dreamwalker"],
+    "grimdark": ["Vengeful Flame", "Death Knight", "Umbra Chain"],
+    "cosmic": ["Starforged Guardian", "Dimensional Rift", "Aether Pulse"],
+    "adventurous": ["Wild Instinct", "Storm Rider", "Scout Vanguard"],
+    "melancholy": ["Silent Step", "Faded Memory", "Broken Warden"],
+    "heroic": ["Shieldbearer", "Braveheart", "Sword of Dawn"],
+    "psychological": ["Foresight Pulse", "Veil Step", "Cursed Insight"],
+    "spiritual": ["Soul Guard", "Wandering Light", "Echo Pilgrim"],
+    "surreal": ["Dream Threader", "Reality Breaker", "Flickering Muse"]
+}
 
             return companion
         return None
