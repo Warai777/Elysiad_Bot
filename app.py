@@ -259,13 +259,20 @@ def secret_event():
     return "<h1>A Secret Bond Has Formed...</h1><a href='/world_scene'>Return</a>"
 
 @app.route("/journal")
-def journal():
+def view_journal():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-    
+
     player = Player.load(player_name)
-    journal = player.memory.get("Journal", {"Hints": [], "Lore": [], "Events": []})
+    if not player:
+        return redirect(url_for("home"))
+
+    journal = player.memory.get("Journal", {
+        "Hints": [],
+        "Lore": [],
+        "Events": []
+    })
 
     return render_template("journal.html", player=player, journal=journal)
 
