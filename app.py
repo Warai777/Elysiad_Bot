@@ -92,7 +92,7 @@ def world_scene():
             return redirect(url_for('lore_found_screen'))
         elif selected == random_choice:
             roll = random.randint(1, 100)
-             if roll >= 50:
+            if roll >= 50:
                  adjust_loyalty(player, +5, cause="Survived random danger")
                  return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
              else:
