@@ -60,6 +60,22 @@
         </ul>
     </div>
 
+    <div class="journal-section">
+    <h2>Your Personal Notes</h2>
+    <ul>
+        {% for note in journal.get("Notes", []) %}
+            <li>{{ note }}</li>
+        {% else %}
+            <li>No personal notes yet.</li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST" action="{{ url_for('add_note') }}">
+        <textarea name="note" rows="4" cols="50" placeholder="Write your note here..." required></textarea><br>
+        <button type="submit">Save Note</button>
+    </form>
+</div>
+    
     <a href="{{ url_for('library') }}">Back to Library</a>
 </body>
 </html>
