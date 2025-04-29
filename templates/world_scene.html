@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Survive in {{ world }} - Elysiad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Facing the Unknown in {{ world }}</h1>
+        <p>The shadows shift. The world watches your every move...</p>
+        <h2>What will you do?</h2>
+
+        <form method="POST">
+            {% for num, action in choices %}
+                <button type="submit" name="choice" value="{{ num }}" class="button">{{ num }}. {{ action }}</button><br><br>
+            {% endfor %}
+        </form>
+
+        <br>
+        <p><b>Choose wisely, {{ player.name }}...</b></p>
+    </div>
+</body>
+</html>
