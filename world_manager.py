@@ -26,6 +26,9 @@ class WorldManager:
     data["current_world"] = world_name
     data["world_entry_time"] = datetime.datetime.utcnow().isoformat()
 
+    with open(filepath, "w") as f:
+        json.dump(data, f, indent=2)
+
     # ✨ New Part: track past visited worlds
     if "PastWorlds" not in data:
         data["PastWorlds"] = []
