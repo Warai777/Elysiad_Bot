@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Combat Encounter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="combat-box">
+        <h1>Combat Encounter</h1>
+        <p>Time is ticking — Choose your action!</p>
+        <form method="POST" id="combat-form">
+            {% for choice in choices %}
+                <button type="submit" name="choice" value="{{ loop.index0 }}">{{ choice }}</button><br><br>
+            {% endfor %}
+        </form>
+    </div>
+
+    <script>
+        setTimeout(function() {
+            document.getElementById('combat-form').submit();
+        }, 10000);  // Auto-submit after 10 seconds
+    </script>
+</body>
+</html>
