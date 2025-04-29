@@ -6,18 +6,17 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="combat-result-box">
-        <h1>Combat Outcome</h1>
-        <p>{{ outcome }}</p>
+    <h1>Combat Outcome</h1>
+    <p>{{ outcome }}</p>
 
-        {% if scar %}
-            <p><b>You were scarred by the battle...</b></p>
-        {% endif %}
-        {% if instinct_gain %}
-            <p><b>Your instincts sharpened after facing death!</b></p>
-        {% endif %}
+    {% if scar %}
+        <p><strong>You suffered a mental scar!</strong></p>
+    {% endif %}
 
-        <a href="{{ url_for('library') }}">Return to Library</a>
-    </div>
+    {% if instinct_gain %}
+        <p><strong>Your combat instincts have sharpened.</strong></p>
+    {% endif %}
+
+    <a href="{{ url_for('world_scene') }}">Continue Your Journey</a>
 </body>
 </html>
