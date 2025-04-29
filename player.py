@@ -42,7 +42,7 @@ class Player:
             json.dump(self.__dict__, f, indent=2)
 
     @classmethod
-def load(cls, name):
+    def load(cls, name):
     filepath = os.path.join(PLAYER_FOLDER, f"{name}.json")
     if not os.path.exists(filepath):
         return None
@@ -64,6 +64,7 @@ def load(cls, name):
         "Notes": []
     })
     return player
+
 
     def save_now(self):
         self.save()
