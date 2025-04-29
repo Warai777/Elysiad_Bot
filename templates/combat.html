@@ -4,22 +4,27 @@
     <meta charset="UTF-8">
     <title>Combat Encounter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        let timeLeft = 15;
+        function countdown() {
+            if (timeLeft <= 0) {
+                document.getElementById("combatForm").submit();
+            } else {
+                document.getElementById("timer").innerHTML = timeLeft + "s";
+                timeLeft -= 1;
+                setTimeout(countdown, 1000);
+            }
+        }
+        window.onload = countdown;
+    </script>
 </head>
 <body>
-    <div class="combat-box">
-        <h1>Combat Encounter</h1>
-        <p>Time is ticking — Choose your action!</p>
-        <form method="POST" id="combat-form">
-            {% for choice in choices %}
-                <button type="submit" name="choice" value="{{ loop.index0 }}">{{ choice }}</button><br><br>
-            {% endfor %}
-        </form>
-    </div>
-
-    <script>
-        setTimeout(function() {
-            document.getElementById('combat-form').submit();
-        }, 10000);  // Auto-submit after 10 seconds
-    </script>
+    <h1>Battle Commences!</h1>
+    <h2 id="timer">15s</h2>
+    <form id="combatForm" method="POST">
+        {% for idx, option in enumerate(choices) %}
+            <button type="submit" name="choice" value="{{ idx }}">{{ option }}</button><br><br>
+        {% endfor %}
+    </form>
 </body>
 </html>
