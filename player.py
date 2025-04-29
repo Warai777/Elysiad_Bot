@@ -27,7 +27,7 @@ class Player:
         self.current_world = None
         self.world_entry_time = None
         self.memory = {
-            "Deaths": []
+            "Deaths": [],
         self.companions = []
         }
 
