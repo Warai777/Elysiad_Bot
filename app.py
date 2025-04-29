@@ -58,10 +58,12 @@ def choose_world():
     player = Player.load(player_name)
 
     if request.method == "POST":
-        chosen_world = request.form.get("world")
-        if chosen_world:
-            world_manager.start_world_timer(player_name, chosen_world)
-            session["current_world"] = chosen_world
+        chosen_world = next(w for w in books if w["name"] == request.form.get("world"))
+world_manager.start_world_timer(player_name, chosen_world["name"])
+
+session["current_world"] = chosen_world["name"]
+session["current_world_tone"] = chosen_world["tone"]
+session["current_world_inspiration"] = chosen_world["inspiration"]
             return redirect(url_for("world_scene"))
     else:
         books = world_manager.generate_books()
