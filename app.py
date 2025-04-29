@@ -225,6 +225,49 @@ def char_sheet(username):
 def lore_index():
     return render_template("lore.html", lore=lore)
 
+# --- 🧠 NEW STREAM STORY ROUTE ---
+@app.route("/stream_story", methods=["POST"])
+@login_required
+def stream_story():
+    u = get_user_data(current_user.username)
+    
+    if not u["Story"]["started"]:
+        # First time: begin adventure
+        u["Story"]["started"] = True
+        u["Story"]["chapter"] = 1
+        u["Story"]["scene"] = 1
+        u["Story"]["history"] = ["<b>Chapter 1: First Decision</b><br><b>Scene 1</b><br><br>You step into the unknown..."]
+        u["HP"] = 100
+        u["Origin Essence"] = 0
+    else:
+        # After making a choice
+        choice = int(request.form.get("choice", 1))
+        u["Story"]["scene"] += 1
+        if choice == 1:
+            u["Story"]["history"].append("You charge forward fearlessly.")
+        elif choice == 2:
+            u["Story"]["history"].append("You stumble upon forgotten lore.")
+            u["Lore"].append(f"Scene {u['Story']['scene']}: Mysterious Text Discovered")
+            save_lore()
+        elif choice == 3:
+            u["Story"]["history"].append("You fall into a hidden pit!")
+            u["HP"] -= 10
+        elif choice == 4:
+            u["Story"]["history"].append("You gain a small spark of Origin Essence.")
+            u["Origin Essence"] += 5
+        elif choice == 5:
+            outcome = random.choice(["lucky", "unlucky"])
+            if outcome == "lucky":
+                u["Story"]["history"].append("A blessing of fortune smiles upon you!")
+                u["HP"] += 10
+            else:
+                u["Story"]["history"].append("You are cursed with misfortune...")
+                u["HP"] -= 10
+
+    save_users()
+
+    return jsonify({"history": u["Story"]["history"]})
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Default to 5000
     app.run(host="0.0.0.0", port=port, debug=True)
