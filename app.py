@@ -121,6 +121,12 @@ def death_screen():
     if not player_name:
         return redirect(url_for("home"))
     player = Player.load(player_name)
+
+    # Save death memory
+    cause_of_death = f"Died inside {player.current_world} after surviving {session.get('survived_minutes', 0)} minutes."
+    player.memory.setdefault("Deaths", []).append(cause_of_death)
+    player.save()
+
     return render_template("death_screen.html", player=player)
 
 @app.route("/lore_found")
