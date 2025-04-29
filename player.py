@@ -30,6 +30,7 @@ class Player:
             "Deaths": []
         }
         self.companions = []
+        self.grit = 0
 
     def assign_random_traits(self):
         traits = ["Curious", "Bold", "Quiet", "Impulsive", "Cautious", "Charming"]
