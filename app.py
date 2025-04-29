@@ -98,8 +98,6 @@ def world_scene():
              else:
                  adjust_loyalty(player, -5, cause="Random misfortune struck")
                  return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
-             else:
-                 return "<h1>Invalid choice.</h1><a href='/library'>Return</a>"
 
     # 🌟 ADD THIS PART BELOW for companion encounter:
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
