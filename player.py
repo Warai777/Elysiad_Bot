@@ -63,14 +63,14 @@ class Player:
 
 # --- Loyalty Adjustment Function (Outside the Class) ---
 def adjust_loyalty(player, amount, cause=""):
-    """
-    Adjusts companion loyalty values based on events.
-    """
-    for comp in getattr(player, "companions", []):
-        if "Loyalty" in comp:
-            comp["Loyalty"] += amount
-            comp["Loyalty"] = max(0, min(comp["Loyalty"], 100))  # clamp between 0 and 100
-            if "Events" not in comp:
-                comp["Events"] = []
-            comp["Events"].append(f"{cause} ({'+' if amount > 0 else ''}{amount})")
+    for companion in getattr(player, "companions", []):
+        if "loyalty" in companion:
+            companion["loyalty"] += amount
+            companion["loyalty"] = max(0, min(100, companion["loyalty"]))  # Clamp between 0 and 100
+
+            if "memories" not in companion:
+                companion["memories"] = []
+            if cause:
+                companion["memories"].append(cause)
+
     player.save()
