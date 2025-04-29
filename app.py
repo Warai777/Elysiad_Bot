@@ -95,18 +95,20 @@ def world_scene():
         session["progress_choice"] = progress
         session["lore_choices"] = lore
         session["random_choice"] = random_c
-        session["survived_minutes"] = survived_minutes
-
 
         # ⏳ Add survival timer calculation
-        world_entry_time = player.world_entry_time
-        if world_entry_time:
-            entry_dt = datetime.datetime.fromisoformat(world_entry_time)
-            now_dt = datetime.datetime.utcnow()
-            survived_seconds = int((now_dt - entry_dt).total_seconds())
-            survived_minutes = survived_seconds // 60
-        else:
-            survived_minutes = 0
+world_entry_time = player.world_entry_time
+if world_entry_time:
+    entry_dt = datetime.datetime.fromisoformat(world_entry_time)
+    now_dt = datetime.datetime.utcnow()
+    survived_seconds = int((now_dt - entry_dt).total_seconds())
+    survived_minutes = survived_seconds // 60
+else:
+    survived_minutes = 0  # <-- SAFETY fallback if player.world_entry_time is None
+
+# Always set survived_minutes into session
+session["survived_minutes"] = survived_minutes
+
 
         return render_template(
             "world_scene.html",
