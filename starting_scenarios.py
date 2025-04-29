@@ -3,7 +3,7 @@ import random
 def generate_starting_scenario(world):
     tone = world.get("tone", "mystical")
     inspiration = world.get("inspiration", "Unknown World")
-    name = world["name"]
+    name = world.get("name", "Unnamed Realm")
 
     base_feeling = {
         "grimdark": "The air reeks of rust and sorrow. Nothing here remembers mercy.",
@@ -30,15 +30,12 @@ def generate_starting_scenario(world):
         f"Your vision returns slowly. The first thing you see is the skyline of the {name}.",
     ]
 
-    # Build the scenario
     intro = random.choice(arrival_variants)
     flavor = base_feeling.get(tone, base_feeling["mystical"])
 
-    return f"""
-{intro}
+    return f"""{intro}
 
 {flavor}
 
 This is a world born from the echoes of **{inspiration}**.
-You're not meant to be here — and yet, something deeper is beginning to stir...
-"""
+You're not meant to be here — and yet, something deeper is beginning to stir...""".strip()
