@@ -54,20 +54,29 @@ def choose_world():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
-    books = world_manager.generate_books()
+
     if request.method == "POST":
         selected_world_name = request.form.get("world")
+        books = session.get("available_books", [])
         chosen_world = next((w for w in books if w["name"] == selected_world_name), None)
+
         if not chosen_world:
             return redirect(url_for("choose_world"))
+
         world_manager.start_world_timer(player_name, chosen_world["name"])
         session["current_world"] = chosen_world["name"]
         session["current_world_tone"] = chosen_world["tone"]
         session["current_world_inspiration"] = chosen_world["inspiration"]
+
         return redirect(url_for("world_scene"))
+
+    # GET request: generate and store the list in session
+    books = world_manager.generate_books()
+    session["available_books"] = books
     return render_template("choose_world.html", books=books, player=player)
 
 @app.route("/world_scene", methods=["GET", "POST"])
