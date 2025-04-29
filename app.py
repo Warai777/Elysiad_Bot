@@ -92,14 +92,14 @@ def world_scene():
             return redirect(url_for('lore_found_screen'))
         elif selected == random_choice:
             roll = random.randint(1, 100)
-            if roll >= 50:
-        adjust_loyalty(player, +5, cause="Survived random danger")
-            return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
-        else:
-        adjust_loyalty(player, -5, cause="Random misfortune struck")
-            return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
-        else:
-            return "<h1>Invalid choice.</h1><a href='/library'>Return</a>"
+             if roll >= 50:
+                 adjust_loyalty(player, +5, cause="Survived random danger")
+                 return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
+             else:
+                 adjust_loyalty(player, -5, cause="Random misfortune struck")
+                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
+             else:
+                 return "<h1>Invalid choice.</h1><a href='/library'>Return</a>"
 
     # 🌟 ADD THIS PART BELOW for companion encounter:
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
