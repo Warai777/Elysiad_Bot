@@ -151,6 +151,27 @@ def lore_found_screen():
     player = Player.load(player_name)
     return render_template("lore_found.html", player=player)
 
+@app.route("/handle_companion_choice", methods=["POST"])
+def handle_companion_choice():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+    player = Player.load(player_name)
+
+    choice = request.form.get("choice")
+    companion = session.get("pending_companion")
+
+    if companion and choice == "accept":
+        player_data = player.__dict__
+        companions_list = player_data.get("companions", [])
+        companions_list.append(companion)
+        player_data["companions"] = companions_list
+        player.save()
+
+    session.pop("pending_companion", None)
+
+    return redirect(url_for("world_scene"))
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host="0.0.0.0", port=port)
