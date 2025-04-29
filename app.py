@@ -44,11 +44,15 @@ def library():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+    
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
+
     companions = getattr(player, "companions", [])
-    return render_template("library.html", player=player, companions=companions)
+    journal = player.memory.get("Journal", {})
+
+    return render_template("library.html", player=player, companions=companions, journal=journal)
 
 @app.route("/choose_world", methods=["GET", "POST"])
 def choose_world():
