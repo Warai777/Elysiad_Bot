@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Victory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="victory-box">
+        <h1>Victory!</h1>
+        <p>{{ reward_message }}</p>
+        <a href="{{ url_for('world_scene') }}">Continue your journey</a>
+    </div>
+</body>
+</html>
