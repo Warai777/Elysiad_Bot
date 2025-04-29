@@ -159,6 +159,12 @@ def death_screen():
     # Save death memory
     cause_of_death = f"Died inside {player.current_world} after surviving {session.get('survived_minutes', 0)} minutes."
     player.memory.setdefault("Deaths", []).append(cause_of_death)
+
+    # Check if player had close bonds
+    for comp in player.companions:
+        if comp.get("loyalty", 0) >= 80:
+            record_memory(player, f"You carry the grief of {comp['name']} losing you.")
+
     player.save()
 
     return render_template("death_screen.html", player=player)
