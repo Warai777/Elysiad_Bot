@@ -56,6 +56,7 @@ class Player:
         player.world_entry_time = data.get("world_entry_time")
         player.memory = data.get("memory", {"Deaths": []})
         player.companions = data.get("companions", [])
+        player.grit = data.get("grit", 0)
         return player
 
     def save_now(self):
