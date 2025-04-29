@@ -11,9 +11,16 @@
         <p>Three books glow before you, their titles whispering promises and threats.</p>
 
         <form method="POST">
-            {% for book in books %}
-            <button type="submit" name="world" value="{{ book }}" class="button">{{ book }}</button><br><br>
-            {% endfor %}
+            {% for world in books %}
+    <form method="POST">
+        <input type="hidden" name="world" value="{{ world.name }}">
+        <div class="book-entry">
+            <h3>{{ world.name }}</h3>
+            <p><em>Genre:</em> {{ world.tone }}</p>
+            <button type="submit">Enter</button>
+        </div>
+    </form>
+{% endfor %}
         </form>
 
         <a href="{{ url_for('library') }}" class="button small">Return to Library</a>
