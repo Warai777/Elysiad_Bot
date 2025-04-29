@@ -69,7 +69,7 @@ def world_scene():
     player = Player.load(player_name)
 
     if not player:
-    return redirect(url_for("home"))
+        return redirect(url_for("home"))
 
     if request.method == "POST":
         selected = int(request.form.get("choice"))
