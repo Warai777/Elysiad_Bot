@@ -11,9 +11,25 @@
         <p>You awaken surrounded by endless shelves stretching into darkness.</p>
         <p>A cloaked figure — <b>The Archivist</b> — greets you with an unseen smile.</p>
         <p><i>"Welcome, {{ player.name }}. Your story has yet to be written."</i></p>
-        <p><i>"Choose a world to begin... but know that each choice holds unseen fates."</i></p>
-        <br>
-        <a href="{{ url_for('choose_world') }}" class="button">Choose a Book of Worlds</a>
+        <p><i>Choose a world to begin... but not all survive.</i></p>
+
+<h2>Your Companions</h2>
+{% if companions %}
+    <ul>
+    {% for c in companions %}
+        <li>
+            <strong>{{ c.name }}</strong> — {{ c.type }}<br>
+            <i>{{ c.personality }}</i> | Trait: {{ c.special_trait }}<br>
+            HP: {{ c.base_hp }} | ATK: {{ c.attack }} | DEF: {{ c.defense }} | Loyalty: {{ c.loyalty }}
+        </li><br>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have no companions yet...</p>
+{% endif %}
+
+<br>
+<a href="{{ url_for('choose_world') }}">Choose a World</a>
     </div>
 </body>
 </html>
