@@ -10,6 +10,7 @@ from choice_engine import ChoiceEngine
 from companion_manager import CompanionManager
 from archivist_lore import ARCHIVIST_LORE
 from combat_manager import CombatManager
+from starting_scenarios import generate_starting_scenario
 
 # --- CONFIG ---
 app = Flask(__name__)
@@ -84,13 +85,16 @@ def world_scene():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+    
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
 
+    # Archivist Rebirth condition
     if set(player.memory.get("FoundLore", [])) >= set(ARCHIVIST_LORE):
         return redirect(url_for("rebirth_screen"))
 
+    # Handle player choice
     if request.method == "POST":
         selected = int(request.form.get("choice"))
         if session.get("secret_choice") and selected == 6:
@@ -100,9 +104,11 @@ def world_scene():
         elif selected == session["progress_choice"]:
             return "<h1>You progress deeper into the world!</h1><a href='/library'>Return</a>"
         elif selected in session["lore_choices"]:
-            found_lore = random.choice(ARCHIVIST_LORE)
-            player.memory.setdefault("FoundLore", []).append(found_lore)
-            player.save()
+            available_lore = [l for l in ARCHIVIST_LORE if l not in player.memory.get("FoundLore", [])]
+            if available_lore:
+                found_lore = random.choice(available_lore)
+                player.memory.setdefault("FoundLore", []).append(found_lore)
+                player.save()
             return redirect(url_for("lore_found_screen"))
         elif selected == session["random_choice"]:
             roll = random.randint(1, 100)
@@ -117,7 +123,7 @@ def world_scene():
     if random.random() < 0.2:
         return redirect(url_for("combat"))
 
-    # Generate choices
+    # Generate scene choices
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
@@ -125,7 +131,7 @@ def world_scene():
     session["lore_choices"] = lore
     session["random_choice"] = random_c
 
-    # Survival Timer
+    # Track survival time
     survived_minutes = 0
     if player.world_entry_time:
         entry = datetime.datetime.fromisoformat(player.world_entry_time)
@@ -133,7 +139,7 @@ def world_scene():
         survived_minutes = int((now - entry).total_seconds()) // 60
     session["survived_minutes"] = survived_minutes
 
-    # Grit Milestones
+    # Grit milestones
     milestones = player.memory.setdefault("Milestones", [])
     for minutes, grit_gain, message in [
         (10, 1, "Survived 10 minutes. A faint resilience is born."),
@@ -148,7 +154,7 @@ def world_scene():
             record_memory(player, message)
             player.save()
 
-    # Loyalty unlock
+    # Loyalty bond secret option
     high_loyalty_companions = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
     if high_loyalty_companions:
         session["secret_choice"] = True
@@ -162,7 +168,22 @@ def world_scene():
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
 
-    return render_template("world_scene.html", player=player, world=session["current_world"], choices=choices, survived_minutes=survived_minutes)
+    # Generate immersive scenario description
+    from starting_scenarios import generate_starting_scenario
+    scenario_text = generate_starting_scenario({
+        "name": session.get("current_world"),
+        "tone": session.get("current_world_tone"),
+        "inspiration": session.get("current_world_inspiration")
+    })
+
+    return render_template(
+        "world_scene.html",
+        player=player,
+        world=session.get("current_world"),
+        choices=choices,
+        survived_minutes=survived_minutes,
+        scenario_text=scenario_text
+    )
 
 @app.route("/combat", methods=["GET", "POST"])
 def combat():
