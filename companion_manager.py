@@ -68,7 +68,7 @@ class CompanionManager:
                 "defense": random.randint(5, 20),
                 "loyalty": 50,
                 "archetype": chosen_archetype,
-                "ability": ability
+                "ability": ability,
                 "memories": []
             }
 
