@@ -90,24 +90,24 @@ def world_scene():
     if not player:
         return redirect(url_for("home"))
 
-    # Archivist Rebirth condition
+    # Archivist Rebirth Trigger
     if set(player.memory.get("FoundLore", [])) >= set(ARCHIVIST_LORE):
         return redirect(url_for("rebirth_screen"))
 
-    # Handle player choice
+    # Handle Player Choice
     if request.method == "POST":
         selected = int(request.form.get("choice"))
         if session.get("secret_choice") and selected == 6:
             return redirect(url_for("secret_event"))
-        if selected == session["death_choice"]:
+        elif selected == session["death_choice"]:
             return redirect(url_for("death_screen"))
         elif selected == session["progress_choice"]:
             return "<h1>You progress deeper into the world!</h1><a href='/library'>Return</a>"
         elif selected in session["lore_choices"]:
-            available_lore = [l for l in ARCHIVIST_LORE if l not in player.memory.get("FoundLore", [])]
-            if available_lore:
-                found_lore = random.choice(available_lore)
-                player.memory.setdefault("FoundLore", []).append(found_lore)
+            available = [l for l in ARCHIVIST_LORE if l not in player.memory.get("FoundLore", [])]
+            if available:
+                found = random.choice(available)
+                player.memory.setdefault("FoundLore", []).append(found)
                 player.save()
             return redirect(url_for("lore_found_screen"))
         elif selected == session["random_choice"]:
@@ -119,11 +119,11 @@ def world_scene():
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
 
-    # Random 20% chance of combat encounter
+    # Random Combat Trigger (20%)
     if random.random() < 0.2:
         return redirect(url_for("combat"))
 
-    # Generate scene choices
+    # Generate Scene Choices
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
@@ -131,22 +131,26 @@ def world_scene():
     session["lore_choices"] = lore
     session["random_choice"] = random_c
 
-    # Track survival time
+    # Survival Time Tracking
     survived_minutes = 0
     if player.world_entry_time:
-        entry = datetime.datetime.fromisoformat(player.world_entry_time)
-        now = datetime.datetime.utcnow()
-        survived_minutes = int((now - entry).total_seconds()) // 60
+        try:
+            entry = datetime.datetime.fromisoformat(player.world_entry_time)
+            now = datetime.datetime.utcnow()
+            survived_minutes = int((now - entry).total_seconds()) // 60
+        except Exception:
+            survived_minutes = 0
     session["survived_minutes"] = survived_minutes
 
-    # Grit milestones
+    # Grit Milestones
     milestones = player.memory.setdefault("Milestones", [])
-    for minutes, grit_gain, message in [
+    milestone_events = [
         (10, 1, "Survived 10 minutes. A faint resilience is born."),
         (30, 2, "Survived 30 minutes. Second Wind awakened."),
         (60, 3, "Survived 60 minutes. Armor of Determination earned."),
         (120, 5, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
-    ]:
+    ]
+    for minutes, grit_gain, message in milestone_events:
         code = f"Milestone{minutes}"
         if survived_minutes >= minutes and code not in milestones:
             milestones.append(code)
@@ -154,32 +158,32 @@ def world_scene():
             record_memory(player, message)
             player.save()
 
-    # Loyalty bond secret option
-    high_loyalty_companions = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
-    if high_loyalty_companions:
+    # Loyalty Bond (Secret Option)
+    high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
+    if high_loyalty:
         session["secret_choice"] = True
-        choices.append(f"A mysterious chance... inspired by {random.choice(high_loyalty_companions)}")
+        choices.append(f"A mysterious chance... inspired by {random.choice(high_loyalty)}")
     else:
         session["secret_choice"] = False
 
-    # Companion encounter
+    # Companion Encounter
     companion = companion_manager.random_companion_encounter()
     if companion:
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
 
-    # Generate immersive scenario description
+    # Starting Scenario Narrative
     from starting_scenarios import generate_starting_scenario
     scenario_text = generate_starting_scenario({
-        "name": session.get("current_world"),
-        "tone": session.get("current_world_tone"),
-        "inspiration": session.get("current_world_inspiration")
+        "name": session.get("current_world", "Unknown World"),
+        "tone": session.get("current_world_tone", "mystical"),
+        "inspiration": session.get("current_world_inspiration", "Original")
     })
 
     return render_template(
         "world_scene.html",
         player=player,
-        world=session.get("current_world"),
+        world=session.get("current_world", "Unknown"),
         choices=choices,
         survived_minutes=survived_minutes,
         scenario_text=scenario_text
