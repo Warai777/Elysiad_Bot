@@ -110,7 +110,7 @@ else:
 session["survived_minutes"] = survived_minutes
 
 
-        return render_template(
+ return render_template(
             "world_scene.html",
             player=player,
             world=session.get("current_world"),
