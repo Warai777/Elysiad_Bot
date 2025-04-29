@@ -177,7 +177,6 @@ def world_scene():
         return render_template("companion_encounter.html", companion=companion)
 
     # Starting Scenario Narrative
-    from starting_scenarios import generate_starting_scenario
     scenario_text = generate_starting_scenario({
         "name": session.get("current_world", "Unknown World"),
         "tone": session.get("current_world_tone", "mystical"),
@@ -241,7 +240,7 @@ def rebirth_screen():
 
 @app.route("/lore_found")
 def lore_found_screen():
-    return "<h1>New Lore Discovered!</h1><a href='/world_scene'>Continue</a>"
+    return render_template("lore_found.html", player=player)
 
 @app.route("/handle_companion_choice", methods=["POST"])
 def handle_companion_choice():
@@ -257,7 +256,13 @@ def handle_companion_choice():
 
 @app.route("/secret_event")
 def secret_event():
-    player = Player.load(session["player_name"])
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+    player = Player.load(player_name)
+    if not player:
+        return redirect(url_for("home"))
+
     record_memory(player, "You shared a bond stronger than fate.")
     adjust_loyalty(player, +10, cause="Forged deep bond through hidden event.")
     return "<h1>A Secret Bond Has Formed...</h1><a href='/world_scene'>Return</a>"
@@ -275,7 +280,8 @@ def view_journal():
     journal = player.memory.get("Journal", {
         "Hints": [],
         "Lore": [],
-        "Events": []
+        "Events": [],
+        "Notes": []
     })
 
     return render_template("journal.html", player=player, journal=journal)
