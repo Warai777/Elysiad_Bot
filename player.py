@@ -29,9 +29,8 @@ class Player:
         self.memory = {
             "Deaths": []
         }
-        
         self.companions = []
-        
+
     def assign_random_traits(self):
         traits = ["Curious", "Bold", "Quiet", "Impulsive", "Cautious", "Charming"]
         return random.sample(traits, 2)
@@ -60,8 +59,10 @@ class Player:
 
     def save_now(self):
         self.save()
-    
-    def adjust_loyalty(player, amount, cause=""):
+
+
+# --- Loyalty Adjustment Function (Outside the Class) ---
+def adjust_loyalty(player, amount, cause=""):
     """
     Adjusts companion loyalty values based on events.
     """
@@ -72,6 +73,4 @@ class Player:
             if "Events" not in comp:
                 comp["Events"] = []
             comp["Events"].append(f"{cause} ({'+' if amount > 0 else ''}{amount})")
-
     player.save()
-    return changed
