@@ -69,6 +69,7 @@ class CompanionManager:
                 "loyalty": 50,
                 "archetype": chosen_archetype,
                 "ability": ability
+                "memories": []
             }
 
             return companion
