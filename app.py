@@ -96,7 +96,24 @@ def world_scene():
         session["lore_choices"] = lore
         session["random_choice"] = random_c
 
-        return render_template("world_scene.html", player=player, world=session.get("current_world"), choices=choices)
+        # ⏳ Add survival timer calculation
+        world_entry_time = player.world_entry_time
+        if world_entry_time:
+            entry_dt = datetime.datetime.fromisoformat(world_entry_time)
+            now_dt = datetime.datetime.utcnow()
+            survived_seconds = int((now_dt - entry_dt).total_seconds())
+            survived_minutes = survived_seconds // 60
+        else:
+            survived_minutes = 0
+
+        return render_template(
+            "world_scene.html",
+            player=player,
+            world=session.get("current_world"),
+            choices=choices,
+            survived_minutes=survived_minutes
+        )
+
 
 @app.route("/death")
 def death_screen():
