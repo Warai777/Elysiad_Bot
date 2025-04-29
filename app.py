@@ -195,13 +195,32 @@ def death_screen():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+    
     player = Player.load(player_name)
+    if not player:
+        return redirect(url_for("home"))
 
-    # Save death memory
+    # 🌟 --- Check if Milestone30 ("Second Wind") saves you ---
+    if "Milestone30" in player.memory.get("Milestones", []) and not session.get("second_wind_used", False):
+        session["second_wind_used"] = True  # Mark it used
+        record_memory(player, "Second Wind triggered — death narrowly avoided!")
+        adjust_loyalty(player, +10, cause="Witnessed your miraculous survival.")
+        player.save()
+        return redirect(url_for("world_scene"))  # ❗️ Send them back into the world alive!
+
+    # 🌟 --- Check if Milestone120 ("Last Stand") saves you ---
+    if "Milestone120" in player.memory.get("Milestones", []) and not session.get("last_stand_used", False):
+        session["last_stand_used"] = True  # Mark it used
+        record_memory(player, "Last Stand activated — willpower defied death itself!")
+        adjust_loyalty(player, +15, cause="Felt the shock of your heroic revival.")
+        player.save()
+        return redirect(url_for("world_scene"))  # ❗️ Survive death once.
+
+    # --- Otherwise: you really die ---
     cause_of_death = f"Died inside {player.current_world} after surviving {session.get('survived_minutes', 0)} minutes."
     player.memory.setdefault("Deaths", []).append(cause_of_death)
 
-    # Check if player had close bonds
+    # Emotional impact for companions
     for comp in player.companions:
         if comp.get("loyalty", 0) >= 80:
             record_memory(player, f"You carry the grief of {comp['name']} losing you.")
