@@ -43,45 +43,43 @@ class Player:
 
     @classmethod
     def load(cls, name):
-    filepath = os.path.join(PLAYER_FOLDER, f"{name}.json")
-    if not os.path.exists(filepath):
-        return None
-    with open(filepath, "r") as f:
-        data = json.load(f)
-    player = cls(data["name"], data["background"], data["genre"])
-    player.traits = data["traits"]
-    player.alignment = data["alignment"]
-    player.will = data["will"]
-    player.current_world = data.get("current_world")
-    player.world_entry_time = data.get("world_entry_time")
-    player.memory = data.get("memory", {"Deaths": []})
-    player.companions = data.get("companions", [])
-    player.grit = data.get("grit", 0)
-    player.memory.setdefault("Journal", {
-        "Hints": [],
-        "Lore": [],
-        "Events": [],
-        "Notes": []
-    })
-    return player
+        filepath = os.path.join(PLAYER_FOLDER, f"{name}.json")
+        if not os.path.exists(filepath):
+            return None
+        with open(filepath, "r") as f:
+            data = json.load(f)
 
+        player = cls(data["name"], data["background"], data["genre"])
+        player.traits = data["traits"]
+        player.alignment = data["alignment"]
+        player.will = data["will"]
+        player.current_world = data.get("current_world")
+        player.world_entry_time = data.get("world_entry_time")
+        player.memory = data.get("memory", {"Deaths": []})
+        player.companions = data.get("companions", [])
+        player.grit = data.get("grit", 0)
+        player.memory.setdefault("Journal", {
+            "Hints": [],
+            "Lore": [],
+            "Events": [],
+            "Notes": []
+        })
+        return player
 
     def save_now(self):
         self.save()
 
 
-# --- Loyalty Adjustment Function (Outside the Class) ---
+# --- Loyalty Adjustment Function ---
 def adjust_loyalty(player, amount, cause=""):
     for companion in getattr(player, "companions", []):
         if "loyalty" in companion:
             companion["loyalty"] += amount
-            companion["loyalty"] = max(0, min(100, companion["loyalty"]))  # Clamp between 0 and 100
-
+            companion["loyalty"] = max(0, min(100, companion["loyalty"]))
             if "memories" not in companion:
                 companion["memories"] = []
             if cause:
                 companion["memories"].append(cause)
-
     player.save()
 
 def record_memory(player, memory_text):
@@ -89,7 +87,6 @@ def record_memory(player, memory_text):
         if "memories" not in companion:
             companion["memories"] = []
         companion["memories"].append(memory_text)
-
     player.save()
 
 def kill_companion(player, companion_name):
@@ -98,7 +95,6 @@ def kill_companion(player, companion_name):
         if comp["name"] == companion_name:
             dead = comp
             break
-
     if dead:
         player.companions.remove(dead)
         record_memory(player, f"{dead['name']} fell in battle. Their memory haunts you.")
