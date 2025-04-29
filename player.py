@@ -28,6 +28,7 @@ class Player:
         self.world_entry_time = None
         self.memory = {
             "Deaths": []
+        self.companions = []
         }
 
     def assign_random_traits(self):
@@ -53,6 +54,7 @@ class Player:
         player.current_world = data.get("current_world")
         player.world_entry_time = data.get("world_entry_time")
         player.memory = data.get("memory", {"Deaths": []})
+        player.companions = data.get("companions", [])
         return player
 
     def save_now(self):
