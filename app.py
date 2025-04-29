@@ -218,6 +218,21 @@ def handle_companion_choice():
 
     return redirect(url_for("world_scene"))
 
+@app.route("/secret_event")
+def secret_event():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+    player = Player.load(player_name)
+
+    # 🌟 Add a powerful hidden memory
+    record_memory(player, "You shared a bond stronger than fate.")
+
+    # 🌟 Loyalty boost for all companions
+    adjust_loyalty(player, +10, cause="Forged deep bond through hidden event.")
+
+    return render_template("secret_event.html", player=player)
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host="0.0.0.0", port=port)
