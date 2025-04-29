@@ -3,6 +3,7 @@ import datetime
 import os
 import json
 from choice_engine import ChoiceEngine   # <-- Import ChoiceEngine properly here
+from world_templates import generate_world
 
 PLAYER_FOLDER = "data/players"
 
@@ -22,7 +23,7 @@ class WorldManager:
         ]
 
     def generate_books(self):
-        return random.sample(self.world_names_pool, 3)
+    return [generate_world() for _ in range(3)]
 
     def start_world_timer(self, player_name, world_name):
         filepath = os.path.join(PLAYER_FOLDER, f"{player_name}.json")
