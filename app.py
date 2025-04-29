@@ -88,7 +88,9 @@ def world_scene():
         else:
             return "<h1>Invalid choice.</h1><a href='/library'>Return</a>"
 
-else:
+    # ⬇️⬇️⬇️ NOT `else:` HERE! Just continue normally!
+    
+    # This happens if request.method == "GET"
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
@@ -96,7 +98,6 @@ else:
     session["lore_choices"] = lore
     session["random_choice"] = random_c
 
-    # Survival timer calculation
     world_entry_time = player.world_entry_time
     if world_entry_time:
         entry_dt = datetime.datetime.fromisoformat(world_entry_time)
