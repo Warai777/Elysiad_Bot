@@ -276,6 +276,23 @@ def view_journal():
 
     return render_template("journal.html", player=player, journal=journal)
 
+@app.route("/add_note", methods=["POST"])
+def add_note():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+
+    player = Player.load(player_name)
+    if not player:
+        return redirect(url_for("home"))
+
+    note = request.form.get("note", "").strip()
+    if note:
+        player.memory.setdefault("Journal", {}).setdefault("Notes", []).append(note)
+        player.save()
+
+    return redirect(url_for("view_journal"))
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host="0.0.0.0", port=port)
