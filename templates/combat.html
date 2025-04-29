@@ -4,27 +4,67 @@
     <meta charset="UTF-8">
     <title>Combat Encounter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script>
-        let timeLeft = 15;
-        function countdown() {
-            if (timeLeft <= 0) {
-                document.getElementById("combatForm").submit();
-            } else {
-                document.getElementById("timer").innerHTML = timeLeft + "s";
-                timeLeft -= 1;
-                setTimeout(countdown, 1000);
-            }
+    <style>
+        body {
+            background-color: #1b1b1b;
+            color: #eee;
+            font-family: 'Georgia', serif;
+            text-align: center;
+            padding: 50px;
         }
-        window.onload = countdown;
-    </script>
+        .combat-box {
+            background: rgba(30, 30, 60, 0.9);
+            padding: 30px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 50px;
+            max-width: 800px;
+        }
+        .combat-btn {
+            background-color: #7744aa;
+            padding: 12px 30px;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            margin: 10px;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .combat-btn:hover {
+            background-color: #9977dd;
+        }
+        #timer {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #ff8888;
+        }
+    </style>
 </head>
 <body>
-    <h1>Battle Commences!</h1>
-    <h2 id="timer">15s</h2>
-    <form id="combatForm" method="POST">
-        {% for idx, option in enumerate(choices) %}
-            <button type="submit" name="choice" value="{{ idx }}">{{ option }}</button><br><br>
-        {% endfor %}
-    </form>
+    <div class="combat-box">
+        <h1>Fight for Your Life!</h1>
+        <div id="timer">15</div>
+        <form method="POST">
+            {% for choice in choices %}
+                <button class="combat-btn" name="choice" value="{{ loop.index0 }}">{{ choice }}</button>
+            {% endfor %}
+        </form>
+    </div>
+
+    <script>
+        let timeLeft = 15;
+        const timerElement = document.getElementById('timer');
+
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                document.forms[0].submit(); // Auto-submit the form (panic decision!)
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
