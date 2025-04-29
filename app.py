@@ -98,6 +98,22 @@ def world_scene():
 
         return render_template("world_scene.html", player=player, world=session.get("current_world"), choices=choices)
 
+@app.route("/death")
+def death_screen():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+    player = Player.load(player_name)
+    return render_template("death_screen.html", player=player)
+
+@app.route("/lore_found")
+def lore_found_screen():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+    player = Player.load(player_name)
+    return render_template("lore_found.html", player=player)
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host="0.0.0.0", port=port)
