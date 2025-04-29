@@ -27,17 +27,19 @@
             text-decoration: none;
             border-radius: 6px;
             font-size: 1.1em;
-            margin: 10px;
+            margin: 10px auto;
             display: block;
+            width: 80%;
             transition: background-color 0.3s;
         }
         .combat-btn:hover {
             background-color: #9977dd;
         }
         #timer {
-            font-size: 1.5em;
+            font-size: 1.8em;
             margin-bottom: 20px;
-            color: #ff8888;
+            color: #ff5555;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -62,7 +64,8 @@
 
             if (timeLeft <= 0) {
                 clearInterval(countdown);
-                document.forms[0].submit(); // Auto-submit the form (panic decision!)
+                alert("You froze! The enemy strikes first!");
+                document.forms[0].submit(); // Auto-submit form if no decision
             }
         }, 1000);
     </script>
