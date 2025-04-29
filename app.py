@@ -9,6 +9,7 @@ from world_manager import WorldManager
 from choice_engine import ChoiceEngine
 from companion_manager import CompanionManager
 from archivist_lore import ARCHIVIST_LORE
+from combat_manager import CombatManager
 
 # --- CONFIG ---
 app = Flask(__name__)
@@ -250,6 +251,46 @@ def secret_event():
 @app.route("/rebirth")
 def rebirth():
     return render_template("rebirth.html")
+
+@app.route("/combat", methods=["GET", "POST"])
+def combat():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+
+    player = Player.load(player_name)
+    if not player:
+        return redirect(url_for("home"))
+
+    companions = getattr(player, "companions", [])
+    world_tone = session.get("current_world_tone", "mysterious")
+
+    combat_manager = CombatManager(player, companions, world_tone)
+
+    if request.method == "POST":
+        selected = int(request.form.get("choice"))
+        outcome, scar, instinct_gain = combat_manager.resolve_choice(selected)
+
+        # Update player memory and state
+        if scar:
+            player.memory.setdefault("Scars", []).append("Wound from a fierce battle.")
+            record_memory(player, "You earned a new mental scar from combat.")
+        if instinct_gain:
+            player.memory.setdefault("Instinct", 0)
+            player.memory["Instinct"] += 1
+            record_memory(player, "Instinct sharpened by surviving death.")
+
+        player.save()
+
+        return render_template(
+            "combat_result.html",
+            outcome=outcome,
+            scar=scar,
+            instinct_gain=instinct_gain
+        )
+
+    choices = combat_manager.generate_combat_choices()
+    return render_template("combat.html", choices=choices, player=player)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
