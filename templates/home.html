@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Elysiad - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Elysiad</h1>
+        <p>A living story awaits you beyond the Library of Beginnings.</p>
+        <a href="{{ url_for('create_character') }}" class="button">Begin Your Journey</a>
+    </div>
+</body>
+</html>
