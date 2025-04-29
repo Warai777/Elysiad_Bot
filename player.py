@@ -60,3 +60,21 @@ class Player:
 
     def save_now(self):
         self.save()
+    
+    def adjust_loyalty(player, amount, cause=""):
+    """
+    Increase or decrease all companion loyalty by `amount`.
+    """
+    changed = []
+    for comp in getattr(player, "companions", []):
+        original = comp["loyalty"]
+        comp["loyalty"] = max(0, min(100, comp["loyalty"] + amount))
+        if cause:
+            comp.setdefault("emotions", []).append({
+                "event": cause,
+                "old": original,
+                "new": comp["loyalty"]
+            })
+        changed.append((comp["name"], original, comp["loyalty"]))
+    player.save()
+    return changed
