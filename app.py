@@ -95,7 +95,7 @@ def world_scene():
             if roll >= 50:
                  adjust_loyalty(player, +5, cause="Survived random danger")
                  return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
-             else:
+            else:
                  adjust_loyalty(player, -5, cause="Random misfortune struck")
                  return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
 
