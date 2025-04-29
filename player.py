@@ -42,22 +42,31 @@ class Player:
             json.dump(self.__dict__, f, indent=2)
 
     @classmethod
-    def load(cls, name):
-        filepath = os.path.join(PLAYER_FOLDER, f"{name}.json")
-        if not os.path.exists(filepath):
-            return None
-        with open(filepath, "r") as f:
-            data = json.load(f)
-        player = cls(data["name"], data["background"], data["genre"])
-        player.traits = data["traits"]
-        player.alignment = data["alignment"]
-        player.will = data["will"]
-        player.current_world = data.get("current_world")
-        player.world_entry_time = data.get("world_entry_time")
-        player.memory = data.get("memory", {"Deaths": []})
-        player.companions = data.get("companions", [])
-        player.grit = data.get("grit", 0)
-        return player
+def load(cls, name):
+    filepath = os.path.join(PLAYER_FOLDER, f"{name}.json")
+    if not os.path.exists(filepath):
+        return None
+    with open(filepath, "r") as f:
+        data = json.load(f)
+    player = cls(data["name"], data["background"], data["genre"])
+    player.traits = data["traits"]
+    player.alignment = data["alignment"]
+    player.will = data["will"]
+    player.current_world = data.get("current_world")
+    player.world_entry_time = data.get("world_entry_time")
+    player.memory = data.get("memory", {"Deaths": []})
+    player.companions = data.get("companions", [])
+    player.grit = data.get("grit", 0)
+
+    # --- Ensure Journal structure exists
+    player.memory.setdefault("Journal", {
+        "Hints": [],
+        "Lore": [],
+        "Events": [],
+        "Notes": []
+    })
+
+    return player
 
     def save_now(self):
         self.save()
