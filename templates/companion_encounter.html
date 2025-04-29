@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Encounter!</title>
+</head>
+<body>
+    <h2>You encounter a wandering soul...</h2>
+    <h3>{{ companion.name }}</h3>
+    <p><b>Personality:</b> {{ companion.personality }}</p>
+    <p><b>Special Trait:</b> {{ companion.special_trait }}</p>
+    <p><b>Type:</b> {{ companion.type }}</p>
+    <p><b>HP:</b> {{ companion.base_hp }} | <b>Attack:</b> {{ companion.attack }} | <b>Defense:</b> {{ companion.defense }}</p>
+
+    <form action="{{ url_for('handle_companion_choice') }}" method="POST">
+        <button name="choice" value="accept">Accept Companion</button>
+        <button name="choice" value="reject">Reject Companion</button>
+    </form>
+</body>
+</html>
