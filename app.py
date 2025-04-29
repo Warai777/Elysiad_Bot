@@ -55,19 +55,28 @@ def choose_world():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+    
     player = Player.load(player_name)
+    if not player:
+        return redirect(url_for("home"))
+
+    books = world_manager.generate_books()  # Moved this to the top
 
     if request.method == "POST":
-        chosen_world = next(w for w in books if w["name"] == request.form.get("world"))
-world_manager.start_world_timer(player_name, chosen_world["name"])
+        selected_world_name = request.form.get("world")
+        chosen_world = next((w for w in books if w["name"] == selected_world_name), None)
 
-session["current_world"] = chosen_world["name"]
-session["current_world_tone"] = chosen_world["tone"]
-session["current_world_inspiration"] = chosen_world["inspiration"]
-            return redirect(url_for("world_scene"))
-    else:
-        books = world_manager.generate_books()
-        return render_template("choose_world.html", books=books, player=player)
+        if not chosen_world:
+            return redirect(url_for("choose_world"))
+
+        world_manager.start_world_timer(player_name, chosen_world["name"])
+        session["current_world"] = chosen_world["name"]
+        session["current_world_tone"] = chosen_world["tone"]
+        session["current_world_inspiration"] = chosen_world["inspiration"]
+
+        return redirect(url_for("world_scene"))
+
+    return render_template("choose_world.html", books=books, player=player)
 
 @app.route("/world_scene", methods=["GET", "POST"])
 def world_scene():
