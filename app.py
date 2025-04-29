@@ -128,6 +128,10 @@ def world_scene():
     session["lore_choices"] = lore
     session["random_choice"] = random_c
 
+    # 🌟 RANDOM COMBAT ENCOUNTER 🌟
+if random.random() < 0.2:  # 20% chance of being attacked during exploration
+    return redirect(url_for("combat"))
+
     # --- Survival Timer ---
     world_entry_time = player.world_entry_time
     survived_minutes = 0
@@ -247,6 +251,7 @@ def combat():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
@@ -258,8 +263,9 @@ def combat():
 
     if request.method == "POST":
         selected = int(request.form.get("choice"))
-        outcome, scar, instinct_gain = combat_manager.resolve_choice(selected)
+        outcome, scar, instinct_gain, assist_text = combat_manager.resolve_choice(selected)
 
+        # Update player memory and state
         if scar:
             player.memory.setdefault("Scars", []).append("Wound from a fierce battle.")
             record_memory(player, "You earned a new mental scar from combat.")
@@ -274,7 +280,8 @@ def combat():
             "combat_result.html",
             outcome=outcome,
             scar=scar,
-            instinct_gain=instinct_gain
+            instinct_gain=instinct_gain,
+            assist_text=assist_text
         )
 
     choices = combat_manager.generate_combat_choices()
