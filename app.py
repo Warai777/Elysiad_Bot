@@ -204,7 +204,6 @@ def dashboard():
         next_event_ts=next_event_ts
     )
 
-# Route for the character sheet
 @app.route("/char_sheet/<username>")
 @login_required
 def char_sheet(username):
@@ -219,6 +218,12 @@ def char_sheet(username):
         global_event=global_state.get("current_event"),
         next_event_ts=next_event_ts
     )
+
+# --- 📖 NEW LORE ROUTE 📖 ---
+@app.route("/lore")
+@login_required
+def lore_index():
+    return render_template("lore.html", lore=lore)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Default to 5000
