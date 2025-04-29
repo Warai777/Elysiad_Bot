@@ -73,24 +73,22 @@ def world_scene():
         lore_choices = session.get("lore_choices")
         random_choice = session.get("random_choice")
 
-       if selected == death_choice:
-    return redirect(url_for('death_screen'))
-elif selected == progress_choice:
-    return "<h1>You progress deeper into the world!</h1><a href='/library'>Return</a>"
-elif selected in lore_choices:
-    return redirect(url_for('lore_found_screen'))
-elif selected == random_choice:
-    roll = random.randint(1, 100)
-    if roll >= 50:
-        return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
-    else:
-        return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
-
+        if selected == death_choice:
+            return redirect(url_for('death_screen'))
+        elif selected == progress_choice:
+            return "<h1>You progress deeper into the world!</h1><a href='/library'>Return</a>"
+        elif selected in lore_choices:
+            return redirect(url_for('lore_found_screen'))
+        elif selected == random_choice:
+            roll = random.randint(1, 100)
+            if roll >= 50:
+                return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
+            else:
+                return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
         else:
-            return "<h1>Invalid Choice.</h1><a href='/library'>Return to Library</a>"
+            return "<h1>Invalid choice.</h1><a href='/library'>Return</a>"
 
     else:
-        # Fresh arrival to survival scene
         choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
         session["current_choices"] = choices
         session["death_choice"] = death
