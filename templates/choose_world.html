@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose a World - Elysiad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Choose Your World</h1>
+        <p>Three books glow before you, their titles whispering promises and threats.</p>
+
+        <form method="POST">
+            {% for book in books %}
+            <button type="submit" name="world" value="{{ book }}" class="button">{{ book }}</button><br><br>
+            {% endfor %}
+        </form>
+
+        <a href="{{ url_for('library') }}" class="button small">Return to Library</a>
+    </div>
+</body>
+</html>
