@@ -42,7 +42,7 @@ class Player:
             json.dump(self.__dict__, f, indent=2)
 
     @classmethod
-    def load(cls, name):
+def load(cls, name):
     filepath = os.path.join(PLAYER_FOLDER, f"{name}.json")
     if not os.path.exists(filepath):
         return None
@@ -57,16 +57,12 @@ class Player:
     player.memory = data.get("memory", {"Deaths": []})
     player.companions = data.get("companions", [])
     player.grit = data.get("grit", 0)
-
-
-    # --- Ensure Journal structure exists
     player.memory.setdefault("Journal", {
         "Hints": [],
         "Lore": [],
         "Events": [],
         "Notes": []
     })
-
     return player
 
     def save_now(self):
