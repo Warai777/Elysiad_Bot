@@ -52,6 +52,10 @@
 
         <p>{{ outcome }}</p>
 
+        {% if assist_text %}
+            <p><strong>Companion Assist:</strong> {{ assist_text }}</p>
+        {% endif %}
+
         {% if scar %}
             <p><strong>You suffered a wound!</strong> A scar marks this battle.</p>
         {% endif %}
