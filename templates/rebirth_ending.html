@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rebirth of the Archivist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background: linear-gradient(black, #0a0a2a, black);
+            color: #eee;
+            font-family: 'Georgia', serif;
+            text-align: center;
+            padding: 50px;
+        }
+        .ending-box {
+            background: rgba(30, 30, 60, 0.9);
+            padding: 30px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 50px;
+            max-width: 800px;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #d0bfff;
+        }
+        p {
+            font-size: 1.2em;
+            line-height: 1.7em;
+            margin-bottom: 30px;
+        }
+        .ending-btn {
+            background-color: #5544aa;
+            padding: 12px 30px;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+        }
+        .ending-btn:hover {
+            background-color: #7766dd;
+        }
+    </style>
+</head>
+<body>
+    <div class="ending-box">
+        <h1>The Rebirth of the Archivist</h1>
+        <p>
+            The final fragment falls into place.
+            <br><br>
+            Memories surge through the void.<br><br>
+            Before the halls of endless tomes, before the chains of duty — he was human.<br><br>
+            Love, betrayal, hope, despair... each a flame rekindled in the darkness.<br><br>
+            The Library shudders.<br><br>
+            You see him now: not as a warden of the forgotten, but as a soul reborn.<br><br>
+            The past, once shattered, is whole again.<br><br>
+            The Archivist smiles — and somewhere, the first star is born anew.
+        </p>
+        <a href="{{ url_for('home') }}" class="ending-btn">Return to the Beginning</a>
+    </div>
+</body>
+</html>
