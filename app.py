@@ -87,6 +87,10 @@ def world_scene():
     if not player:
         return redirect(url_for("home"))
 
+    # --- Check for Archivist Rebirth ---
+if set(player.memory.get("Lore", [])) >= set(ARCHIVIST_LORE):
+    return redirect(url_for("rebirth"))
+
     if request.method == "POST":
         selected = int(request.form.get("choice"))
         death_choice = session.get("death_choice")
@@ -242,6 +246,10 @@ def secret_event():
     record_memory(player, "You shared a bond stronger than fate.")
     adjust_loyalty(player, +10, cause="Forged deep bond through hidden event.")
     return "<h1>A Secret Bond Has Formed...</h1><a href='/world_scene'>Return</a>"
+
+@app.route("/rebirth")
+def rebirth():
+    return render_template("rebirth.html")
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
