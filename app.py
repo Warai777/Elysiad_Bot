@@ -156,14 +156,14 @@ def world_scene():
     phase = "Intro" if survived_minutes < 1 else "Exploration"
 
     scenario_text = story_engine.generate_story_segment(
+        world={
+            "name": session.get("current_world", "Unknown"),
+            "inspiration": session.get("current_world_inspiration", "Original")
+        },
+        tone=session.get("current_world_tone", "mystical"),
         player_traits=player.traits,
         player_memory=player.memory,
         companions=player.companions,
-        world={
-            "name": session.get("current_world", "Unknown"),
-            "tone": session.get("current_world_tone", "mystical"),
-            "inspiration": session.get("current_world_inspiration", "Original")
-        },
         phase=phase
     )
 
