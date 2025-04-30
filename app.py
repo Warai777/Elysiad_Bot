@@ -70,12 +70,14 @@ def choose_world():
     session["available_books"] = books
     return render_template("choose_world.html", books=books, player=player)
 
+player)
+
 @app.route("/world_scene", methods=["GET", "POST"])
 def world_scene():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-    
+
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
@@ -127,20 +129,6 @@ def world_scene():
             survived_minutes = 0
     session["survived_minutes"] = survived_minutes
 
-    milestones = player.memory.setdefault("Milestones", [])
-    for minutes, grit_gain, message in [
-        (10, 1, "Survived 10 minutes. A faint resilience is born."),
-        (30, 2, "Survived 30 minutes. Second Wind awakened."),
-        (60, 3, "Survived 60 minutes. Armor of Determination earned."),
-        (120, 5, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
-    ]:
-        code = f"Milestone{minutes}"
-        if survived_minutes >= minutes and code not in milestones:
-            milestones.append(code)
-            player.grit += grit_gain
-            record_memory(player, message)
-            player.save()
-
     high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
     if high_loyalty:
         session["secret_choice"] = True
@@ -153,19 +141,18 @@ def world_scene():
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
 
-    # Updated story generation with AI
-    story_engine = StoryManager(ai_model="gpt-4")
+    phase = "Intro" if survived_minutes < 1 else "Exploration"
     scenario_text = story_engine.generate_story_segment(
+        player_name=player.name,
+        player_traits=player.traits,
+        memory=player.memory,
+        companions=player.companions,
         world={
-            "name": session.get("current_world", "Unknown World"),
+            "name": session.get("current_world", "Unknown"),
             "tone": session.get("current_world_tone", "mystical"),
             "inspiration": session.get("current_world_inspiration", "Original")
         },
-        companions=player.companions,
-        tone=session.get("current_world_tone", "mystical"),
-        player_traits=player.traits,
-        player_memory=player.memory,
-        phase="Exploration"
+        phase=phase
     )
 
     return render_template(
@@ -176,6 +163,7 @@ def world_scene():
         survived_minutes=survived_minutes,
         scenario_text=scenario_text
     )
+
 
 @app.route("/combat", methods=["GET", "POST"])
 def combat():
