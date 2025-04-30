@@ -177,9 +177,9 @@ def world_scene():
             "tone": session.get("current_world_tone", "mystical"),
             "inspiration": session.get("current_world_inspiration", "Original")
         },
-        player.companions,
-        session.get("current_world_tone", "mystical"),
-        player.traits
+        companions=player.companions,
+        tone=session.get("current_world_tone", "mystical"),
+        player_traits=player.traits
     )
 
     return render_template(
