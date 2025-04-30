@@ -36,10 +36,7 @@
             color: white;
             text-decoration: none;
             border-radius: 6px;
-            font-size: 1.2em;
-            margin-top: 20px;
-            display: inline-block;
-            transition: background-color 0.3s;
+            font-size: 1.1em;
         }
         .btn:hover {
             background-color: #77aaff;
@@ -48,23 +45,18 @@
 </head>
 <body>
     <div class="result-box">
-        <h1>Combat Results</h1>
-
-        <p>{{ outcome }}</p>
-
+        <h1>The Outcome</h1>
+        <p>{{ narrative }}</p>
+        {% if scar_text %}
+            <p><strong>Scars:</strong> {{ scar_text }}</p>
+        {% endif %}
+        {% if instinct_text %}
+            <p><strong>Instincts:</strong> {{ instinct_text }}</p>
+        {% endif %}
         {% if assist_text %}
             <p><strong>Companion Assist:</strong> {{ assist_text }}</p>
         {% endif %}
-
-        {% if scar %}
-            <p><strong>You suffered a wound!</strong> A scar marks this battle.</p>
-        {% endif %}
-
-        {% if instinct_gain %}
-            <p><strong>Your instincts sharpened.</strong> (+1 Instinct)</p>
-        {% endif %}
-
-        <a href="{{ url_for('world_scene') }}" class="btn">Continue Your Journey</a>
+        <a href="{{ url_for('world_scene') }}" class="btn">Continue</a>
     </div>
 </body>
 </html>
