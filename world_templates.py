@@ -68,7 +68,7 @@ Return the following JSON object:
 ONLY return valid JSON. Do not explain anything.
 """
 
-       try:
+    try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
