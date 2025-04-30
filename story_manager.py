@@ -1,9 +1,10 @@
 import os
 import json
 import re
-from openai import OpenAI
+import openai
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# ✅ Instantiate OpenAI v1.0+ client
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class StoryManager:
     def __init__(self, ai_model="gpt-4"):
@@ -49,22 +50,21 @@ Respond strictly with:
 }}
         """
 
-        response = client.chat.completions.create(
-            model=self.ai_model,
-            messages=[
-                {"role": "system", "content": "You are an immersive narrative engine for a light novel-style game."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.95,
-            max_tokens=1200,
-        )
-
-        raw_content = response.choices[0].message.content
-
         try:
-            # Sanitize: remove control characters (non-printing)
-            cleaned_content = re.sub(r'[\x00-\x1F\x7F]', '', raw_content)
+            response = client.chat.completions.create(
+                model=self.ai_model,
+                messages=[
+                    {"role": "system", "content": "You are an immersive narrative engine for a light novel-style game."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.95,
+                max_tokens=1200,
+            )
 
+            raw_content = response.choices[0].message.content
+
+            # Sanitize output
+            cleaned_content = re.sub(r'[\x00-\x1F\x7F]', '', raw_content)
             parsed = json.loads(cleaned_content)
 
             if "story" not in parsed or "choices" not in parsed:
