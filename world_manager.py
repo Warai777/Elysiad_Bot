@@ -12,7 +12,7 @@ class WorldManager:
         pass  # Worlds are dynamically generated!
 
     def generate_books(self):
-    return [generate_ai_world_template() for _ in range(3)]
+        return [generate_ai_world_template() for _ in range(3)]
        
     def start_world_timer(self, player_name, world_name):
         filepath = os.path.join(PLAYER_FOLDER, f"{player_name}.json")
