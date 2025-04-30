@@ -70,8 +70,6 @@ def choose_world():
     session["available_books"] = books
     return render_template("choose_world.html", books=books, player=player)
 
-player)
-
 @app.route("/world_scene", methods=["GET", "POST"])
 def world_scene():
     player_name = session.get("player_name")
