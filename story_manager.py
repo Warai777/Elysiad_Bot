@@ -34,14 +34,21 @@ Context:
 - Phase of story: "{phase}" (Intro, Exploration, Tension, Climax, Resolution, Failure)
 
 Instructions:
-- Write in the second person ("you") and style the scene like a light novel.
-- Make the world feel living, strange, and emotionally immersive.
-- Describe at least one meaningful thing the player sees or experiences that will return later in the story.
-- Include at least one specific moment where the environment or a character reacts to the player in a subtle way.
-- Never mention the real source material directly (e.g., Bleach, Marvel), but match the feel.
-- Do not write choices or game instructions. Just return the story scene text itself.
+1. Write in the second person ("you") and style the scene like a light novel.
+2. Make the world feel living, strange, and emotionally immersive.
+3. Describe at least one meaningful thing the player sees or experiences that will return later in the story.
+4. Include at least one specific moment where the environment or a character reacts to the player in a subtle way.
+5. Never mention the real source material directly (e.g., Bleach, Marvel), but match the feel.
+6. Do not include game mechanics or rules.
+7. After writing the immersive scene, output exactly five story choices. Format them as a JSON list like this:
+["Choice A", "Choice B", "Choice C", "Choice D", "Choice E"]
+Each option should feel like a valid action in the story, but hide whether it leads to death, world-building, progress, or randomness.
 
-Begin the story segment now.
+Return a JSON object with two keys:
+- "story": the full generated story segment
+- "choices": the list of five story options
+
+Begin the response now in proper JSON format.
         """
 
         response = client.chat.completions.create(
@@ -50,8 +57,10 @@ Begin the story segment now.
                 {"role": "system", "content": "You are an immersive narrative engine for a light novel-style game."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.9,
-            max_tokens=1000
+            temperature=0.95,
+            max_tokens=1200,
+            response_format="json"
         )
 
-        return response.choices[0].message.content.strip()
+        result = response.choices[0].message.content
+        return result
