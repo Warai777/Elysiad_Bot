@@ -172,16 +172,17 @@ def world_scene():
     phase = "Intro" if survived_minutes < 1 else "Exploration"
 
     scenario_text = generate_story_segment(
-        {
-            "name": session.get("current_world", "Unknown World"),
-            "tone": session.get("current_world_tone", "mystical"),
-            "inspiration": session.get("current_world_inspiration", "Original")
-        },
-        companions=player.companions,
-        tone=session.get("current_world_tone", "mystical"),
-        player_traits=player.traits,
-        phase=phase
-    )
+    {
+        "name": session.get("current_world", "Unknown World"),
+        "tone": session.get("current_world_tone", "mystical"),
+        "inspiration": session.get("current_world_inspiration", "Original")
+    },
+    companions=player.companions,
+    tone=session.get("current_world_tone", "mystical"),
+    player_traits=player.traits,
+    player_memory=player.memory,  # <-- NEW ARGUMENT!
+    phase="Exploration"
+)
 
     return render_template(
         "world_scene.html",
