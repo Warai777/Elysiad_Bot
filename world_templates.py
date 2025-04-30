@@ -1,10 +1,12 @@
 import openai
 import json
 import random
+import os
 
+# ✅ Set your OpenAI API key from the environment
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Massive inspiration pool from anime, novels, games, TV, and movies
+# ✅ Large inspiration pool
 FICTIONAL_INSPIRATIONS = [
     # Anime & Manga
     "One Piece", "Bleach", "Naruto", "Dragon Ball", "Attack on Titan", "Fullmetal Alchemist",
