@@ -247,7 +247,12 @@ def handle_companion_choice():
         player.companions.append(comp)
         player.save()
     session.pop("pending_companion", None)
+
+    # ✅ Reset scene flag so the story can proceed
+    session["scene_initialized"] = False
+
     return redirect(url_for("world_scene"))
+
 
 @app.route("/secret_event")
 def secret_event():
