@@ -266,14 +266,20 @@ def view_journal():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+
     player = Player.load(player_name)
+    if not player:
+        return redirect(url_for("home"))
+
     journal = player.memory.get("Journal", {
         "Hints": [],
         "Lore": [],
         "Events": [],
         "Notes": []
     })
+
     return render_template("journal.html", player=player, journal=journal)
+
 
 @app.route("/add_note", methods=["POST"])
 def add_note():
