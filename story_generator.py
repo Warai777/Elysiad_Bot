@@ -1,6 +1,6 @@
 import random
 
-def generate_story_segment(world, companions, tone, player_traits):
+def generate_story_segment(world, companions, tone, player_traits, phase="Exploration"):
     world_name = world.get("name", "Unknown Realm")
     inspiration = world.get("inspiration", "an unfamiliar myth")
     tone = tone.lower()
@@ -21,18 +21,16 @@ def generate_story_segment(world, companions, tone, player_traits):
         "adventurous": f"Sunlight slices through canopies. {world_name} promises danger — and glory."
     }
 
-    prompt = base_descriptions.get(tone, base_descriptions["mystical"])
+    phase_flavor = {
+        "Exploration": f"You wander through the {world_name}, your {trait_description} nature alert to every shift in the air.",
+        "Tension": f"A noise cracks the silence. Somewhere unseen, something watches. Your breath catches in your throat.",
+        "Climax": f"You're out of options. This moment — whatever it is — has been building for some time. And now, it's here.",
+        "Resolution": f"Whatever trial you've faced, the echo of it lingers. The dust hasn't settled, but you’re still standing.",
+        "Failure": f"You faltered — the world didn't wait. Now, even your shadow seems to judge you.",
+    }
 
-    scene = f"""
-{prompt}
+    intro = base_descriptions.get(tone, base_descriptions["mystical"])
+    middle = phase_flavor.get(phase, phase_flavor["Exploration"])
+    outro = f"Alongside you, {companion_detail} keeps close. The Archivist’s hint flickers in your journal, unreadable but heavy with meaning."
 
-You wander through {world_name}, your {trait_description} nature alert to every shift in the air.
-Alongside you, {companion_detail} keeps close, gaze scanning the world as if expecting something.
-
-There are no guides here. The Archivist’s words echo in your journal — cryptic, half-formed.
-A fragment from your entry reads: *"The world resists those who don't belong."*
-
-And yet, you walk forward — unbound by prophecy, unwritten by fate.
-    """
-
-    return scene.strip()
+    return f"{intro}\n\n{middle}\n\n{outro}"
