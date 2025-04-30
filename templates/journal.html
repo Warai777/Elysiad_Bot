@@ -1,190 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Archivist’s Journal</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        body {
-            background-color: #1b1a17;
-            color: #f4ecd8;
-            font-family: 'Georgia', serif;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <title>{{ player.name }}'s Journal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      background-color: #111;
+      font-family: 'Georgia', serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
 
-        .journal {
-            max-width: 800px;
-            margin: 60px auto;
-            background: url('{{ url_for('static', filename='leather_texture.jpg') }}') repeat;
-            box-shadow: 0 0 40px rgba(0,0,0,0.7);
-            border: 12px solid #4b2e1e;
-            border-radius: 10px;
-            padding: 40px;
-        }
+    .book {
+      width: 800px;
+      height: 500px;
+      background: url('{{ url_for('static', filename='leather_texture.jpg') }}') center center / cover no-repeat;
+      border: 5px solid #442a1d;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+      perspective: 2000px;
+    }
 
-        h1 {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-        }
+    .page {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background-color: #f9f2e4;
+      box-shadow: inset 0 0 20px #c2b280;
+      transform-origin: left center;
+      transition: transform 1s ease;
+      padding: 40px;
+      overflow-y: auto;
+      z-index: 0;
+    }
 
-        .tabs {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
+    .page:nth-child(1) { z-index: 4; }
+    .page:nth-child(2) { z-index: 3; }
+    .page:nth-child(3) { z-index: 2; }
+    .page:nth-child(4) { z-index: 1; }
 
-        .tab-button {
-            padding: 12px 20px;
-            background-color: #2f2517;
-            border: none;
-            color: #f4ecd8;
-            margin: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 8px;
-        }
+    .flipped {
+      transform: rotateY(-180deg);
+      z-index: 0 !important;
+    }
 
-        .tab-button:hover {
-            background-color: #5a422b;
-        }
+    .nav-buttons {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
 
-        .page {
-            display: none;
-        }
+    .nav-buttons button {
+      background-color: #442a1d;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-family: 'Georgia', serif;
+      cursor: pointer;
+    }
 
-        .page.active {
-            display: block;
-            animation: fadeIn 0.4s ease-in-out;
-        }
+    h2 {
+      margin-top: 0;
+      color: #442a1d;
+    }
 
-        ul {
-            list-style-type: square;
-            margin-left: 20px;
-        }
+    ul {
+      padding-left: 20px;
+    }
 
-        textarea {
-            width: 100%;
-            border-radius: 8px;
-            border: none;
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        button[type="submit"] {
-            background: #4b2e1e;
-            color: #f4ecd8;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        a {
-            display: block;
-            text-align: center;
-            color: #b3a089;
-            margin-top: 40px;
-        }
-
-        .mascot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-        }
-
-        .mascot-container img {
-            width: 60px;
-            height: auto;
-            opacity: 0.85;
-        }
-
-        @keyframes fadeIn {
-            from {opacity: 0;}
-            to {opacity: 1;}
-        }
-    </style>
-    <script>
-        function showPage(pageId) {
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            showPage('hints');
-        });
-    </script>
+    li {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="journal">
-    <h1>{{ player.name }}'s Journal</h1>
+<div class="book">
+  <div class="page" id="page1">
+    <h2>Hints from the Archivist</h2>
+    <ul>
+      {% for hint in journal.Hints %}
+        <li>{{ hint }}</li>
+      {% else %}
+        <li>No hints yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
 
-    <div class="tabs">
-        <button class="tab-button" onclick="showPage('hints')">Hints</button>
-        <button class="tab-button" onclick="showPage('lore')">Lore</button>
-        <button class="tab-button" onclick="showPage('events')">Events</button>
-        <button class="tab-button" onclick="showPage('notes')">Notes</button>
-    </div>
+  <div class="page" id="page2">
+    <h2>Discovered Lore</h2>
+    <ul>
+      {% for entry in journal.Lore %}
+        <li>{{ entry }}</li>
+      {% else %}
+        <li>No lore found yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
 
-    <div class="page" id="hints">
-        <h2>Hints from the Archivist</h2>
-        <ul>
-            {% for hint in journal.Hints %}
-                <li>{{ hint }}</li>
-            {% else %}
-                <li>No hints yet.</li>
-            {% endfor %}
-        </ul>
-    </div>
+  <div class="page" id="page3">
+    <h2>Major Events</h2>
+    <ul>
+      {% for event in journal.Events %}
+        <li>{{ event }}</li>
+      {% else %}
+        <li>No events recorded yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
 
-    <div class="page" id="lore">
-        <h2>Discovered Lore</h2>
-        <ul>
-            {% for entry in journal.Lore %}
-                <li>{{ entry }}</li>
-            {% else %}
-                <li>No lore found yet.</li>
-            {% endfor %}
-        </ul>
-    </div>
+  <div class="page" id="page4">
+    <h2>Your Notes</h2>
+    <ul>
+      {% for note in journal.get("Notes", []) %}
+        <li>{{ note }}</li>
+      {% else %}
+        <li>No personal notes yet.</li>
+      {% endfor %}
+    </ul>
 
-    <div class="page" id="events">
-        <h2>Major Events</h2>
-        <ul>
-            {% for event in journal.Events %}
-                <li>{{ event }}</li>
-            {% else %}
-                <li>No major events recorded.</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <form method="POST" action="{{ url_for('add_note') }}">
+      <textarea name="note" rows="4" cols="50" placeholder="Write your note..." required></textarea><br>
+      <button type="submit">Save Note</button>
+    </form>
+  </div>
 
-    <div class="page" id="notes">
-        <h2>Your Personal Notes</h2>
-        <ul>
-            {% for note in journal.get("Notes", []) %}
-                <li>{{ note }}</li>
-            {% else %}
-                <li>No personal notes yet.</li>
-            {% endfor %}
-        </ul>
-        <form method="POST" action="{{ url_for('add_note') }}">
-            <textarea name="note" rows="4" placeholder="Write your note here..." required></textarea><br>
-            <button type="submit">Save Note</button>
-        </form>
-    </div>
-
-    <a href="{{ url_for('library') }}">← Back to Library</a>
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← Previous</button>
+    <button onclick="nextPage()">Next →</button>
+  </div>
 </div>
 
-<div class="mascot-container">
-    <img src="{{ url_for('static', filename='elysiad_mascot.png') }}" alt="Elysiad Mascot">
-</div>
+<script>
+  let currentPage = 0;
+  const pages = document.querySelectorAll('.page');
+
+  function showPage(index) {
+    pages.forEach((p, i) => {
+      p.classList.toggle('flipped', i < index);
+    });
+  }
+
+  function nextPage() {
+    if (currentPage < pages.length) {
+      currentPage++;
+      showPage(currentPage);
+    }
+  }
+
+  function prevPage() {
+    if (currentPage > 0) {
+      currentPage--;
+      showPage(currentPage);
+    }
+  }
+</script>
 
 </body>
 </html>
