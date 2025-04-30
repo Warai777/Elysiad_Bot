@@ -56,7 +56,6 @@ Return a JSON object like:
             ],
             temperature=0.95,
             max_tokens=1200,
-            response_format="json"
         )
 
         parsed = json.loads(response.choices[0].message.content)
