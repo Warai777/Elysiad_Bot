@@ -188,38 +188,37 @@ def combat():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-    player = Player.load(player_name)
-    companions = getattr(player, "companions", [])
-    tone = session.get("current_world_tone", "mysterious")
-    manager = CombatManager(player, companions, tone)
-    if request.method == "POST":
-        selected = int(request.form.get("choice"))
-        outcome, scar, instinct, assist = manager.resolve_choice(selected)
-        if scar:
-            player.memory.setdefault("Scars", []).append("Wound from a fierce battle.")
-            record_memory(player, "You earned a new mental scar from combat.")
-        if instinct:
-            player.memory["Instinct"] = player.memory.get("Instinct", 0) + 1
-            record_memory(player, "Instinct sharpened by surviving death.")
-        player.save()
-        return render_template("combat_result.html", outcome=outcome, scar=scar, instinct_gain=instinct, assist_text=assist)
-    choices = manager.generate_combat_choices()
-    return render_template("combat.html", choices=choices, player=player)
 
-@app.route("/death")
-def death_screen():
-    player_name = session.get("player_name")
-    if not player_name:
-        return redirect(url_for("home"))
     player = Player.load(player_name)
-    if sorted(player.memory.get("FoundLore", [])) == sorted(ARCHIVIST_LORE):
-        return redirect(url_for("rebirth_screen"))
-    player.memory.setdefault("Deaths", []).append(f"Died inside {player.current_world} after surviving {session.get('survived_minutes', 0)} minutes.")
-    for c in player.companions:
-        if c.get("loyalty", 0) >= 80:
-            record_memory(player, f"You carry the grief of {c['name']} losing you.")
-    player.save()
-    return render_template("death_screen.html", player=player)
+    if not player:
+        return redirect(url_for("home"))
+
+    pending_story = session.get("pending_combat_story", "A shadow looms... but you can't recall how it began.")
+
+    if request.method == "POST":
+        selected_index = int(request.form.get("choice"))  # 0-based
+        manager = CombatManager(player, player.companions, session.get("current_world_tone", "neutral"))
+        narrative, scar_text, instinct_text, assist_text = manager.resolve_choice(selected_index)
+
+        return render_template(
+            "combat_result.html",
+            player=player,
+            narrative=narrative,
+            scar_text=scar_text,
+            instinct_text=instinct_text,
+            assist_text=assist_text
+        )
+
+    manager = CombatManager(player, player.companions, session.get("current_world_tone", "neutral"))
+    choices = manager.generate_combat_choices()
+
+    return render_template(
+        "combat.html",
+        player=player,
+        opening_story=pending_story,
+        choices=enumerate(choices)
+    )
+
 
 @app.route("/rebirth_screen")
 def rebirth_screen():
