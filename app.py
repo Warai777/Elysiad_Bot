@@ -9,9 +9,7 @@ from world_manager import WorldManager
 from choice_engine import ChoiceEngine
 from companion_manager import CompanionManager
 from archivist_lore import ARCHIVIST_LORE
-from combat_manager import CombatManager
-from starting_scenarios import generate_starting_scenario
-from story_generator import generate_story_segment
+from story_manager import generate_starting_scenario, generate_story_segment, StoryEngine
 
 # --- CONFIG ---
 app = Flask(__name__)
