@@ -1,86 +1,76 @@
 body {
     margin: 0;
-    background-color: #1e1f22;
-    background-image: url("/static/leather_texture.jpg");
+    padding: 0;
+    background-color: #1e1f22; /* Discord-like dark grey */
+    background-image: url('/static/leather_texture.jpg');
     background-size: cover;
-    background-position: center;
-    font-family: 'Cinzel', serif;
+    font-family: 'EB Garamond', serif;
+}
+
+.journal-wrapper {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
 }
 
 .journal-book {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.book-container {
-    display: flex;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-    border-radius: 8px;
-    overflow: hidden;
     position: relative;
-    background: url("/static/parchment_texture_overlay.png") repeat;
-    background-color: #f8f1dc;
-    width: 800px;
-    height: 500px;
+    width: 900px;
+    height: 600px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.7);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: transparent;
+    transition: transform 0.8s ease;
     transform-style: preserve-3d;
-    perspective: 2000px;
 }
 
-.book-page {
+.page {
     width: 50%;
     padding: 40px;
-    box-sizing: border-box;
-    background-color: #fdf6e3;
-    background-image: url("/static/parchment_texture_overlay.png");
+    background-image: url('/static/parchment_texture_overlay.png');
     background-size: cover;
-    color: #2f1b0c;
+    background-position: center;
+    color: #1e1f22;
+    overflow-y: auto;
+    box-sizing: border-box;
+    z-index: 2;
 }
 
-.left-page {
-    border-right: 1px solid #8d6748;
+.left {
+    border-right: 1px solid #bbb;
 }
 
-.right-page {
-    transform-origin: left center;
-    transition: transform 1s ease;
+.right {
+    border-left: 1px solid #bbb;
+}
+
+.spine {
+    width: 10px;
+    background-image: url('/static/journal_binding_shadow.png');
+    background-size: contain;
+    background-repeat: repeat-y;
+    background-position: center;
     z-index: 1;
 }
 
-.right-page.flipped {
-    transform: rotateY(-180deg);
-}
-
-.book-binding {
-    width: 10px;
-    background-image: url("/static/journal_binding_shadow.png");
-    background-size: cover;
-}
-
-h2 {
-    margin-top: 0;
-    font-size: 20px;
-    text-shadow: 1px 1px 1px #eee;
-}
-
-.flip-button {
+.flip-btn {
     margin-top: 20px;
     padding: 10px 20px;
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-    background-color: #4a2e1e;
-    color: #fff;
+    background-color: #4b2e1e;
+    color: white;
     border: none;
     border-radius: 5px;
-    box-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    font-weight: bold;
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
-.flip-button:hover {
-    background-color: #613f29;
+.flip-btn:hover {
+    background-color: #3a2117;
 }
