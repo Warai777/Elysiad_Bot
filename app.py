@@ -247,6 +247,14 @@ def rebirth_screen():
 
 @app.route("/lore_found")
 def lore_found_screen():
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+    
+    player = Player.load(player_name)
+    if not player:
+        return redirect(url_for("home"))
+
     return render_template("lore_found.html", player=player)
 
 @app.route("/handle_companion_choice", methods=["POST"])
