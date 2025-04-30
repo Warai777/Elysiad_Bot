@@ -33,41 +33,21 @@
             transition: background-color 0.3s;
         }
         .combat-btn:hover {
-            background-color: #9977dd;
-        }
-        #timer {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            color: #ff5555;
-            font-weight: bold;
+            background-color: #9966cc;
         }
     </style>
 </head>
 <body>
     <div class="combat-box">
-        <h1>Fight for Your Life!</h1>
-        <div id="timer">15</div>
+        <h2>The tension rises...</h2>
+        <p>{{ opening_story }}</p>
         <form method="POST">
-            {% for choice in choices %}
-                <button class="combat-btn" name="choice" value="{{ loop.index0 }}">{{ choice }}</button>
+            {% for idx, option in choices %}
+                <button type="submit" name="choice" value="{{ idx }}" class="combat-btn">
+                    {{ option }}
+                </button>
             {% endfor %}
         </form>
     </div>
-
-    <script>
-        let timeLeft = 15;
-        const timerElement = document.getElementById('timer');
-
-        const countdown = setInterval(() => {
-            timeLeft--;
-            timerElement.textContent = timeLeft;
-
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                alert("You froze! The enemy strikes first!");
-                document.forms[0].submit(); // Auto-submit form if no decision
-            }
-        }, 1000);
-    </script>
 </body>
 </html>
