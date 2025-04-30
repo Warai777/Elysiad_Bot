@@ -11,16 +11,13 @@ from companion_manager import CompanionManager
 from archivist_lore import ARCHIVIST_LORE
 from story_manager import generate_story_segment
 from combat_manager import CombatManager
-# --- CONFIG ---
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "elysiad_secret_key")
 
-# --- SETUP ---
 genre_manager = GenreManager()
 world_manager = WorldManager()
 companion_manager = CompanionManager()
-
-# --- ROUTES ---
 
 @app.route("/")
 def home():
@@ -43,14 +40,11 @@ def library():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-    
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
-
     companions = getattr(player, "companions", [])
     journal = player.memory.get("Journal", {})
-
     return render_template("library.html", player=player, companions=companions, journal=journal)
 
 @app.route("/choose_world", methods=["GET", "POST"])
@@ -58,46 +52,34 @@ def choose_world():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
-
     if request.method == "POST":
         selected_world_name = request.form.get("world")
         books = session.get("available_books", [])
         chosen_world = next((w for w in books if w["name"] == selected_world_name), None)
-
         if not chosen_world:
             return redirect(url_for("choose_world"))
-
         world_manager.start_world_timer(player_name, chosen_world["name"])
         session["current_world"] = chosen_world["name"]
         session["current_world_tone"] = chosen_world["tone"]
         session["current_world_inspiration"] = chosen_world["inspiration"]
-
         return redirect(url_for("world_scene"))
-
-    # GET request: generate and store the list in session
     books = world_manager.generate_books()
     session["available_books"] = books
     return render_template("choose_world.html", books=books, player=player)
 
 @app.route("/world_scene", methods=["GET", "POST"])
 def world_scene():
-    from story_manager import generate_story_segment
-
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
-
     if set(player.memory.get("FoundLore", [])) >= set(ARCHIVIST_LORE):
         return redirect(url_for("rebirth_screen"))
-
     if request.method == "POST":
         selected = int(request.form.get("choice"))
         if session.get("secret_choice") and selected == 6:
@@ -121,7 +103,6 @@ def world_scene():
             else:
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
-
     if random.random() < 0.2:
         return redirect(url_for("combat"))
 
@@ -147,7 +128,7 @@ def world_scene():
         (10, 1, "Survived 10 minutes. A faint resilience is born."),
         (30, 2, "Survived 30 minutes. Second Wind awakened."),
         (60, 3, "Survived 60 minutes. Armor of Determination earned."),
-        (120, 5, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
+        (120, 5, "Survived 120 minutes. Last Stand unlocked â your will transcends death.")
     ]:
         code = f"Milestone{minutes}"
         if survived_minutes >= minutes and code not in milestones:
@@ -168,21 +149,18 @@ def world_scene():
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
 
-    # Story Phase Logic
-    phase = "Intro" if survived_minutes < 1 else "Exploration"
-
     scenario_text = generate_story_segment(
-    {
-        "name": session.get("current_world", "Unknown World"),
-        "tone": session.get("current_world_tone", "mystical"),
-        "inspiration": session.get("current_world_inspiration", "Original")
-    },
-    companions=player.companions,
-    tone=session.get("current_world_tone", "mystical"),
-    player_traits=player.traits,
-    player_memory=player.memory,  # <-- NEW ARGUMENT!
-    phase="Exploration"
-)
+        {
+            "name": session.get("current_world", "Unknown World"),
+            "tone": session.get("current_world_tone", "mystical"),
+            "inspiration": session.get("current_world_inspiration", "Original")
+        },
+        companions=player.companions,
+        tone=session.get("current_world_tone", "mystical"),
+        player_traits=player.traits,
+        player_memory=player.memory,
+        phase="Exploration"
+    )
 
     return render_template(
         "world_scene.html",
@@ -202,7 +180,6 @@ def combat():
     companions = getattr(player, "companions", [])
     tone = session.get("current_world_tone", "mysterious")
     manager = CombatManager(player, companions, tone)
-
     if request.method == "POST":
         selected = int(request.form.get("choice"))
         outcome, scar, instinct, assist = manager.resolve_choice(selected)
@@ -214,7 +191,6 @@ def combat():
             record_memory(player, "Instinct sharpened by surviving death.")
         player.save()
         return render_template("combat_result.html", outcome=outcome, scar=scar, instinct_gain=instinct, assist_text=assist)
-
     choices = manager.generate_combat_choices()
     return render_template("combat.html", choices=choices, player=player)
 
@@ -244,11 +220,9 @@ def lore_found_screen():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-    
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
-
     return render_template("lore_found.html", player=player)
 
 @app.route("/handle_companion_choice", methods=["POST"])
@@ -266,12 +240,7 @@ def handle_companion_choice():
 @app.route("/secret_event")
 def secret_event():
     player_name = session.get("player_name")
-    if not player_name:
-        return redirect(url_for("home"))
     player = Player.load(player_name)
-    if not player:
-        return redirect(url_for("home"))
-
     record_memory(player, "You shared a bond stronger than fate.")
     adjust_loyalty(player, +10, cause="Forged deep bond through hidden event.")
     return "<h1>A Secret Bond Has Formed...</h1><a href='/world_scene'>Return</a>"
@@ -281,18 +250,13 @@ def view_journal():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-
     player = Player.load(player_name)
-    if not player:
-        return redirect(url_for("home"))
-
     journal = player.memory.get("Journal", {
         "Hints": [],
         "Lore": [],
         "Events": [],
         "Notes": []
     })
-
     return render_template("journal.html", player=player, journal=journal)
 
 @app.route("/add_note", methods=["POST"])
@@ -300,18 +264,13 @@ def add_note():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-
     player = Player.load(player_name)
-    if not player:
-        return redirect(url_for("home"))
-
     note = request.form.get("note", "").strip()
     if note:
         player.memory.setdefault("Journal", {}).setdefault("Notes", []).append(note)
         player.save()
-
     return redirect(url_for("view_journal"))
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
