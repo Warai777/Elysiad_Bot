@@ -117,12 +117,7 @@ def world_scene():
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
 
-    if not session.get("scene_initialized"):
-        session["scene_initialized"] = True
-    else:
-        if random.random() < 0.2:
-            return redirect(url_for("combat"))
-
+    # Track survival time
     survived_minutes = 0
     if player.world_entry_time:
         try:
@@ -133,17 +128,20 @@ def world_scene():
             survived_minutes = 0
     session["survived_minutes"] = survived_minutes
 
+    # Check for high-loyalty companions
     high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
-    session["secret_choice"] = True if high_loyalty else False
+    session["secret_choice"] = bool(high_loyalty)
 
+    # Companion encounter override
     companion = companion_manager.random_companion_encounter()
     if companion:
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
 
+    # Determine narrative phase
     phase = "Intro" if survived_minutes < 1 else "Exploration"
 
-    # ✅ FIX: Unpack the tuple from generate_story_segment
+    # ✅ Generate story and choices
     scenario_text, contextual_choices = story_engine.generate_story_segment(
         world={
             "name": session.get("current_world", "Unknown"),
@@ -156,7 +154,17 @@ def world_scene():
         phase=phase
     )
 
-    # Setup choice mapping
+    # ✅ Check for combat triggers in story content
+    combat_keywords = [
+        "ambush", "attack", "enemy", "draw your weapon", "hostile", "creature snarls",
+        "a fight begins", "battle erupts", "you are not alone", "lunges at you", "prepare to fight"
+    ]
+
+    if any(kw in scenario_text.lower() for kw in combat_keywords):
+        session["pending_combat_story"] = scenario_text  # Save story for combat display
+        return redirect(url_for("combat"))
+
+    # Setup choices
     choices = [(i + 1, choice) for i, choice in enumerate(contextual_choices[:5])]
     session["death_choice"] = 1
     session["progress_choice"] = 2
