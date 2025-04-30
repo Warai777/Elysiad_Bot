@@ -1,33 +1,56 @@
+import json
 import random
-from combat_story_manager import CombatStoryManager
+import openai
 
-class CombatManager:
-    def __init__(self, player, companions, world_tone):
-        self.player = player
-        self.companions = companions
-        self.world_tone = world_tone
-        self.story_manager = CombatStoryManager(player, companions, world_tone)
+def generate_ai_inspired_companion(world_inspiration):
+    prompt = f"""
+You are generating a fictional companion based on the world of {world_inspiration}.
+Your goal is to:
+- Select a well-known character from that world.
+- Slightly rename and redesign them to avoid copyright.
+- Keep them clearly recognizable by fans.
+- Give them a unique ability (renamed and reworded).
+- Describe their personality in 1 sentence.
 
-    def generate_combat_choices(self):
-        return [
-            "Charge forward aggressively",
-            "Use the environment to your advantage",
-            "Stall and buy time",
-            "Outwit the enemy with a trick",
-            "Brace for impact and endure"
-        ]
+Respond only in JSON like:
+{{
+  "name": "RenamedCharacter",
+  "inspired_by": "Original Character",
+  "archetype": "Reworded role (e.g., Soul Reaper Captain)",
+  "ability": {{
+    "name": "Echo Technique",
+    "description": "A renamed ability based on the original."
+  }},
+  "personality": "Short description here."
+}}
+    """
 
-    def resolve_choice(self, choice_index):
-        roll = random.randint(1, 100)
-        success = roll >= 60
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a character generator for a procedurally generated RPG."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.85,
+            max_tokens=400
+        )
 
-        narrative, scar_text, instinct_text = self.story_manager.generate_combat_result(choice_index, success)
+        content = response.choices[0].message.content
+        companion_data = json.loads(content)
+        companion_data["loyalty"] = random.randint(50, 90)
+        return companion_data
 
-        # --- Companion Assist Chance ---
-        assist_text = None
-        for comp in self.companions:
-            if comp.get("loyalty", 0) >= 70 and random.random() < 0.3:
-                assist_text = f"{comp['name']} assisted you with their {comp['ability']['name']}!"
-                break
-
-        return narrative, scar_text, instinct_text, assist_text
+    except Exception as e:
+        print("⚠️ AI Companion generation failed:", e)
+        return {
+            "name": "Fallback Echo",
+            "inspired_by": world_inspiration,
+            "archetype": "Lost Wanderer",
+            "ability": {
+                "name": "Memory Spark",
+                "description": "A faint echo of a forgotten warrior’s power."
+            },
+            "personality": "Mysterious and quiet, as if remembering another life.",
+            "loyalty": random.randint(40, 60)
+        }
