@@ -16,18 +16,18 @@ class WorldManager:
         return [generate_world() for _ in range(3)]
 
     def start_world_timer(self, player_name, world_name):
-    filepath = os.path.join(PLAYER_FOLDER, f"{player_name}.json")
-    if not os.path.exists(filepath):
-        return
+        filepath = os.path.join(PLAYER_FOLDER, f"{player_name}.json")
+        if not os.path.exists(filepath):
+            return
 
-    with open(filepath, "r") as f:
-        data = json.load(f)
+        with open(filepath, "r") as f:
+            data = json.load(f)
 
-    data["current_world"] = world_name
-    data["world_entry_time"] = datetime.datetime.utcnow().isoformat()
+        data["current_world"] = world_name
+        data["world_entry_time"] = datetime.datetime.utcnow().isoformat()
 
-    with open(filepath, "w") as f:
-        json.dump(data, f, indent=2)
+        with open(filepath, "w") as f:
+            json.dump(data, f, indent=2)
 
     # ✨ New Part: track past visited worlds
     if "PastWorlds" not in data:
