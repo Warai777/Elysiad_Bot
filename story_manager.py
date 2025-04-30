@@ -2,9 +2,10 @@ import os
 import json
 import re
 import openai
+from genre_manager import GenreManager
 
-# ✅ Instantiate OpenAI v1.0+ client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+genre_manager = GenreManager()
 
 class StoryManager:
     def __init__(self, ai_model="gpt-4"):
@@ -13,7 +14,7 @@ class StoryManager:
     def generate_story_segment(self, world, companions, tone, player_traits, player_memory, phase="Intro"):
         world_name = world.get("name", "Unknown Realm")
         inspiration = world.get("inspiration", "an unfamiliar myth")
-        tone = tone.lower()
+        tone_base = tone.lower()
         companion_names = [c["name"] for c in companions]
         companion_summary = ", ".join(companion_names) if companion_names else "no one but your own shadow"
         trait_description = ", ".join(player_traits)
@@ -22,13 +23,32 @@ class StoryManager:
             journal_hints = ["The Archivist’s journal remains frustratingly vague."]
         hint_summary = "; ".join(journal_hints)
 
+        # Expand tone with AI
+        expanded = genre_manager.expand_genre_with_ai(tone)
+        if expanded:
+            try:
+                genre_data = json.loads(expanded)
+                tone_description = genre_data.get("tone", tone_base)
+                world_flavor = genre_data.get("description", "")
+                world_impact = genre_data.get("world_effect", "")
+            except Exception:
+                tone_description = tone_base
+                world_flavor = ""
+                world_impact = ""
+        else:
+            tone_description = tone_base
+            world_flavor = ""
+            world_impact = ""
+
         prompt = f"""
 You are an AI storyteller within a darkly immersive light novel engine. Generate a completely original story scene in strict JSON format.
 
 Context:
 - World: "{world_name}"
-- Tone: "{tone}"
+- Tone: "{tone_description}"
 - Inspiration: "{inspiration}"
+- Genre Flavor: "{world_flavor}"
+- Setting Impact: "{world_impact}"
 - Traits: {trait_description}
 - Companions: {companion_summary}
 - Journal Hints: {hint_summary}
@@ -36,12 +56,13 @@ Context:
 
 Instructions:
 1. Write in second person ("you").
-2. Style the scene like a light novel.
-3. Make the world vivid, alive, and emotionally immersive.
-4. Describe one meaningful element that returns later.
-5. Include one subtle reaction from the environment or a character.
-6. Do NOT mention real-world IP or game mechanics.
-7. Return ONLY valid JSON (no preamble, no markdown, no prose).
+2. Style the scene like a light novel — vivid, immersive, and emotional.
+3. Include at least one internal monologue (what the player thinks during the scene).
+4. If relevant, subtly reference at least one journal hint (as memory, déjà vu, or vision).
+5. Describe one meaningful element that may return later.
+6. Include one subtle reaction from the environment or a character.
+7. Do NOT mention real-world IP or game mechanics.
+8. Return ONLY valid JSON (no preamble, no markdown, no prose).
 
 Respond strictly with:
 {{
@@ -62,8 +83,6 @@ Respond strictly with:
             )
 
             raw_content = response.choices[0].message.content
-
-            # Sanitize output
             cleaned_content = re.sub(r'[\x00-\x1F\x7F]', '', raw_content)
             parsed = json.loads(cleaned_content)
 
