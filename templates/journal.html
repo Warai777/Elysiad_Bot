@@ -1,165 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>{{ player.name }}'s Journal</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <style>
-    body {
-      background-color: #111;
-      font-family: 'Georgia', serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .book {
-      width: 800px;
-      height: 500px;
-      background: url('{{ url_for('static', filename='leather_texture.jpg') }}') center center / cover no-repeat;
-      border: 5px solid #442a1d;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
-      position: relative;
-      perspective: 2000px;
-    }
-
-    .page {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      background-color: #f9f2e4;
-      box-shadow: inset 0 0 20px #c2b280;
-      transform-origin: left center;
-      transition: transform 1s ease;
-      padding: 40px;
-      overflow-y: auto;
-      z-index: 0;
-    }
-
-    .page:nth-child(1) { z-index: 4; }
-    .page:nth-child(2) { z-index: 3; }
-    .page:nth-child(3) { z-index: 2; }
-    .page:nth-child(4) { z-index: 1; }
-
-    .flipped {
-      transform: rotateY(-180deg);
-      z-index: 0 !important;
-    }
-
-    .nav-buttons {
-      position: absolute;
-      bottom: 10px;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 20px;
-    }
-
-    .nav-buttons button {
-      background-color: #442a1d;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-family: 'Georgia', serif;
-      cursor: pointer;
-    }
-
-    h2 {
-      margin-top: 0;
-      color: #442a1d;
-    }
-
-    ul {
-      padding-left: 20px;
-    }
-
-    li {
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>{{ player.name }}'s Journal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 
-<div class="book">
-  <div class="page" id="page1">
-    <h2>Hints from the Archivist</h2>
-    <ul>
-      {% for hint in journal.Hints %}
-        <li>{{ hint }}</li>
-      {% else %}
-        <li>No hints yet.</li>
-      {% endfor %}
-    </ul>
-  </div>
+<div class="journal-book" id="journalBook">
+    <!-- Page 1: Hints -->
+    <div class="journal-page" data-page="0">
+        <h2>Hints from the Archivist</h2>
+        <ul>
+            {% for hint in journal.Hints %}
+                <li>{{ hint }}</li>
+            {% else %}
+                <li>No hints yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-  <div class="page" id="page2">
-    <h2>Discovered Lore</h2>
-    <ul>
-      {% for entry in journal.Lore %}
-        <li>{{ entry }}</li>
-      {% else %}
-        <li>No lore found yet.</li>
-      {% endfor %}
-    </ul>
-  </div>
+    <!-- Page 2: Lore -->
+    <div class="journal-page" data-page="1">
+        <h2>Discovered Lore</h2>
+        <ul>
+            {% for entry in journal.Lore %}
+                <li>{{ entry }}</li>
+            {% else %}
+                <li>No lore found yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-  <div class="page" id="page3">
-    <h2>Major Events</h2>
-    <ul>
-      {% for event in journal.Events %}
-        <li>{{ event }}</li>
-      {% else %}
-        <li>No events recorded yet.</li>
-      {% endfor %}
-    </ul>
-  </div>
+    <!-- Page 3: Events -->
+    <div class="journal-page" data-page="2">
+        <h2>Major Events</h2>
+        <ul>
+            {% for event in journal.Events %}
+                <li>{{ event }}</li>
+            {% else %}
+                <li>No major events recorded.</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-  <div class="page" id="page4">
-    <h2>Your Notes</h2>
-    <ul>
-      {% for note in journal.get("Notes", []) %}
-        <li>{{ note }}</li>
-      {% else %}
-        <li>No personal notes yet.</li>
-      {% endfor %}
-    </ul>
+    <!-- Page 4: Notes -->
+    <div class="journal-page" data-page="3">
+        <h2>Your Personal Notes</h2>
+        <ul>
+            {% for note in journal.get("Notes", []) %}
+                <li>{{ note }}</li>
+            {% else %}
+                <li>No personal notes yet.</li>
+            {% endfor %}
+        </ul>
 
-    <form method="POST" action="{{ url_for('add_note') }}">
-      <textarea name="note" rows="4" cols="50" placeholder="Write your note..." required></textarea><br>
-      <button type="submit">Save Note</button>
-    </form>
-  </div>
+        <form method="POST" action="{{ url_for('add_note') }}">
+            <textarea name="note" rows="4" cols="50" placeholder="Write your note here..." required></textarea><br>
+            <button type="submit">Save Note</button>
+        </form>
+    </div>
 
-  <div class="nav-buttons">
-    <button onclick="prevPage()">← Previous</button>
-    <button onclick="nextPage()">Next →</button>
-  </div>
+    <div class="journal-nav">
+        <button id="prevPage">&larr; Previous</button>
+        <a href="{{ url_for('library') }}" class="button small">← Back to Library</a>
+        <button id="nextPage">Next &rarr;</button>
+    </div>
+</div>
+
+<div class="mascot-container">
+    <img src="{{ url_for('static', filename='elysiad_mascot.png') }}" alt="Elysiad Mascot">
 </div>
 
 <script>
-  let currentPage = 0;
-  const pages = document.querySelectorAll('.page');
+    const pages = document.querySelectorAll('.journal-page');
+    let currentPage = 0;
 
-  function showPage(index) {
-    pages.forEach((p, i) => {
-      p.classList.toggle('flipped', i < index);
+    function showPage(index) {
+        pages.forEach((page, i) => {
+            if (i === index) {
+                page.style.zIndex = 5;
+                page.classList.remove('flipped');
+            } else if (i < index) {
+                page.classList.add('flipped');
+                page.style.zIndex = 0;
+            } else {
+                page.classList.remove('flipped');
+                page.style.zIndex = 4 - i;
+            }
+        });
+    }
+
+    document.getElementById('nextPage').addEventListener('click', () => {
+        if (currentPage < pages.length - 1) {
+            currentPage++;
+            showPage(currentPage);
+        }
     });
-  }
 
-  function nextPage() {
-    if (currentPage < pages.length) {
-      currentPage++;
-      showPage(currentPage);
-    }
-  }
+    document.getElementById('prevPage').addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    });
 
-  function prevPage() {
-    if (currentPage > 0) {
-      currentPage--;
-      showPage(currentPage);
-    }
-  }
+    // Initial page
+    showPage(currentPage);
 </script>
 
 </body>
