@@ -1,71 +1,53 @@
-import re
+import openai
 
 class StoryManager:
     def __init__(self, ai_model):
         self.ai_model = ai_model
 
-    def generate_story_segment(self, player, world, companions, phase):
-        world_name = world.get("name", "Unknown World")
-        inspiration = world.get("inspiration", "an unknown tale")
-        tone = world.get("tone", "mystical")
-        traits = ", ".join(player.traits)
+    def generate_story_segment(self, world, companions, tone, player_traits, player_memory, phase="Intro"):
+        world_name = world.get("name", "Unknown Realm")
+        inspiration = world.get("inspiration", "an unfamiliar myth")
+        tone = tone.lower()
         companion_names = [c["name"] for c in companions]
-        companion_line = f"{random.choice(companion_names)} walks beside you." if companion_names else "You move alone."
+        companion_summary = ", ".join(companion_names) if companion_names else "no one but your own shadow"
+        trait_description = ", ".join(player_traits)
 
-        journal = player.memory.get("Journal", {})
-        hints = journal.get("Hints", [])
-        journal_hint = random.choice(hints) if hints else "The Archivist left you no clue this time."
-
-        narrative_threads = player.memory.setdefault("NarrativeThreads", [])
-        callbacks = "\n".join(f"- {thread}" for thread in narrative_threads[-3:])  # Limit to last 3 for context
+        journal_hints = player_memory.get("Journal", {}).get("Hints", [])
+        if not journal_hints:
+            journal_hints = ["The Archivist’s journal remains frustratingly vague."]
+        hint_summary = "; ".join(journal_hints)
 
         prompt = f"""
-You are writing a second-person immersive scene like a light novel. The player is in {world_name}, a realm inspired by {inspiration}.
-The tone is {tone}, and the story is currently in the "{phase}" phase.
+You are an AI storyteller within a darkly immersive light novel engine. You are about to generate a completely original story scene for a player who has transmigrated into a new world. This world is procedurally generated, but its tone and atmosphere are inspired by a popular fictional work. You must avoid referencing any copyrighted names, characters, or settings directly, but you can mimic the tone, themes, world structure, and feel in a transformative, original way.
 
-Traits: {traits}
-Companion: {companion_line}
-Archivist Hint: {journal_hint}
-Callback Threads: {callbacks or "None yet."}
+Context:
+- The player is in a world called: "{world_name}"
+- The tone of this world is: "{tone}" (examples: mystical, grimdark, heroic, psychological, cosmic, etc.)
+- The world was inspired by: "{inspiration}" (this is a theme or work like "Bleach", "Reverend Insanity", "God of War", etc.)
+- The player has these personality traits: {trait_description}
+- These companions are with the player: {companion_summary}
+- Their journal contains these vague hints: {hint_summary}
+- Phase of story: "{phase}" (Intro, Exploration, Tension, Climax, Resolution, Failure)
 
-Write a vivid, emotional, highly detailed scene where the environment, past memories, or subtle world rules might matter later.
-Include sensory language, pacing, internal thought, and physical reactions.
-DO NOT summarize — immerse the player completely in this moment.
-        """.strip()
+Instructions:
+- Write in the second person ("you") and style the scene like a light novel.
+- Make the world feel living, strange, and emotionally immersive.
+- Describe at least one meaningful thing the player sees or experiences that will return later in the story.
+- Include at least one specific moment where the environment or a character reacts to the player in a subtle way.
+- Never mention the real source material directly (e.g., Bleach, Marvel), but match the feel.
+- Do not write choices or game instructions. Just return the story scene text itself.
 
-        output = self.ai_model.generate(prompt)
-
-        # Parse and extract a key moment for future reference
-        new_thread = self.extract_significant_moment(output)
-        if new_thread:
-            narrative_threads.append(new_thread)
-            player.memory["NarrativeThreads"] = narrative_threads
-            player.save()
-
-        return output
-
-    def extract_significant_moment(self, scene_text):
+Begin the story segment now.
         """
-        Extract a possible narrative thread for reuse based on key phrases.
-        """
-        # Look for lines involving something "unusual", "noted", or "strange"
-        patterns = [
-            r'You notice (something|someone|a figure|an object|an anomaly)[^\.]+[\.]',
-            r'(Strangely|Oddly),[^\.]+[\.]',
-            r'There is (a|an) (faint|strange|glimmering|unusual)[^\.]+[\.]',
-            r'In the distance,[^\.]+[\.]',
-            r'Something feels off[^\.]*[\.]'
-        ]
 
-        for pattern in patterns:
-            match = re.search(pattern, scene_text, re.IGNORECASE)
-            if match:
-                return match.group().strip()
+        response = openai.ChatCompletion.create(
+            model=self.ai_model,
+            messages=[
+                {"role": "system", "content": "You are an immersive narrative engine for a light novel-style game."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.9,
+            max_tokens=1000
+        )
 
-        # Fallback: extract the first vivid sensory sentence
-        lines = scene_text.splitlines()
-        for line in lines:
-            if len(line.split()) >= 6 and any(word in line.lower() for word in ["hear", "feel", "see", "notice", "watch", "tremble"]):
-                return line.strip()
-
-        return None
+        return response['choices'][0]['message']['content'].strip()
