@@ -2,6 +2,8 @@ import openai
 import json
 import random
 
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 # Massive inspiration pool from anime, novels, games, TV, and movies
 FICTIONAL_INSPIRATIONS = [
     # Anime & Manga
