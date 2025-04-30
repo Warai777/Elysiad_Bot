@@ -2,6 +2,8 @@ import os
 import json
 import random
 import datetime
+import openai
+
 from flask import Flask, render_template, request, redirect, url_for, session
 from player import Player, adjust_loyalty, record_memory
 from genre_manager import GenreManager
@@ -15,9 +17,11 @@ from combat_manager import CombatManager
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "elysiad_secret_key")
 
+# Set up managers
 genre_manager = GenreManager()
 world_manager = WorldManager()
 companion_manager = CompanionManager()
+story_engine = StoryManager(ai_model="gpt-4")
 
 @app.route("/")
 def home():
@@ -75,14 +79,11 @@ def world_scene():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
-
     if set(player.memory.get("FoundLore", [])) >= set(ARCHIVIST_LORE):
         return redirect(url_for("rebirth_screen"))
-
     if request.method == "POST":
         selected = int(request.form.get("choice"))
         if session.get("secret_choice") and selected == 6:
@@ -106,17 +107,14 @@ def world_scene():
             else:
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
-
     if random.random() < 0.2:
         return redirect(url_for("combat"))
-
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
     session["progress_choice"] = progress
     session["lore_choices"] = lore
     session["random_choice"] = random_c
-
     survived_minutes = 0
     if player.world_entry_time:
         try:
@@ -126,42 +124,30 @@ def world_scene():
         except Exception:
             survived_minutes = 0
     session["survived_minutes"] = survived_minutes
-
     high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
     if high_loyalty:
         session["secret_choice"] = True
         choices.append(f"A mysterious chance... inspired by {random.choice(high_loyalty)}")
     else:
         session["secret_choice"] = False
-
     companion = companion_manager.random_companion_encounter()
     if companion:
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
-
     phase = "Intro" if survived_minutes < 1 else "Exploration"
     scenario_text = story_engine.generate_story_segment(
-        player_name=player.name,
-        player_traits=player.traits,
-        memory=player.memory,
-        companions=player.companions,
         world={
             "name": session.get("current_world", "Unknown"),
             "tone": session.get("current_world_tone", "mystical"),
             "inspiration": session.get("current_world_inspiration", "Original")
         },
+        companions=player.companions,
+        tone=session.get("current_world_tone", "mystical"),
+        player_traits=player.traits,
+        player_memory=player.memory,
         phase=phase
     )
-
-    return render_template(
-        "world_scene.html",
-        player=player,
-        world=session.get("current_world", "Unknown"),
-        choices=choices,
-        survived_minutes=survived_minutes,
-        scenario_text=scenario_text
-    )
-
+    return render_template("world_scene.html", player=player, world=session.get("current_world", "Unknown"), choices=choices, survived_minutes=survived_minutes, scenario_text=scenario_text)
 
 @app.route("/combat", methods=["GET", "POST"])
 def combat():
@@ -213,8 +199,6 @@ def lore_found_screen():
     if not player_name:
         return redirect(url_for("home"))
     player = Player.load(player_name)
-    if not player:
-        return redirect(url_for("home"))
     return render_template("lore_found.html", player=player)
 
 @app.route("/handle_companion_choice", methods=["POST"])
@@ -232,6 +216,8 @@ def handle_companion_choice():
 @app.route("/secret_event")
 def secret_event():
     player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
     player = Player.load(player_name)
     record_memory(player, "You shared a bond stronger than fate.")
     adjust_loyalty(player, +10, cause="Forged deep bond through hidden event.")
