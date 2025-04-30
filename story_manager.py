@@ -1,8 +1,8 @@
-import openai
 import os
+from openai import OpenAI
 
-# Ensure API key is set from environment (Render, local .env, etc.)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Initialize OpenAI client with API key from environment
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class StoryManager:
     def __init__(self, ai_model="gpt-4"):
@@ -27,7 +27,7 @@ You are an AI storyteller within a darkly immersive light novel engine. You are 
 Context:
 - The player is in a world called: "{world_name}"
 - The tone of this world is: "{tone}" (examples: mystical, grimdark, heroic, psychological, cosmic, etc.)
-- The world was inspired by: "{inspiration}" (this is a theme or work like "Bleach", "Reverend Insanity", "God of War", etc.)
+- The world was inspired by: "{inspiration}"
 - The player has these personality traits: {trait_description}
 - These companions are with the player: {companion_summary}
 - Their journal contains these vague hints: {hint_summary}
@@ -44,7 +44,7 @@ Instructions:
 Begin the story segment now.
         """
 
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model=self.ai_model,
             messages=[
                 {"role": "system", "content": "You are an immersive narrative engine for a light novel-style game."},
@@ -54,4 +54,4 @@ Begin the story segment now.
             max_tokens=1000
         )
 
-        return response['choices'][0]['message']['content'].strip()
+        return response.choices[0].message.content.strip()
