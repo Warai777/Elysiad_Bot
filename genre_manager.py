@@ -1,3 +1,9 @@
+import openai
+import os
+
+# ✅ OpenAI v1.0+ client
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 class GenreManager:
     def __init__(self):
         self.available_genres = [
@@ -27,3 +33,35 @@ class GenreManager:
             "Dark Heroism": "grim determination, noble suffering"
         }
         return styles.get(genre, "mysterious and unknown")
+
+    def expand_genre_with_ai(self, genre):
+        prompt = f"""
+You are a tone stylist. Take the genre "{genre}" and expand it into:
+- A rich narrative description (1-2 sentences)
+- A poetic tone summary
+- A theme suggestion for how it affects the world
+
+Respond strictly in JSON:
+{{
+  "description": "...",
+  "tone": "...",
+  "world_effect": "..."
+}}
+"""
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are a literary tone expansion engine."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.8,
+                max_tokens=300
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            print("⚠️ AI genre expansion failed:", e)
+            return None
