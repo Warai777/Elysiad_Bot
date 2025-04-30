@@ -83,11 +83,15 @@ ONLY return valid JSON. Do not explain anything.
         world = json.loads(content)
         return world
 
-    except Exception as e:
-        print("⚠️ AI world generation failed:", e)
-        return {
-            "name": "Nullspire",
-            "tone": "mystical",
-            "inspiration": inspiration,
-            "summary": "A shrouded land adrift between time and ruin."
-        }
+   except Exception as e:
+    # Log the raw error to Render logs
+    import sys
+    print("⚠️ AI world generation failed:", file=sys.stderr)
+    print(e, file=sys.stderr)
+    return {
+        "name": "Nullspire",
+        "tone": "mystical",
+        "inspiration": inspiration,
+        "summary": "A shrouded land adrift between time and ruin."
+    }
+
