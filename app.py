@@ -20,7 +20,6 @@ app.secret_key = os.environ.get("SECRET_KEY", "elysiad_secret_key")
 # Set up managers
 genre_manager = GenreManager()
 world_manager = WorldManager()
-companion_manager =  generate_ai_inspired_companion(world_inspiration)
 story_engine = StoryManager(ai_model="gpt-4")
 
 @app.route("/")
