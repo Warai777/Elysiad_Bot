@@ -22,7 +22,7 @@ def generate_story_segment(world, companions, tone, player_traits):
     }
 
     prompt = base_descriptions.get(tone, base_descriptions["mystical"])
-    
+
     scene = f"""
 {prompt}
 
@@ -30,7 +30,9 @@ You wander through {world_name}, your {trait_description} nature alert to every 
 Alongside you, {companion_detail} keeps close, gaze scanning the world as if expecting something.
 
 There are no guides here. The Archivist’s words echo in your journal — cryptic, half-formed.
-The story of {world_name}, born from the mythos of {inspiration}, begins to unfold.
-"""
+A fragment from your entry reads: *"The world resists those who don't belong."*
+
+And yet, you walk forward — unbound by prophecy, unwritten by fate.
+    """
 
     return scene.strip()
