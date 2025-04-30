@@ -284,7 +284,16 @@ def add_note():
 
 @app.route("/death_screen", methods=["GET"])
 def death_screen():
-    return render_template("death_screen.html")
+    player_name = session.get("player_name")
+    if not player_name:
+        return redirect(url_for("home"))
+
+    player = Player.load(player_name)
+    if not player:
+        return redirect(url_for("home"))
+
+    return render_template("death_screen.html", player=player)
+
 
 
 if __name__ == "__main__":
