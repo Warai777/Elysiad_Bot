@@ -9,7 +9,7 @@ from world_manager import WorldManager
 from choice_engine import ChoiceEngine
 from companion_manager import CompanionManager
 from archivist_lore import ARCHIVIST_LORE
-from story_manager import generate_story_segment
+from story_manager import StoryManager
 from combat_manager import CombatManager
 
 app = Flask(__name__)
@@ -149,11 +149,12 @@ def world_scene():
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
 
-    scenario_text = generate_story_segment(
-        {
+    story_engine = StoryManager()
+    scenario_text = story_engine.generate(
+        world={
             "name": session.get("current_world", "Unknown World"),
             "tone": session.get("current_world_tone", "mystical"),
-            "inspiration": session.get("current_world_inspiration", "Original")
+           "inspiration": session.get("current_world_inspiration", "Original")
         },
         companions=player.companions,
         tone=session.get("current_world_tone", "mystical"),
@@ -161,6 +162,7 @@ def world_scene():
         player_memory=player.memory,
         phase="Exploration"
     )
+    
 
     return render_template(
         "world_scene.html",
