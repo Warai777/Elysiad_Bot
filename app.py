@@ -157,7 +157,7 @@ def world_scene():
 
     scenario_text = story_engine.generate_story_segment(
         player_traits=player.traits,
-        memory=player.memory,
+        player_memory=player.memory,
         companions=player.companions,
         world={
             "name": session.get("current_world", "Unknown"),
