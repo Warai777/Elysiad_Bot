@@ -130,15 +130,14 @@ def world_scene():
     high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
     session["secret_choice"] = bool(high_loyalty)
 
-    # ✅ Only trigger companion once per scene load
-    if not session.get("scene_initialized"):
+    # ✅ Only trigger companion once per scene load, and only if no pending companion
+    if not session.get("scene_initialized") and not session.get("pending_companion"):
         session["scene_initialized"] = True
         world_inspiration = session.get("current_world_inspiration")
         companion = generate_ai_inspired_companion(world_inspiration)
         if companion:
             session["pending_companion"] = companion
             return render_template("companion_encounter.html", companion=companion)
-
 
     # Determine narrative phase
     phase = "Intro" if survived_minutes < 1 else "Exploration"
@@ -242,9 +241,10 @@ def handle_companion_choice():
     player = Player.load(player_name)
     choice = request.form.get("choice")
     comp = session.get("pending_companion")
-    if comp and choice == "accept":
-        player.companions.append(comp)
-        player.save()
+    if comp and choice == "accept" and comp not in player.companions:
+    player.companions.append(comp)
+    player.save()
+
     session.pop("pending_companion", None)
 
     # ✅ Reset scene flag so the story can proceed
