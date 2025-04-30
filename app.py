@@ -56,20 +56,26 @@ def choose_world():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
+
     if request.method == "POST":
         selected_world_name = request.form.get("world")
         books = session.get("available_books", [])
         chosen_world = next((w for w in books if w["name"] == selected_world_name), None)
+
         if not chosen_world:
             return redirect(url_for("choose_world"))
+
         world_manager.start_world_timer(player_name, chosen_world["name"])
         session["current_world"] = chosen_world["name"]
         session["current_world_tone"] = chosen_world["tone"]
         session["current_world_inspiration"] = chosen_world["inspiration"]
+        session["scene_initialized"] = False  # Reset the combat trigger
         return redirect(url_for("world_scene"))
+
     books = world_manager.generate_books()
     session["available_books"] = books
     return render_template("choose_world.html", books=books, player=player)
@@ -79,11 +85,14 @@ def world_scene():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
+
     if set(player.memory.get("FoundLore", [])) >= set(ARCHIVIST_LORE):
         return redirect(url_for("rebirth_screen"))
+
     if request.method == "POST":
         selected = int(request.form.get("choice"))
         if session.get("secret_choice") and selected == 6:
@@ -107,14 +116,21 @@ def world_scene():
             else:
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
-    if random.random() < 0.2:
-        return redirect(url_for("combat"))
+
+    # Only trigger combat after the scene has been initialized once
+    if not session.get("scene_initialized"):
+        session["scene_initialized"] = True
+    else:
+        if random.random() < 0.2:
+            return redirect(url_for("combat"))
+
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
     session["progress_choice"] = progress
     session["lore_choices"] = lore
     session["random_choice"] = random_c
+
     survived_minutes = 0
     if player.world_entry_time:
         try:
@@ -124,30 +140,42 @@ def world_scene():
         except Exception:
             survived_minutes = 0
     session["survived_minutes"] = survived_minutes
+
     high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
     if high_loyalty:
         session["secret_choice"] = True
         choices.append(f"A mysterious chance... inspired by {random.choice(high_loyalty)}")
     else:
         session["secret_choice"] = False
+
     companion = companion_manager.random_companion_encounter()
     if companion:
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
+
     phase = "Intro" if survived_minutes < 1 else "Exploration"
+
     scenario_text = story_engine.generate_story_segment(
+        player_name=player.name,
+        player_traits=player.traits,
+        memory=player.memory,
+        companions=player.companions,
         world={
             "name": session.get("current_world", "Unknown"),
             "tone": session.get("current_world_tone", "mystical"),
             "inspiration": session.get("current_world_inspiration", "Original")
         },
-        companions=player.companions,
-        tone=session.get("current_world_tone", "mystical"),
-        player_traits=player.traits,
-        player_memory=player.memory,
         phase=phase
     )
-    return render_template("world_scene.html", player=player, world=session.get("current_world", "Unknown"), choices=choices, survived_minutes=survived_minutes, scenario_text=scenario_text)
+
+    return render_template(
+        "world_scene.html",
+        player=player,
+        world=session.get("current_world", "Unknown"),
+        choices=choices,
+        survived_minutes=survived_minutes,
+        scenario_text=scenario_text
+    )
 
 @app.route("/combat", methods=["GET", "POST"])
 def combat():
