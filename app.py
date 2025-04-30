@@ -9,8 +9,8 @@ from world_manager import WorldManager
 from choice_engine import ChoiceEngine
 from companion_manager import CompanionManager
 from archivist_lore import ARCHIVIST_LORE
-from story_manager import generate_starting_scenario, generate_story_segment, StoryEngine
-
+from story_generator import generate_story_segment
+from combat_manager import CombatManager
 # --- CONFIG ---
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "elysiad_secret_key")
