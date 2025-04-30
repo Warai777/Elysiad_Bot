@@ -1,7 +1,11 @@
 import openai
+import os
+
+# Ensure API key is set from environment (Render, local .env, etc.)
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class StoryManager:
-    def __init__(self, ai_model):
+    def __init__(self, ai_model="gpt-4"):
         self.ai_model = ai_model
 
     def generate_story_segment(self, world, companions, tone, player_traits, player_memory, phase="Intro"):
