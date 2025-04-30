@@ -8,7 +8,6 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from player import Player, adjust_loyalty, record_memory
 from genre_manager import GenreManager
 from world_manager import WorldManager
-from choice_engine import ChoiceEngine
 from companion_manager import generate_ai_inspired_companion
 from archivist_lore import ARCHIVIST_LORE
 from story_manager import StoryManager
