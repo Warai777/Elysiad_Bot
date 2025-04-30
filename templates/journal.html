@@ -75,6 +75,18 @@
         <button type="submit">Save Note</button>
     </form>
 </div>
+
+    <div class="journal-section">
+    <h2>Suspicion Level</h2>
+    <p>{{ player.suspicion_level }} / 100</p>
+    {% if player.suspicion_level >= 60 %}
+        <p><i>People around you seem wary…</i></p>
+    {% elif player.suspicion_level >= 30 %}
+        <p><i>You’ve raised a few eyebrows.</i></p>
+    {% else %}
+        <p><i>You’re still blending in… for now.</i></p>
+    {% endif %}
+</div>
     
     <a href="{{ url_for('library') }}">Back to Library</a>
 </body>
