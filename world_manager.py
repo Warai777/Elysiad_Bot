@@ -2,7 +2,6 @@ import random
 import datetime
 import os
 import json
-from choice_engine import ChoiceEngine
 from world_templates import generate_ai_world_template  # v1.0+ GPT-powered world generation
 
 PLAYER_FOLDER = "data/players"
@@ -44,14 +43,3 @@ class WorldManager:
 
         except Exception as e:
             print(f"⚠️ Failed to update player file: {e}")
-
-    def generate_scene_choices(self):
-        engine = ChoiceEngine()
-        engine.generate_choices()
-        return (
-            engine.choices,
-            engine.death_choice,
-            engine.progress_choice,
-            engine.lore_choices,
-            engine.random_choice
-        )
