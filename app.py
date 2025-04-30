@@ -117,7 +117,6 @@ def world_scene():
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
 
-    # Only trigger combat after scene initialized
     if not session.get("scene_initialized"):
         session["scene_initialized"] = True
     else:
@@ -135,10 +134,7 @@ def world_scene():
     session["survived_minutes"] = survived_minutes
 
     high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
-    if high_loyalty:
-        session["secret_choice"] = True
-    else:
-        session["secret_choice"] = False
+    session["secret_choice"] = True if high_loyalty else False
 
     companion = companion_manager.random_companion_encounter()
     if companion:
@@ -147,8 +143,8 @@ def world_scene():
 
     phase = "Intro" if survived_minutes < 1 else "Exploration"
 
-    # Generate immersive story and contextual choices via AI
-    result = story_engine.generate_story_segment(
+    # ✅ FIX: Unpack the tuple from generate_story_segment
+    scenario_text, contextual_choices = story_engine.generate_story_segment(
         world={
             "name": session.get("current_world", "Unknown"),
             "inspiration": session.get("current_world_inspiration", "Original")
@@ -160,10 +156,7 @@ def world_scene():
         phase=phase
     )
 
-    scenario_text = result["story"]
-    contextual_choices = result["choices"]
-
-    # Map AI choices to numbered session tracking
+    # Setup choice mapping
     choices = [(i + 1, choice) for i, choice in enumerate(contextual_choices[:5])]
     session["death_choice"] = 1
     session["progress_choice"] = 2
@@ -171,7 +164,6 @@ def world_scene():
     session["random_choice"] = 4
     if session.get("secret_choice"):
         choices.append((6, f"A mysterious chance... inspired by {random.choice(high_loyalty)}"))
-
     session["current_choices"] = choices
 
     return render_template(
