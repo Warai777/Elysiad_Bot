@@ -1,113 +1,31 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ player.name }}'s Journal</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Archivist’s Journal</title>
+    <link rel="stylesheet" href="/static/journal_page_flip.css">
 </head>
 <body>
-
-<div class="journal-book" id="journalBook">
-    <!-- Page 1: Hints -->
-    <div class="journal-page" data-page="0">
-        <h2>Hints from the Archivist</h2>
-        <ul>
-            {% for hint in journal.Hints %}
-                <li>{{ hint }}</li>
-            {% else %}
-                <li>No hints yet.</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <!-- Page 2: Lore -->
-    <div class="journal-page" data-page="1">
-        <h2>Discovered Lore</h2>
-        <ul>
-            {% for entry in journal.Lore %}
-                <li>{{ entry }}</li>
-            {% else %}
-                <li>No lore found yet.</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <!-- Page 3: Events -->
-    <div class="journal-page" data-page="2">
-        <h2>Major Events</h2>
-        <ul>
-            {% for event in journal.Events %}
-                <li>{{ event }}</li>
-            {% else %}
-                <li>No major events recorded.</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <!-- Page 4: Notes -->
-    <div class="journal-page" data-page="3">
-        <h2>Your Personal Notes</h2>
-        <ul>
-            {% for note in journal.get("Notes", []) %}
-                <li>{{ note }}</li>
-            {% else %}
-                <li>No personal notes yet.</li>
-            {% endfor %}
-        </ul>
-
-        <form method="POST" action="{{ url_for('add_note') }}">
-            <textarea name="note" rows="4" cols="50" placeholder="Write your note here..." required></textarea><br>
-            <button type="submit">Save Note</button>
-        </form>
-    </div>
-
-    <div class="journal-nav">
-        <button id="prevPage">&larr; Previous</button>
-        <a href="{{ url_for('library') }}" class="button small">← Back to Library</a>
-        <button id="nextPage">Next &rarr;</button>
+<div class="journal-wrapper">
+    <div class="journal">
+        <div class="page left">
+            <h2>Hints from the Archivist</h2>
+            <ul><li>No hints yet.</li></ul>
+        </div>
+        <div class="page right" id="rightPage">
+            <h2>Discovered Lore</h2>
+            <ul><li>No lore discovered yet.</li></ul>
+        </div>
+        <div class="controls">
+            <button onclick="flipPage()">Flip Page</button>
+        </div>
     </div>
 </div>
-
-<div class="mascot-container">
-    <img src="{{ url_for('static', filename='elysiad_mascot.png') }}" alt="Elysiad Mascot">
-</div>
-
 <script>
-    const pages = document.querySelectorAll('.journal-page');
-    let currentPage = 0;
-
-    function showPage(index) {
-        pages.forEach((page, i) => {
-            if (i === index) {
-                page.style.zIndex = 5;
-                page.classList.remove('flipped');
-            } else if (i < index) {
-                page.classList.add('flipped');
-                page.style.zIndex = 0;
-            } else {
-                page.classList.remove('flipped');
-                page.style.zIndex = 4 - i;
-            }
-        });
-    }
-
-    document.getElementById('nextPage').addEventListener('click', () => {
-        if (currentPage < pages.length - 1) {
-            currentPage++;
-            showPage(currentPage);
-        }
-    });
-
-    document.getElementById('prevPage').addEventListener('click', () => {
-        if (currentPage > 0) {
-            currentPage--;
-            showPage(currentPage);
-        }
-    });
-
-    // Initial page
-    showPage(currentPage);
+function flipPage() {
+    document.getElementById("rightPage").classList.toggle("flip");
+}
 </script>
-
 </body>
 </html>
