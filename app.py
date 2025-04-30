@@ -282,6 +282,11 @@ def add_note():
         player.save()
     return redirect(url_for("view_journal"))
 
+@app.route("/death_screen", methods=["GET"])
+def death_screen():
+    return render_template("death_screen.html")
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
