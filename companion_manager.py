@@ -1,6 +1,10 @@
 import json
 import random
 import openai
+import os
+
+# ✅ OpenAI v1.0+ client
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def generate_ai_inspired_companion(world_inspiration):
     prompt = f"""
@@ -26,7 +30,7 @@ Respond only in JSON like:
     """
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are a character generator for a procedurally generated RPG."},
@@ -43,6 +47,7 @@ Respond only in JSON like:
 
     except Exception as e:
         print("⚠️ AI Companion generation failed:", e)
+
         return {
             "name": "Fallback Echo",
             "inspired_by": world_inspiration,
