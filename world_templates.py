@@ -3,8 +3,8 @@ import json
 import random
 import os
 
-# ✅ Set your OpenAI API key from the environment
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# ✅ Initialize OpenAI v1.0+ client
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ✅ Large inspiration pool
 FICTIONAL_INSPIRATIONS = [
@@ -69,7 +69,7 @@ ONLY return valid JSON. Do not explain anything.
 """
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an RPG world generator."},
@@ -86,7 +86,11 @@ ONLY return valid JSON. Do not explain anything.
     except Exception as e:
         import sys
         print("⚠️ AI world generation failed:", file=sys.stderr)
-        print(e, file=sys.stderr)
+        print("Reason:", e, file=sys.stderr)
+
+        if 'response' in locals():
+            print("Raw content:", getattr(response.choices[0].message, "content", "[no content]"), file=sys.stderr)
+
         return {
             "name": "Nullspire",
             "tone": "mystical",
