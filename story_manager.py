@@ -1,5 +1,6 @@
 import os
 import json
+import re
 from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -21,7 +22,7 @@ class StoryManager:
         hint_summary = "; ".join(journal_hints)
 
         prompt = f"""
-You are an AI storyteller within a darkly immersive light novel engine. Generate a completely original story scene in JSON format.
+You are an AI storyteller within a darkly immersive light novel engine. Generate a completely original story scene in strict JSON format.
 
 Context:
 - World: "{world_name}"
@@ -39,9 +40,9 @@ Instructions:
 4. Describe one meaningful element that returns later.
 5. Include one subtle reaction from the environment or a character.
 6. Do NOT mention real-world IP or game mechanics.
-7. After the scene, return exactly five immersive choices that feel like valid actions the player could take.
+7. Return ONLY valid JSON (no preamble, no markdown, no prose).
 
-Return a JSON object like:
+Respond strictly with:
 {{
   "story": "Immersive story scene here...",
   "choices": ["Choice A", "Choice B", "Choice C", "Choice D", "Choice E"]
@@ -58,5 +59,24 @@ Return a JSON object like:
             max_tokens=1200,
         )
 
-        parsed = json.loads(response.choices[0].message.content)
-        return parsed["story"], parsed["choices"]
+        raw_content = response.choices[0].message.content
+
+        try:
+            # Sanitize: remove control characters (non-printing)
+            cleaned_content = re.sub(r'[\x00-\x1F\x7F]', '', raw_content)
+
+            parsed = json.loads(cleaned_content)
+
+            if "story" not in parsed or "choices" not in parsed:
+                raise ValueError("Missing 'story' or 'choices' key in AI response.")
+
+            return parsed["story"], parsed["choices"]
+
+        except json.JSONDecodeError as e:
+            print("❌ JSON decoding failed:", e)
+            print("⚠️ Raw response (truncated):", repr(raw_content[:500]))
+            raise
+
+        except Exception as e:
+            print("❌ Unexpected error while parsing story segment:", e)
+            raise
