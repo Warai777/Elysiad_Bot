@@ -131,12 +131,14 @@ def world_scene():
     high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
     session["secret_choice"] = bool(high_loyalty)
 
-    # Companion encounter override (replaces tone-based with AI-based logic)
-    world_inspiration = session.get("current_world_inspiration")
-    companion = generate_ai_inspired_companion(world_inspiration)
-    if companion:
-        session["pending_companion"] = companion
-        return render_template("companion_encounter.html", companion=companion)
+    # ✅ Only trigger companion once per scene load
+    if not session.get("scene_initialized"):
+        session["scene_initialized"] = True
+        world_inspiration = session.get("current_world_inspiration")
+        companion = generate_ai_inspired_companion(world_inspiration)
+        if companion:
+            session["pending_companion"] = companion
+            return render_template("companion_encounter.html", companion=companion)
 
 
     # Determine narrative phase
