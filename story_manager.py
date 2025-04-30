@@ -58,7 +58,7 @@ You're not meant to be here — and yet, something deeper begins to stir...
 """.strip()
 
 
-def generate_story_segment(world, companions, tone, player_traits, player_memory, phase="Exploration"):
+def generate_story_segment(world, companions, tone, player_traits, player_memory, phase="Intro"):
     world_name = world.get("name", "Unknown Realm")
     inspiration = world.get("inspiration", "an unfamiliar myth")
     tone = tone.lower()
@@ -66,49 +66,65 @@ def generate_story_segment(world, companions, tone, player_traits, player_memory
     companion_detail = random.choice(companion_names) if companion_names else "a shadow that follows"
     trait_description = " and ".join(player_traits)
 
-    # Memory-based callback (previous hint or event)
-    hints = player_memory.get("Journal", {}).get("Hints", [])
-    recent_hint = random.choice(hints) if hints else "The Archivist’s journal remains frustratingly vague."
+    journal_hint = None
+    if player_memory.get("Journal", {}).get("Hints"):
+        journal_hint = random.choice(player_memory["Journal"]["Hints"])
+    else:
+        journal_hint = "The Archivist’s journal remains frustratingly vague."
 
-    events = player_memory.get("Journal", {}).get("Events", [])
-    recalled_event = random.choice(events) if events else None
-
-    # Tone-based world introduction
-    tone_descriptions = {
-        "grimdark": f"The sky above {world_name} bleeds rust. Hope here is a rumor, whispered and long dead.",
-        "surreal": f"In {world_name}, buildings bend, clocks hum, and thoughts sometimes drip from your ears. Nothing is stable.",
-        "mystical": f"{world_name} breathes like a sleeping god. Even the stones carry whispers of forgotten chants.",
-        "heroic": f"The banners of {world_name} ripple in unseen wind. Somewhere, fate sharpens its blade for you.",
-        "melancholy": f"Everything in {world_name} feels like the last echo of a goodbye — delicate, irreversible.",
-        "cosmic": f"Above {world_name}, the stars blink in impossible languages. You feel watched, weighed, and maybe rewritten.",
-        "spiritual": f"The trees hum. The rivers speak. {world_name} is alive in a way no world should be.",
-        "dreamlike": f"You’re walking through someone else’s dream. Every breath in {world_name} tastes like memory.",
-        "psychological": f"{world_name} turns inward — you hear your own voice echo from other mouths.",
-        "adventurous": f"Mountains claw the horizon. Towns bustle beneath floating isles. {world_name} begs to be charted."
+    base_intro = {
+        "grimdark": f"{world_name} is soaked in rust and regret. The ground crunches with old bones and broken crowns.",
+        "surreal": f"Colors drip from the sky like paint. In {world_name}, logic is a myth, and the wind speaks in riddles.",
+        "mystical": f"{world_name} breathes with arcane pulse. Trees glow faintly. Rivers hum forgotten songs.",
+        "heroic": f"The banners of lost kingdoms ripple above {world_name}. You feel destiny crawling up your spine.",
+        "melancholy": f"{world_name} rests in mourning. Every stone bears the weight of untold sorrow.",
+        "cosmic": f"{world_name} tilts beneath stars that shouldn’t exist. Something ancient stirs beyond the veil.",
+        "spiritual": f"In {world_name}, spirits whisper from the roots. Your every step echoes through unseen realms.",
+        "dreamlike": f"{world_name} bends like a memory half-remembered. You feel lighter than thought itself.",
+        "psychological": f"You’re not sure you’re alone in your mind. {world_name} blurs the line between thought and place.",
+        "adventurous": f"The winds of {world_name} beckon like a challenge. Hidden temples and leviathans lie ahead."
     }
-    intro = tone_descriptions.get(tone, tone_descriptions["mystical"])
 
-    # Phase-based flavor
-    phase_flavor = {
-        "Intro": f"You blink against strange light, your {trait_description} instincts struggling to parse this reality. Beside you, {companion_detail} adjusts slowly — both of you strangers in this place.",
-        "Exploration": f"You venture deeper, your {trait_description} nature tuned to the oddities around you. The wind smells of salt and metal. {companion_detail} says nothing, but watches everything.",
-        "Tension": f"A chill lances the silence. Your breath draws slower. {companion_detail} places a hand on something hidden. You sense you're not alone.",
-        "Climax": f"You've come too far to stop now. The air thickens. Every step feels like a choice between victory or consequence.",
-        "Resolution": f"The echoes fade. The world feels quieter, though nothing here is ever truly safe. {companion_detail} lets out a sigh they didn’t know they were holding.",
-        "Failure": f"Your body moves, but you don’t feel it. The world pressed harder than expected. You are still breathing, but that’s all."
+    intro = base_intro.get(tone, base_intro["mystical"])
+
+    phase_block = {
+        "Intro": f"""
+You arrive in {world_name}, your {trait_description} nature on edge. The air hums — not with sound, but with tension. 
+Alongside you, {companion_detail} says nothing, but watches everything.
+
+{journal_hint}
+""",
+
+        "Exploration": f"""
+You trek deeper into {world_name}, paths winding and strange. Your senses sharpen — every shift in wind, every flicker of light draws your eye. 
+{companion_detail} moves quietly beside you, scanning the strange terrain for danger or wonder.
+
+The Archivist’s hint resurfaces in your thoughts. Meaning still eludes you.
+""",
+
+        "Tension": f"""
+A shriek in the distance cuts the silence. You and {companion_detail} freeze, hearts racing. The ground trembles as if reacting.
+
+Your instincts scream, but there's no clear threat — only the pressure of being watched.
+""",
+
+        "Climax": f"""
+You find yourself at a crossroads beneath a sky of fractured moons. The journal hint blazes in your mind — it was always leading here.
+{companion_detail} draws their weapon, and your next step may change everything.
+""",
+
+        "Resolution": f"""
+The world breathes again. Whatever trial you faced now lingers like smoke in the wind. 
+{companion_detail} rests their back against a broken monument, silent.
+
+You survived. For now.
+""",
+
+        "Failure": f"""
+You collapse, the world dimming around you. In the shadows, {companion_detail} kneels — silent, grieving. 
+
+The journal page turns blank. Your story in {world_name} has paused — not ended.
+"""
     }
-    phase_block = phase_flavor.get(phase, phase_flavor["Exploration"])
 
-    # Callback text
-    callback = f"A faint memory resurfaces: \"{recalled_event}\"" if recalled_event else ""
-    hint_text = f"The Archivist’s last hint echoes: “{recent_hint}”"
-
-    # Final composition
-    return f"""{intro}
-
-{phase_block}
-
-{callback}
-{hint_text}
-
-This place, born from the echoes of **{inspiration}**, watches you in return..."""
+    return f"{intro}\n\n{phase_block.get(phase, phase_block['Exploration'])}\n\nThis place, born from the echoes of **{inspiration}**, watches you in return..."
