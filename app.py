@@ -110,10 +110,14 @@ def world_scene():
             return redirect(url_for("lore_found_screen"))
         elif selected == session["random_choice"]:
             roll = random.randint(1, 100)
-            adjust_loyalty(player, +5 if roll >= 50 else -5,
-                           cause="Survived random danger" if roll >= 50 else "Random misfortune struck")
-            return redirect(url_for("library"))
+            if roll >= 50:
+                adjust_loyalty(player, +5, cause="Survived random danger")
+                return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
+            else:
+                adjust_loyalty(player, -5, cause="Random misfortune struck")
+                return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
 
+    # Only trigger combat after scene initialized
     if not session.get("scene_initialized"):
         session["scene_initialized"] = True
     else:
@@ -143,7 +147,8 @@ def world_scene():
 
     phase = "Intro" if survived_minutes < 1 else "Exploration"
 
-    scenario_text = story_engine.generate_story_segment(
+    # Generate immersive story and contextual choices via AI
+    result = story_engine.generate_story_segment(
         world={
             "name": session.get("current_world", "Unknown"),
             "inspiration": session.get("current_world_inspiration", "Original")
@@ -155,11 +160,25 @@ def world_scene():
         phase=phase
     )
 
+    scenario_text = result["story"]
+    contextual_choices = result["choices"]
+
+    # Map AI choices to numbered session tracking
+    choices = [(i + 1, choice) for i, choice in enumerate(contextual_choices[:5])]
+    session["death_choice"] = 1
+    session["progress_choice"] = 2
+    session["lore_choices"] = [3]
+    session["random_choice"] = 4
+    if session.get("secret_choice"):
+        choices.append((6, f"A mysterious chance... inspired by {random.choice(high_loyalty)}"))
+
+    session["current_choices"] = choices
+
     return render_template(
         "world_scene.html",
         player=player,
         world=session.get("current_world", "Unknown"),
-        choices=session.get("current_choices", []),
+        choices=choices,
         survived_minutes=survived_minutes,
         scenario_text=scenario_text
     )
