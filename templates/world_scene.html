@@ -4,14 +4,29 @@
     <meta charset="UTF-8">
     <title>Survive in {{ world }} - Elysiad</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .scenario-block {
+            background-color: #1b1b1b;
+            color: #ddd;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            line-height: 1.7em;
+            white-space: pre-line;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Facing the Unknown in {{ world }}</h1>
-        <p>The shadows shift. The world watches your every move...</p>
-        <h2>What will you do?</h2>
+
+        <div class="scenario-block">
+            {{ scenario_text }}
+        </div>
+
         <p id="survival-timer">You have survived for {{ survived_minutes }} minutes inside {{ world }}.</p>
 
+        <h2>What will you do?</h2>
         <form method="POST">
             {% for num, action in choices %}
                 <button type="submit" name="choice" value="{{ num }}" class="button">{{ num }}. {{ action }}</button><br><br>
@@ -21,6 +36,7 @@
         <br>
         <p><b>Choose wisely, {{ player.name }}...</b></p>
     </div>
+
     <script>
     // Start counting from survived_minutes passed from server
     let minutes = {{ survived_minutes }};
@@ -37,7 +53,6 @@
     }
 
     setInterval(updateSurvivalTimer, 1000);
-</script>
-
+    </script>
 </body>
 </html>
