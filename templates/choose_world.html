@@ -4,24 +4,60 @@
     <meta charset="UTF-8">
     <title>Choose a World - Elysiad</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .book-entry {
+            border: 2px solid #444;
+            background: #1a1a1a;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 12px;
+            max-width: 600px;
+            color: #eee;
+            box-shadow: 0 0 10px #8882;
+        }
+
+        .book-entry h3 {
+            margin-top: 0;
+            color: #ffc857;
+        }
+
+        .book-entry p {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .book-entry button {
+            padding: 10px 25px;
+            font-size: 1em;
+            background-color: #556bda;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .book-entry button:hover {
+            background-color: #3344aa;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Choose Your World</h1>
         <p>Three books glow before you, their titles whispering promises and threats.</p>
 
-        <form method="POST">
-            {% for world in books %}
-    <form method="POST">
-        <input type="hidden" name="world" value="{{ world.name }}">
-        <div class="book-entry">
-            <h3>{{ world.name }}</h3>
-            <p><em>Genre:</em> {{ world.tone }}</p>
-            <button type="submit">Enter</button>
-        </div>
-    </form>
-{% endfor %}
-        </form>
+        {% for world in books %}
+            <form method="POST">
+                <input type="hidden" name="world" value="{{ world.name }}">
+                <div class="book-entry">
+                    <h3>{{ world.name }}</h3>
+                    <p><strong>Tone:</strong> {{ world.tone }}</p>
+                    <p><strong>Inspired by:</strong> {{ world.inspiration }}</p>
+                    <p><em>{{ world.summary }}</em></p>
+                    <button type="submit">Enter</button>
+                </div>
+            </form>
+        {% endfor %}
 
         <a href="{{ url_for('library') }}" class="button small">Return to Library</a>
     </div>
