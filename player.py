@@ -32,6 +32,15 @@ class Player:
         self.companions = []
         self.grit = 0
 
+        # Transmigration system
+        self.host_identity = {
+            "name": "Unknown Host",
+            "background": "Unknown",
+            "personality_traits": []
+        }
+        self.known_relationships = []  # e.g., ["Mentor: Aizen", "Brother: Tanjiro"]
+        self.suspicion_level = 0  # Ranges from 0 (normal) to 100 (exposed)
+
     def assign_random_traits(self):
         traits = ["Curious", "Bold", "Quiet", "Impulsive", "Cautious", "Charming"]
         return random.sample(traits, 2)
@@ -58,12 +67,22 @@ class Player:
         player.memory = data.get("memory", {"Deaths": []})
         player.companions = data.get("companions", [])
         player.grit = data.get("grit", 0)
+
+        player.host_identity = data.get("host_identity", {
+            "name": "Unknown Host",
+            "background": "Unknown",
+            "personality_traits": []
+        })
+        player.known_relationships = data.get("known_relationships", [])
+        player.suspicion_level = data.get("suspicion_level", 0)
+
         player.memory.setdefault("Journal", {
             "Hints": [],
             "Lore": [],
             "Events": [],
             "Notes": []
         })
+
         return player
 
     def save_now(self):
@@ -100,3 +119,14 @@ def kill_companion(player, companion_name):
         record_memory(player, f"{dead['name']} fell in battle. Their memory haunts you.")
         adjust_loyalty(player, -20, cause=f"Grief from losing {dead['name']}")
         player.save()
+
+# --- Suspicion Adjustment System ---
+def adjust_suspicion(player, amount, reason=""):
+    player.suspicion_level = max(0, min(100, player.suspicion_level + amount))
+    if reason:
+        player.memory.setdefault("Journal", {}).setdefault("Events", []).append(
+            f"Suspicion raised ({amount}): {reason}"
+        )
+    if player.suspicion_level >= 100:
+        player.memory["Journal"]["Events"].append("You have been fully exposed. The world is turning against you.")
+    player.save()
