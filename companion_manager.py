@@ -37,20 +37,35 @@ Respond strictly in JSON format:
 }}
 """
 
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a character generator for an RPG project."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.85,
-            max_tokens=600
-        )
+   try:
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You are a character generator for an RPG project."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.85,
+        max_tokens=600
+    )
 
-        content = response.choices[0].message.content
-        companion_data = json.loads(content)
-        return companion_data
+    content = response.choices[0].message.content
+    companion_data = json.loads(content)
+
+    # ✅ Validate essential keys
+    required_keys = ["name", "tier", "stats", "ability", "personality", "loyalty"]
+    if not all(k in companion_data for k in required_keys):
+        raise ValueError("❌ Incomplete AI companion data.")
+
+    # ✅ Validate nested keys in stats and ability
+    stat_keys = ["attack", "speed", "durability", "range", "intelligence", "stamina"]
+    if not all(k in companion_data["stats"] for k in stat_keys):
+        raise ValueError("❌ Missing stat fields in AI companion data.")
+
+    if "name" not in companion_data["ability"] or "description" not in companion_data["ability"]:
+        raise ValueError("❌ Incomplete ability fields.")
+
+    return companion_data
+
 
     except Exception as e:
         print("⚠️ Companion generation failed:", e)
