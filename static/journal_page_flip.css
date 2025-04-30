@@ -1,97 +1,87 @@
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Georgia', serif;
-    background: url('/static/parchment_bg.png') repeat;
-    background-color: #e6ddc4;
+  margin: 0;
+  padding: 0;
+  background: url('/static/parchment_texture.png') repeat;
+  font-family: 'Georgia', serif;
+  color: #2c1c00;
 }
 
-.book-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 40px;
+.journal-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url('/static/leather_cover.jpg') no-repeat center;
+  background-size: cover;
 }
 
-.book {
-    position: relative;
-    width: 800px;
-    height: 500px;
-    display: flex;
-    background: #fef9e7;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    border: 10px solid #5e3d2b;
-    border-radius: 12px;
-    overflow: hidden;
+.journal {
+  width: 800px;
+  height: 500px;
+  position: relative;
+  background-color: #fdf6e3;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .page {
-    width: 50%;
-    padding: 40px;
-    box-sizing: border-box;
-    background: url('/static/parchment_bg.png') repeat;
-    background-color: #fdf6e3;
-    color: #2d2013;
-    transition: transform 1s ease;
+  width: 50%;
+  padding: 2rem;
+  box-sizing: border-box;
+  position: relative;
 }
 
-.page.right {
+.left {
+  border-right: 2px solid #5b3b1e;
+  z-index: 1;
+}
+
+.right {
   position: absolute;
   top: 0;
   right: 0;
+  width: 50%;
+  height: 100%;
   transform-origin: left center;
   transition: transform 0.6s ease;
+  background-color: #fdf6e3;
   z-index: 2;
-  box-shadow: inset -1px 0 5px rgba(0,0,0,0.2);
+  box-shadow: inset -2px 0 5px rgba(0, 0, 0, 0.2);
 }
 
-.page.right.flip {
+.right.flip {
   transform: rotateY(-180deg);
   z-index: 1;
 }
 
-/* Optional crease image */
 .page::before {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 2px;
   left: 50%;
-  background: url('/static/crease_texture.png') repeat-y center;
+  width: 2px;
+  background: url('/static/crease_texture.png') repeat-y;
   opacity: 0.3;
   z-index: 0;
 }
 
-
-.binding {
-    position: absolute;
-    width: 20px;
-    background: repeating-linear-gradient(
-        to bottom,
-        #4b2e1c,
-        #4b2e1c 6px,
-        #3d261a 6px,
-        #3d261a 12px
-    );
-    left: 50%;
-    transform: translateX(-50%);
-    height: 100%;
-    box-shadow: inset 0 0 8px #2b170d;
-    z-index: 2;
+.controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.flip-button {
-    margin-top: 20px;
-    background-color: #4b2e1c;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Georgia', serif;
-}
-
-.flip-button:hover {
-    background-color: #3a2418;
+button {
+  padding: 0.6rem 1.2rem;
+  font-size: 14px;
+  background-color: #5b3b1e;
+  color: #fff0d6;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
 }
