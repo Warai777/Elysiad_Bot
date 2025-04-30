@@ -241,15 +241,13 @@ def handle_companion_choice():
     player = Player.load(player_name)
     choice = request.form.get("choice")
     comp = session.get("pending_companion")
+    
     if comp and choice == "accept" and comp not in player.companions:
-    player.companions.append(comp)
-    player.save()
+        player.companions.append(comp)
+        player.save()
 
     session.pop("pending_companion", None)
-
-    # ✅ Reset scene flag so the story can proceed
     session["scene_initialized"] = False
-
     return redirect(url_for("world_scene"))
 
 
