@@ -3,18 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <title>New Encounter!</title>
+    <style>
+        body {
+            background-color: #2b2d31;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background-color: #313338;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2, .card h3 {
+            color: #ffffff;
+            margin-top: 0;
+        }
+
+        .field {
+            margin: 12px 0;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #b5bac1;
+        }
+
+        .value {
+            display: block;
+            margin-top: 4px;
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #5865f2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #4752c4;
+        }
+    </style>
 </head>
 <body>
-    <h2>You encounter a wandering soul...</h2>
-    <h3>{{ companion.name }}</h3>
-    <p><b>Personality:</b> {{ companion.personality }}</p>
-    <p><b>Special Trait:</b> {{ companion.special_trait }}</p>
-    <p><b>Type:</b> {{ companion.type }}</p>
-    <p><b>HP:</b> {{ companion.base_hp }} | <b>Attack:</b> {{ companion.attack }} | <b>Defense:</b> {{ companion.defense }}</p>
+    <div class="card">
+        <h2>You encounter a wandering soul...</h2>
+        <h3>{{ companion.name }}</h3>
 
-    <form action="{{ url_for('handle_companion_choice') }}" method="POST">
-        <button name="choice" value="accept">Accept Companion</button>
-        <button name="choice" value="reject">Reject Companion</button>
-    </form>
+        <div class="field">
+            <span class="label">Archetype</span>
+            <span class="value">{{ companion.archetype }}</span>
+        </div>
+
+        <div class="field">
+            <span class="label">Personality</span>
+            <span class="value">{{ companion.personality }}</span>
+        </div>
+
+        <div class="field">
+            <span class="label">Ability</span>
+            <span class="value"><strong>{{ companion.ability.name }}</strong>: {{ companion.ability.description }}</span>
+        </div>
+
+        <div class="field">
+            <span class="label">VS Tier</span>
+            <span class="value">{{ companion.tier }}</span>
+        </div>
+
+        <div class="field">
+            <span class="label">Stats</span>
+            <span class="value">
+                🗡 Attack: {{ companion.stats.attack }} |
+                🛡 Defense: {{ companion.stats.defense }} |
+                ⚡ Speed: {{ companion.stats.speed }}<br>
+                💥 Range: {{ companion.stats.range }} |
+                🧠 Intelligence: {{ companion.stats.intelligence }} |
+                🔋 Stamina: {{ companion.stats.stamina }}
+            </span>
+        </div>
+
+        <div class="buttons">
+            <form action="{{ url_for('handle_companion_choice') }}" method="POST" style="flex: 1; margin-right: 10px;">
+                <button name="choice" value="accept">Accept</button>
+            </form>
+            <form action="{{ url_for('handle_companion_choice') }}" method="POST" style="flex: 1;">
+                <button name="choice" value="reject">Reject</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
