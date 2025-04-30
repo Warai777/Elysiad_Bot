@@ -1,51 +1,46 @@
-import random
+import openai
+import json
 
-INSPIRATION_TAGS = [
-    "One Piece", "Bleach", "Naruto", "Dragon Ball", "Attack on Titan",
-    "Made in Abyss", "Fate Series", "Gurren Lagann", "Mass Effect",
-    "Dark Souls", "Bloodborne", "Elden Ring", "Shadow Slave",
-    "Lord of the Mysteries", "Reverend Insanity", "The Witcher",
-    "Cyberpunk 2077", "Final Fantasy VII", "Persona Series", "Dorohedoro",
-    "Vivy: Fluorite Eye's Song", "Steins;Gate", "Ergo Proxy",
-    "Claymore", "Deadman Wonderland", "Overlord", "No Game No Life",
-    "Death Note", "Tokyo Ghoul", "The Expanse", "Dune",
-    "Star Wars", "Marvel Universe", "DC Universe",
-    "Berserk", "Vinland Saga", "Fullmetal Alchemist", "Trigun",
-    "The Mandalorian", "Arcane", "Eighty-Six (86)", "Zetman",
-    "Cowboy Bebop", "Code Geass", "Hunter x Hunter", "Looney Tunes (Surreal Tone)",
-    "God of War", "Halo", "Metro 2033", "Neon Genesis Evangelion",
-    "Akira", "JoJo's Bizarre Adventure", "Black Clover"
-]
+def generate_ai_world_template():
+    prompt = """
+Create a fictional world template for a light novel-style RPG.
 
-TONE_POOL = [
-    "mystical", "grimdark", "surreal", "melancholy", "cosmic",
-    "heroic", "dreamlike", "adventurous", "tragic", "romantic",
-    "spiritual", "psychological", "apocalyptic", "fantastical", "suspenseful"
-]
+RULES:
+- The world must have a ONE-WORD NAME that is poetic, symbolic, and clearly inspired by a well-known fictional universe (e.g., One Piece, Bleach, Dragon Ball, Lord of the Mysteries, etc.)
+- DO NOT include any copyrighted terms.
+- It must be recognizable to fans as being inspired by that universe.
+- Match the tone and themes of that world.
 
-NAME_FRAGMENTS_A = [
-    "Vault", "Cradle", "Throne", "City", "Forest", "Ruins", "Mirror",
-    "Wound", "Sea", "Crown", "Chasm", "Temple", "Citadel", "Abyss",
-    "Furnace", "Obelisk", "Spires", "Hollow", "Labyrinth", "Veil"
-]
+Return the following JSON object:
+{
+  "name": "OneWordNameHere",
+  "tone": "1-2 word mood descriptor (e.g. grimdark, mystical)",
+  "inspiration": "The fictional work it's based on (e.g., Bleach, One Piece)",
+  "summary": "1-2 sentence poetic summary describing the world."
+}
+ONLY return valid JSON. Do not explain anything.
+"""
 
-NAME_FRAGMENTS_B = [
-    "of Shattered Stars", "of Endless Horizons", "of Distant Echoes",
-    "of Forgotten Sins", "of Hollow Dreams", "of Falling Leaves",
-    "of Lost Suns", "of Flickering Gods", "of Withering Time",
-    "of Silent Cries", "of Rusted Crowns", "of Broken Chains",
-    "of Mourning Songs", "of Blighted Earth", "of Fading Embers",
-    "of Eternal Bloom", "of Howling Voids", "of Crumbling Thrones",
-    "of Sleeping Giants", "of Fractured Skies"
-]
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an RPG world generator."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.95,
+            max_tokens=300
+        )
 
-def generate_world():
-    name = f"{random.choice(NAME_FRAGMENTS_A)} {random.choice(NAME_FRAGMENTS_B)}"
-    inspiration = random.choice(INSPIRATION_TAGS)
-    tone = random.choice(TONE_POOL)
+        content = response.choices[0].message.content
+        world = json.loads(content)
+        return world
 
-    return {
-        "name": name,
-        "inspiration": inspiration,
-        "tone": tone
-    }
+    except Exception as e:
+        print("⚠️ AI world generation failed:", e)
+        return {
+            "name": "Nullspire",
+            "tone": "mystical",
+            "inspiration": "Original",
+            "summary": "A shrouded land adrift between time and ruin."
+        }
