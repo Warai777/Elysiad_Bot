@@ -59,7 +59,6 @@ Begin the response now in proper JSON format.
             ],
             temperature=0.95,
             max_tokens=1200,
-            response_format="json"
         )
 
         result = response.choices[0].message.content
