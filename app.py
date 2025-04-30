@@ -156,7 +156,6 @@ def world_scene():
     phase = "Intro" if survived_minutes < 1 else "Exploration"
 
     scenario_text = story_engine.generate_story_segment(
-        player_name=player.name,
         player_traits=player.traits,
         memory=player.memory,
         companions=player.companions,
