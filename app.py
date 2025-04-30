@@ -176,7 +176,7 @@ def world_scene():
         return render_template("companion_encounter.html", companion=companion)
 
     # Generate Immersive Story Text from World + Traits + Companions
-    from story_generator import generate_story_segment
+    from story_manager import generate_story_segment
     story_text = generate_story_segment(
         world={
             "name": session.get("current_world", "Unknown World"),
