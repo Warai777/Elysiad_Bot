@@ -3,7 +3,7 @@ import datetime
 import os
 import json
 from choice_engine import ChoiceEngine
-from world_templates import generate_world  # AI-style world generation
+from world_templates import generate_ai_world_template  # AI-style world generation
 
 PLAYER_FOLDER = "data/players"
 
@@ -12,9 +12,8 @@ class WorldManager:
         pass  # Worlds are dynamically generated!
 
     def generate_books(self):
-        # Generate 3 random worlds from your generator
-        return [generate_world() for _ in range(3)]
-
+    return [generate_ai_world_template() for _ in range(3)]
+       
     def start_world_timer(self, player_name, world_name):
         filepath = os.path.join(PLAYER_FOLDER, f"{player_name}.json")
         if not os.path.exists(filepath):
