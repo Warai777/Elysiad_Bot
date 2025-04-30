@@ -85,19 +85,19 @@ def choose_world():
 
 @app.route("/world_scene", methods=["GET", "POST"])
 def world_scene():
+    from story_manager import generate_story_segment
+
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
-    
+
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
 
-    # Archivist Rebirth Trigger
     if set(player.memory.get("FoundLore", [])) >= set(ARCHIVIST_LORE):
         return redirect(url_for("rebirth_screen"))
 
-    # Handle Player Choice
     if request.method == "POST":
         selected = int(request.form.get("choice"))
         if session.get("secret_choice") and selected == 6:
@@ -122,11 +122,9 @@ def world_scene():
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
 
-    # Random Combat Trigger (20%)
     if random.random() < 0.2:
         return redirect(url_for("combat"))
 
-    # Generate Scene Choices
     choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
     session["current_choices"] = choices
     session["death_choice"] = death
@@ -134,7 +132,6 @@ def world_scene():
     session["lore_choices"] = lore
     session["random_choice"] = random_c
 
-    # Survival Time Tracking
     survived_minutes = 0
     if player.world_entry_time:
         try:
@@ -145,15 +142,13 @@ def world_scene():
             survived_minutes = 0
     session["survived_minutes"] = survived_minutes
 
-    # Grit Milestones
     milestones = player.memory.setdefault("Milestones", [])
-    milestone_events = [
+    for minutes, grit_gain, message in [
         (10, 1, "Survived 10 minutes. A faint resilience is born."),
         (30, 2, "Survived 30 minutes. Second Wind awakened."),
         (60, 3, "Survived 60 minutes. Armor of Determination earned."),
         (120, 5, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
-    ]
-    for minutes, grit_gain, message in milestone_events:
+    ]:
         code = f"Milestone{minutes}"
         if survived_minutes >= minutes and code not in milestones:
             milestones.append(code)
@@ -161,7 +156,6 @@ def world_scene():
             record_memory(player, message)
             player.save()
 
-    # Loyalty Bond (Secret Option)
     high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
     if high_loyalty:
         session["secret_choice"] = True
@@ -169,23 +163,24 @@ def world_scene():
     else:
         session["secret_choice"] = False
 
-    # Companion Encounter
     companion = companion_manager.random_companion_encounter()
     if companion:
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
 
-    # Generate Immersive Story Text from World + Traits + Companions
-    from story_manager import generate_story_segment
-    story_text = generate_story_segment(
-        world={
+    # Story Phase Logic
+    phase = "Intro" if survived_minutes < 1 else "Exploration"
+
+    scenario_text = generate_story_segment(
+        {
             "name": session.get("current_world", "Unknown World"),
+            "tone": session.get("current_world_tone", "mystical"),
             "inspiration": session.get("current_world_inspiration", "Original")
         },
         companions=player.companions,
         tone=session.get("current_world_tone", "mystical"),
         player_traits=player.traits,
-        phase="Exploration"
+        phase=phase
     )
 
     return render_template(
@@ -194,7 +189,7 @@ def world_scene():
         world=session.get("current_world", "Unknown"),
         choices=choices,
         survived_minutes=survived_minutes,
-        scenario_text=story_text  # Replacing scenario_text with story_text
+        scenario_text=scenario_text
     )
 
 @app.route("/combat", methods=["GET", "POST"])
