@@ -110,26 +110,15 @@ def world_scene():
             return redirect(url_for("lore_found_screen"))
         elif selected == session["random_choice"]:
             roll = random.randint(1, 100)
-            if roll >= 50:
-                adjust_loyalty(player, +5, cause="Survived random danger")
-                return "<h1>Good fortune shines on you!</h1><a href='/library'>Return</a>"
-            else:
-                adjust_loyalty(player, -5, cause="Random misfortune struck")
-                return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
+            adjust_loyalty(player, +5 if roll >= 50 else -5,
+                           cause="Survived random danger" if roll >= 50 else "Random misfortune struck")
+            return redirect(url_for("library"))
 
-    # Only trigger combat after the scene has been initialized once
     if not session.get("scene_initialized"):
         session["scene_initialized"] = True
     else:
         if random.random() < 0.2:
             return redirect(url_for("combat"))
-
-    choices, death, progress, lore, random_c = world_manager.generate_scene_choices()
-    session["current_choices"] = choices
-    session["death_choice"] = death
-    session["progress_choice"] = progress
-    session["lore_choices"] = lore
-    session["random_choice"] = random_c
 
     survived_minutes = 0
     if player.world_entry_time:
@@ -144,7 +133,6 @@ def world_scene():
     high_loyalty = [c["name"] for c in player.companions if c.get("loyalty", 0) >= 80]
     if high_loyalty:
         session["secret_choice"] = True
-        choices.append(f"A mysterious chance... inspired by {random.choice(high_loyalty)}")
     else:
         session["secret_choice"] = False
 
@@ -171,7 +159,7 @@ def world_scene():
         "world_scene.html",
         player=player,
         world=session.get("current_world", "Unknown"),
-        choices=choices,
+        choices=session.get("current_choices", []),
         survived_minutes=survived_minutes,
         scenario_text=scenario_text
     )
