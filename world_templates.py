@@ -68,7 +68,7 @@ Return the following JSON object:
 ONLY return valid JSON. Do not explain anything.
 """
 
-    try:
+       try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
@@ -83,15 +83,13 @@ ONLY return valid JSON. Do not explain anything.
         world = json.loads(content)
         return world
 
-   except Exception as e:
-    # Log the raw error to Render logs
-    import sys
-    print("⚠️ AI world generation failed:", file=sys.stderr)
-    print(e, file=sys.stderr)
-    return {
-        "name": "Nullspire",
-        "tone": "mystical",
-        "inspiration": inspiration,
-        "summary": "A shrouded land adrift between time and ruin."
-    }
-
+    except Exception as e:
+        import sys
+        print("⚠️ AI world generation failed:", file=sys.stderr)
+        print(e, file=sys.stderr)
+        return {
+            "name": "Nullspire",
+            "tone": "mystical",
+            "inspiration": inspiration,
+            "summary": "A shrouded land adrift between time and ruin."
+        }
