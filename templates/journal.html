@@ -6,11 +6,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}">
 </head>
 <body>
-<div class="journal-wrapper">
-    <div class="journal">
-
-        <!-- Page 1: Hints -->
-        <div class="page left page-1">
+<div class="book-wrapper">
+    <div class="book">
+        <div class="page left">
             <h2>Hints from the Archivist</h2>
             <ul>
                 {% for hint in journal.get("Hints", []) %}
@@ -20,9 +18,7 @@
                 {% endfor %}
             </ul>
         </div>
-
-        <!-- Page 2: Lore -->
-        <div class="page right page-2">
+        <div class="page right" id="rightPage">
             <h2>Discovered Lore</h2>
             <ul>
                 {% for lore in journal.get("Lore", []) %}
@@ -32,62 +28,15 @@
                 {% endfor %}
             </ul>
         </div>
-
-        <!-- Page 3: Events -->
-        <div class="page left page-3">
-            <h2>Major Events</h2>
-            <ul>
-                {% for event in journal.get("Events", []) %}
-                    <li>{{ event }}</li>
-                {% else %}
-                    <li>No events recorded.</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <!-- Page 4: Notes -->
-        <div class="page right page-4">
-            <h2>Your Personal Notes</h2>
-            <ul>
-                {% for note in journal.get("Notes", []) %}
-                    <li>{{ note }}</li>
-                {% else %}
-                    <li>No personal notes yet.</li>
-                {% endfor %}
-            </ul>
-            <form method="POST" action="{{ url_for('add_note') }}">
-                <textarea name="note" rows="3" placeholder="Write a note..." required></textarea>
-                <button type="submit">Save Note</button>
-            </form>
-        </div>
-
-        <!-- Controls -->
-        <div class="controls">
-            <button onclick="flipPage()">Flip Page</button>
-            <a class="button" href="{{ url_for('library') }}">← Back to Library</a>
-        </div>
-
+        <div class="binding"></div>
     </div>
+    <button class="flip-button" onclick="flipPage()">Flip Page</button>
 </div>
 
 <script>
-let currentPage = 0;
-const pages = document.querySelectorAll(".page");
-
 function flipPage() {
-    // Hide all pages
-    pages.forEach(p => p.style.display = "none");
-
-    // Show next two pages
-    currentPage = (currentPage + 2) % pages.length;
-    pages[currentPage].style.display = "block";
-    if (pages[currentPage + 1]) {
-        pages[currentPage + 1].style.display = "block";
-    }
+    document.getElementById("rightPage").classList.toggle("flip");
 }
-
-// Initialize first two pages visible
-flipPage();
 </script>
 </body>
 </html>
