@@ -75,11 +75,14 @@ def world_scene():
     player_name = session.get("player_name")
     if not player_name:
         return redirect(url_for("home"))
+    
     player = Player.load(player_name)
     if not player:
         return redirect(url_for("home"))
+
     if set(player.memory.get("FoundLore", [])) >= set(ARCHIVIST_LORE):
         return redirect(url_for("rebirth_screen"))
+
     if request.method == "POST":
         selected = int(request.form.get("choice"))
         if session.get("secret_choice") and selected == 6:
@@ -103,6 +106,7 @@ def world_scene():
             else:
                 adjust_loyalty(player, -5, cause="Random misfortune struck")
                 return "<h1>Misfortune strikes you...</h1><a href='/library'>Return</a>"
+
     if random.random() < 0.2:
         return redirect(url_for("combat"))
 
@@ -128,7 +132,7 @@ def world_scene():
         (10, 1, "Survived 10 minutes. A faint resilience is born."),
         (30, 2, "Survived 30 minutes. Second Wind awakened."),
         (60, 3, "Survived 60 minutes. Armor of Determination earned."),
-        (120, 5, "Survived 120 minutes. Last Stand unlocked â your will transcends death.")
+        (120, 5, "Survived 120 minutes. Last Stand unlocked — your will transcends death.")
     ]:
         code = f"Milestone{minutes}"
         if survived_minutes >= minutes and code not in milestones:
@@ -149,12 +153,13 @@ def world_scene():
         session["pending_companion"] = companion
         return render_template("companion_encounter.html", companion=companion)
 
-    story_engine = StoryManager()
-    scenario_text = story_engine.generate(
+    # Updated story generation with AI
+    story_engine = StoryManager(ai_model="gpt-4")
+    scenario_text = story_engine.generate_story_segment(
         world={
             "name": session.get("current_world", "Unknown World"),
             "tone": session.get("current_world_tone", "mystical"),
-           "inspiration": session.get("current_world_inspiration", "Original")
+            "inspiration": session.get("current_world_inspiration", "Original")
         },
         companions=player.companions,
         tone=session.get("current_world_tone", "mystical"),
@@ -162,7 +167,6 @@ def world_scene():
         player_memory=player.memory,
         phase="Exploration"
     )
-    
 
     return render_template(
         "world_scene.html",
