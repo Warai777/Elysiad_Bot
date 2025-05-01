@@ -57,6 +57,7 @@ body {
   border-radius: 6px;
   backface-visibility: hidden;
   box-sizing: border-box;
+  z-index: 1;
 }
 
 .left-page { left: 4.3%; }
