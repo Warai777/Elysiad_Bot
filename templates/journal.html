@@ -3,30 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Journal</title>
-    <<link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}">
+    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="journal-wrapper">
-  <div class="book-frame"></div>
+    <div class="journal-wrapper">
+        <!-- Decorative book frame -->
+        <div class="book-frame"></div>
 
-  <div class="left-page">
-    <h2>Hints from the Archivist</h2>
-    <ul>
-      <li>No hints yet.</li>
-    </ul>
-  </div>
+        <!-- Left page -->
+        <div class="left-page">
+            <h2>Hints from the Archivist</h2>
+            <ul>
+                <li>No hints yet.</li>
+            </ul>
+        </div>
 
-  <div class="right-page">
-    <h2>Discovered Lore</h2>
-    <ul>
-      <li>No lore discovered yet.</li>
-    </ul>
-  </div>
-</div>
+        <!-- Right page -->
+        <div class="right-page">
+            <h2>Discovered Lore</h2>
+            <ul>
+                <li>No lore discovered yet.</li>
+            </ul>
+        </div>
+    </div>
 
-  <button class="flip-button">Flip</button>
-</div>
-
+    <!-- Flip button (optional) -->
+    <button class="flip-button">Flip</button>
 </body>
 </html>
