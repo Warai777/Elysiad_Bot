@@ -13,57 +13,50 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: 40px;
 }
 
 .book-frame {
-    width: 1536px; /* Use actual PNG size */
+    width: 1536px;
     height: 1024px;
     position: relative;
     background: url('/static/book_inner_frame.png') no-repeat center center;
-    background-size: cover;
-    pointer-events: none; /* optional if you want it completely visual */
+    background-size: contain;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
 }
 
 .book-pages {
     position: absolute;
-    top: 135px;       /* raised slightly more */
-    left: 100px;      /* still good */
-    width: 933px;     /* fits both pages */
-    height: 575px;    /* shortened to reveal bottom edge */
-    background: url('/static/parchment_texture_overlay.jpg') repeat;
+    top: 130px;     /* Adjust until centered inside both page wells */
+    left: 130px;
+    width: 1276px;  /* 1536 - (2 * 130) padding */
+    height: 765px;  /* 1024 - top/bottom padding */
+    background: url('/static/parchment_texture_overlay.jpg');
     background-size: cover;
-    padding: 45px;
+    padding: 50px;
     display: flex;
     justify-content: space-between;
     border-radius: 6px;
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.25);
     z-index: 1;
 }
-
-
-
-
-
-
 .page-section {
     width: 48%;
 }
-
 .page-section h2 {
     font-size: 1.6rem;
     margin-bottom: 12px;
     text-align: center;
     text-shadow: 1px 1px #d4b98a;
 }
-
 .page-section ul {
     list-style-type: disc;
     padding-left: 20px;
     font-size: 1.1rem;
     line-height: 1.5;
 }
-
 .flip-button {
     margin-top: 20px;
     padding: 10px 24px;
@@ -77,7 +70,6 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     transition: background-color 0.3s ease;
 }
-
 .flip-button:hover {
     background-color: #7a5a3a;
 }
