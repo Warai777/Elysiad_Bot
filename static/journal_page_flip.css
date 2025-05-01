@@ -25,26 +25,34 @@ body {
     pointer-events: none;
 }
 
-.left-page, .right-page {
+.left-page {
     position: absolute;
     top: 90px;
-    width: 439px;
+    left: 84px;
+    width: 437px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
     padding: 30px;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
     border-radius: 6px;
     z-index: 1;
     box-sizing: border-box;
 }
 
-.left-page {
-    left: 84px;
-}
-
 .right-page {
-    left: 560px;
+    position: absolute;
+    top: 90px;
+    left: 560px; /* not right: — we’re placing explicitly */
+    width: 440px;
+    height: 717px;
+    background: url('/static/parchment_texture_overlay.jpg') repeat;
+    background-size: cover;
+    padding: 30px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
+    border-radius: 6px;
+    z-index: 1;
+    box-sizing: border-box;
 }
 
 
