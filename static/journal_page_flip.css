@@ -28,7 +28,7 @@ body {
 .left-page {
     position: absolute;
     top: 90px;
-    left: 78px; /* was 84px */
+    left: 72px; /* moved 6px more left */
     width: 437px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
@@ -43,7 +43,7 @@ body {
 .right-page {
     position: absolute;
     top: 90px;
-    left: 554px; /* was 560px */
+    left: 548px; /* moved 6px more left */
     width: 440px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
@@ -54,8 +54,6 @@ body {
     z-index: 1;
     box-sizing: border-box;
 }
-
-
 
 
 
