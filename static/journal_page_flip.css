@@ -17,28 +17,28 @@ body {
 }
 
 .book-frame {
-    background: url('/static/book_inner_frame.png') no-repeat center center;
-    background-size: contain;
-    width: 1100px;
-    height: 750px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
+    width: 1024px; /* Use actual PNG size */
+    height: 768px;
     position: relative;
-    padding-top: 60px;
+    background: url('/static/book_inner_frame.png') no-repeat center center;
+    background-size: cover;
+    pointer-events: none; /* optional if you want it completely visual */
 }
 
 .book-pages {
-    background: url('/static/parchment_texture_overlay.jpg');
+    position: absolute;
+    top: 90px;     /* adjust to visually align with book center */
+    left: 90px;
+    width: 844px;
+    height: 588px;
+    background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
-    width: 840px;
-    height: 500px;
     padding: 50px;
     display: flex;
     justify-content: space-between;
     border-radius: 6px;
     box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.25);
-    margin-top: 30px;
+    z-index: 1;
 }
 
 .page-section {
