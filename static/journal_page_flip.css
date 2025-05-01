@@ -27,10 +27,10 @@ body {
 
 .book-pages {
     position: absolute;
-    top: 80px;   /* raised from 95px to expose spine */
-    left: 90px;  /* shifted in to center better */
-    width: 1133px; /* slightly narrowed */
-    height: 845px; /* shortened to fit vertical padding */
+    top: 40px;   /* raised from 95px to expose spine */
+    left: 70px;  /* shifted in to center better */
+    width: 500px; /* slightly narrowed */
+    height: 400px; /* shortened to fit vertical padding */
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
     padding: 50px;
