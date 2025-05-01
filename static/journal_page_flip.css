@@ -17,16 +17,19 @@ body {
 }
 
 .book-frame {
-    display: flex;
-    position: relative;
-    width: 800px;
-    height: 500px;
-    background-color: #3e2a17;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-    border-radius: 12px;
-    overflow: hidden;
-    background: url('/static/book_inner_frame.png') no-repeat center;
-    background-size: cover;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  width: 1000px;
+  height: auto;
+}
+
+.book-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .page {
