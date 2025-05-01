@@ -5,7 +5,7 @@ body {
     background-size: cover;
     font-family: 'EB Garamond', serif;
     color: #2a1c0f;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .journal-wrapper {
@@ -13,19 +13,15 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    overflow: hidden;
-    padding: 20px;
-    box-sizing: border-box;
+    min-height: 100vh;
 }
 
 .book-frame {
+    width: 960px;   /* SMALLER than original */
+    height: 640px;
     position: relative;
     background: url('/static/book_inner_frame.png') no-repeat center center;
     background-size: contain;
-    width: 90vw;              /* Responsive width */
-    max-width: 1536px;
-    aspect-ratio: 3 / 2;      /* Keeps correct book shape */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -33,17 +29,17 @@ body {
 
 .book-pages {
     position: absolute;
-    top: 11%;                 /* Based on % of height */
-    left: 8%;
-    width: 84%;
-    height: 76%;
-    background: url('/static/parchment_texture_overlay.jpg') repeat;
+    top: 80px;
+    left: 75px;
+    width: 810px;
+    height: 480px;
+    background: url('/static/parchment_texture_overlay.jpg');
     background-size: cover;
-    padding: 3%;
+    padding: 40px;
     display: flex;
     justify-content: space-between;
     border-radius: 6px;
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.25);
     z-index: 1;
     box-sizing: border-box;
 }
@@ -53,7 +49,7 @@ body {
 }
 
 .page-section h2 {
-    font-size: 1.8vw;
+    font-size: 1.4rem;
     text-align: center;
     text-shadow: 1px 1px #d4b98a;
     margin-bottom: 1em;
@@ -61,15 +57,15 @@ body {
 
 .page-section ul {
     list-style-type: disc;
-    padding-left: 1.5em;
-    font-size: 1.2vw;
+    padding-left: 1.2em;
+    font-size: 1.1rem;
     line-height: 1.6;
 }
 
 .flip-button {
-    margin-top: 1.5em;
-    padding: 10px 24px;
-    font-size: 1rem;
+    margin-top: 20px;
+    padding: 8px 20px;
+    font-size: 0.95rem;
     font-family: 'EB Garamond', serif;
     background-color: #5e4328;
     color: #fff3e0;
