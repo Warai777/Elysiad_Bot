@@ -1,11 +1,12 @@
 body {
-    margin: 0;
-    padding: 0;
-    background: url('/static/leather_bg.jpg') no-repeat center center fixed;
-    background-size: cover;
-    font-family: 'EB Garamond', serif;
-    color: #2e1c10;
+  margin: 0;
+  padding: 0;
+  background: url('/static/leather_bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'EB Garamond', serif;
+  color: #2a1c0f;
 }
+
 
 .journal-wrapper {
     display: flex;
