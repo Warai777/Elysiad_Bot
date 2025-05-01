@@ -41,24 +41,21 @@ body {
     box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
 }
 
-.left-page {
-    border-right: 1px solid #a97b50;
+.journal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 500px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+  padding: 50px 60px;
 }
 
-.right-page {
-    border-left: 1px solid #a97b50;
-}
-
-.binding-shadow {
-    position: absolute;
-    width: 20px;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    background: url('/static/journal_binding_shadow.png') center center no-repeat;
-    background-size: contain;
-    z-index: 5;
-    transform: translateX(-50%);
+.left-page, .right-page {
+  width: 45%;
 }
 
 h2 {
