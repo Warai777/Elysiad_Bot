@@ -28,7 +28,7 @@ body {
 .book-pages {
     position: absolute;
     top: 115px;
-    left: 100px;
+    left: 130px;
     width: 933px;
     height: 615px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
