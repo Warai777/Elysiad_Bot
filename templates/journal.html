@@ -7,34 +7,37 @@
 </head>
 <body>
     <div class="journal-wrapper">
+        <!-- Background book frame -->
         <div class="book-frame">
-  <img src="{{ url_for('static', filename='book_inner_frame.png') }}" alt="Journal Book Frame">
-</div>
+            <img src="{{ url_for('static', filename='book_inner_frame.png') }}" alt="Journal Book Frame">
+        </div>
 
-  <div class="journal-content">
-  <div class="left-page">
-    <h2>Hints from the Archivist</h2>
-    <ul>
-      {% for hint in journal.get("Hints", []) %}
-        <li>{{ hint }}</li>
-      {% else %}
-        <li>No hints yet.</li>
-      {% endfor %}
-    </ul>
-  </div>
-  <div class="right-page">
-    <h2>Discovered Lore</h2>
-    <ul>
-      {% for lore in journal.get("Lore", []) %}
-        <li>{{ lore }}</li>
-      {% else %}
-        <li>No lore discovered yet.</li>
-      {% endfor %}
-    </ul>
-  </div>
-</div>
+        <!-- Text content layered above the book -->
+        <div class="journal-content">
+            <div class="left-page">
+                <h2>Hints from the Archivist</h2>
+                <ul>
+                    {% for hint in journal.get("Hints", []) %}
+                        <li>{{ hint }}</li>
+                    {% else %}
+                        <li>No hints yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
 
+            <div class="right-page">
+                <h2>Discovered Lore</h2>
+                <ul>
+                    {% for lore in journal.get("Lore", []) %}
+                        <li>{{ lore }}</li>
+                    {% else %}
+                        <li>No lore discovered yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
 
+        <!-- Flip button -->
         <div class="flip-button-container">
             <button class="flip-button">Flip</button>
         </div>
