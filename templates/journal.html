@@ -38,23 +38,31 @@
   </div>
 
   <script>
-    let currentPage = 1;
-    const totalPages = 2;
+  let currentPage = 1;
+  const totalPages = 2;
 
-    function showPage(page) {
-      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-      document.querySelectorAll(`.page[data-page="${page}"]`).forEach(p => p.classList.remove('hidden'));
-    }
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => {
+      if (parseInt(p.dataset.page) === page) {
+        p.classList.remove('hidden');
+      } else {
+        p.classList.add('hidden');
+      }
+    });
+  }
 
-    function nextPage() {
-      currentPage = (currentPage % totalPages) + 1;
-      showPage(currentPage);
-    }
+  function nextPage() {
+    currentPage = (currentPage % totalPages) + 1;
+    showPage(currentPage);
+  }
 
-    function prevPage() {
-      currentPage = (currentPage - 2 + totalPages) % totalPages + 1;
-      showPage(currentPage);
-    }
-  </script>
+  function prevPage() {
+    currentPage = (currentPage - 2 + totalPages) % totalPages + 1;
+    showPage(currentPage);
+  }
+
+  // Initial call to display the first page
+  showPage(currentPage);
+</script>
 </body>
 </html>
