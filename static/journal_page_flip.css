@@ -28,7 +28,7 @@ body {
 .left-page {
     position: absolute;
     top: 90px;
-    left: 30px; /* from 66 → 64 */
+    left: 0px; /* from 66 → 64 */
     width: 437px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
