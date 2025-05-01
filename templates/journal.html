@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Elysiad Journal</title>
-  <link rel="stylesheet" href="/static/journal_page_flip.css">
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="journal.css" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&family=Homemade+Apple&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="tab-container">
-    <div class="tab" data-section="hints">Hints</div>
-    <div class="tab" data-section="lore">Lore</div>
-    <div class="tab" data-section="notes">Notes</div>
-  </div>
+  <!-- Tab Containers -->
+  <div class="tab-container left" id="tabContainerLeft"></div>
+  <div class="tab-container right" id="tabContainerRight"></div>
 
+  <!-- Journal -->
   <div class="journal-wrapper">
     <div class="book-frame"></div>
-    <div id="pageSpread" class="page-spread">
+    <div class="page-spread" id="pageSpread">
       <div class="page left-page" id="leftPage"></div>
       <div class="page right-page" id="rightPage"></div>
     </div>
   </div>
 
+  <!-- Controls -->
   <div class="button-container">
     <button class="flip-button" id="prevBtn">Previous</button>
     <button class="flip-button" id="nextBtn">Next</button>
   </div>
 
-  <input class="note-input" id="noteInput" placeholder="Write your note and press Enter..."/>
+  <!-- Notes input -->
+  <input type="text" class="note-input" id="noteInput" placeholder="Write your note and press Enter..." />
 
   <script>
     const sections = {
@@ -35,14 +36,16 @@
       notes: []
     };
 
-    const tabEls = document.querySelectorAll('.tab');
+    let currentSection = 'hints';
+    let currentPageIndex = 0;
+
     const leftPage = document.getElementById('leftPage');
     const rightPage = document.getElementById('rightPage');
     const noteInput = document.getElementById('noteInput');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
-    let currentSection = 'hints';
-    let currentPage = 0;
+    const tabContainerLeft = document.getElementById('tabContainerLeft');
+    const tabContainerRight = document.getElementById('tabContainerRight');
 
     function paginate(content, charsPerPage = 200) {
       const lines = [];
@@ -60,38 +63,53 @@
 
     function renderPages() {
       const pages = paginate(sections[currentSection]);
-      leftPage.textContent = pages[currentPage] || '';
-      rightPage.textContent = pages[currentPage + 1] || '';
+      leftPage.textContent = pages[currentPageIndex] || '';
+      rightPage.textContent = pages[currentPageIndex + 1] || '';
     }
 
-    tabEls.forEach(tab => {
+    function createTab(name, side) {
+      const tab = document.createElement('div');
+      tab.className = 'tab flip-tab';
+      tab.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+      tab.dataset.section = name;
       tab.addEventListener('click', () => {
-        currentSection = tab.dataset.section;
-        currentPage = 0;
-        renderPages();
-        updateTabs();
+        if (!tab.classList.contains('active')) {
+          tab.classList.add('flipping');
+          setTimeout(() => {
+            switchSection(name);
+            tab.classList.remove('flipping');
+          }, 300);
+        }
       });
-    });
-
-    function updateTabs() {
-  tabEls.forEach(tab => {
-    tab.classList.remove('active');
-    if (tab.dataset.section === currentSection) {
-      tab.classList.add('active');
+      if (name === currentSection) tab.classList.add('active');
+      (side === 'left' ? tabContainerLeft : tabContainerRight).appendChild(tab);
     }
-  });
 
-  const tabContainer = document.querySelector('.tab-container');
-  tabContainer.classList.remove('left', 'right');
+    function renderTabs() {
+      tabContainerLeft.innerHTML = '';
+      tabContainerRight.innerHTML = '';
 
-  if (currentSection === 'hints') {
-    tabContainer.classList.add('right');
-  } else if (currentSection === 'lore') {
-    tabContainer.classList.add('right');
-  } else if (currentSection === 'notes') {
-    tabContainer.classList.add('left');
-  }
-}
+      if (currentSection === 'hints') {
+        createTab('hints', 'left');
+        createTab('lore', 'right');
+        createTab('notes', 'right');
+      } else if (currentSection === 'lore') {
+        createTab('hints', 'left');
+        createTab('lore', 'left');
+        createTab('notes', 'right');
+      } else {
+        createTab('hints', 'left');
+        createTab('lore', 'left');
+        createTab('notes', 'left');
+      }
+    }
+
+    function switchSection(section) {
+      currentSection = section;
+      currentPageIndex = 0;
+      renderTabs();
+      renderPages();
+    }
 
     noteInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && currentSection === 'notes') {
@@ -117,24 +135,23 @@
       }
     });
 
-    prevBtn.onclick = () => {
-      if (currentPage - 2 >= 0) {
-        currentPage -= 2;
+    prevBtn.addEventListener('click', () => {
+      if (currentPageIndex - 2 >= 0) {
+        currentPageIndex -= 2;
         renderPages();
       }
-    };
+    });
 
-    nextBtn.onclick = () => {
+    nextBtn.addEventListener('click', () => {
       const maxPages = paginate(sections[currentSection]).length;
-      if (currentPage + 2 < maxPages) {
-        currentPage += 2;
+      if (currentPageIndex + 2 < maxPages) {
+        currentPageIndex += 2;
         renderPages();
       }
-    };
+    });
 
-    // Initial setup
+    renderTabs();
     renderPages();
-    updateTabs();
   </script>
 </body>
 </html>
