@@ -9,11 +9,10 @@ body {
 }
 
 .journal-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    position: relative;
+    width: 1024px;
+    height: 1024px;
+    margin: 0 auto;
 }
 
 .book-frame {
@@ -21,15 +20,15 @@ body {
     height: 1024px;
     background: url('/static/book__inner_frame.png') no-repeat center center;
     background-size: contain;
-    position: relative;
+    position: absolute;
     z-index: 2;
     pointer-events: none;
 }
 
 .left-page, .right-page {
     position: absolute;
-    top: 105px;
-    width: 420px;
+    top: 110px;
+    width: 412px;
     height: 800px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
@@ -41,11 +40,11 @@ body {
 }
 
 .left-page {
-    left: 65px;
+    left: 70px;
 }
 
 .right-page {
-    right: 65px;
+    right: 70px;
 }
 
 
