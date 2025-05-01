@@ -28,7 +28,7 @@ body {
 .left-page {
     position: absolute;
     top: 90px;
-    left: 69px; /* precisely fits left cutout */
+    left: 67px; /* FINAL placement */
     width: 437px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
@@ -43,7 +43,7 @@ body {
 .right-page {
     position: absolute;
     top: 90px;
-    left: 545px; /* precisely fits right cutout */
+    left: 543px; /* FINAL placement */
     width: 440px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
