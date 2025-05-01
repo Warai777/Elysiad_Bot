@@ -30,7 +30,7 @@ body {
     top: 80px;   /* raised from 95px to expose spine */
     left: 90px;  /* shifted in to center better */
     width: 844px; /* slightly narrowed */
-    height: 588px; /* shortened to fit vertical padding */
+    height: 500px; /* shortened to fit vertical padding */
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
     padding: 50px;
