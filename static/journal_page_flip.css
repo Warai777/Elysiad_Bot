@@ -17,9 +17,9 @@ body {
 }
 
 .book-frame {
-    width: 512px;  /* half of 1024 to match image scale if side-by-side */
-    height: 512px;
-    background: url('/static/book_inner_frame.png') no-repeat center center;
+    width: 1024px;  /* half of 1024 to match image scale if side-by-side */
+    height: 1024px;
+    background: url('/static/book__inner_frame.png') no-repeat center center;
     background-size: contain;
     position: relative;
 }
