@@ -28,7 +28,7 @@ body {
 .left-page {
     position: absolute;
     top: 90px;
-    left: 84px;
+    left: 78px; /* was 84px */
     width: 437px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
@@ -43,7 +43,7 @@ body {
 .right-page {
     position: absolute;
     top: 90px;
-    left: 560px; /* not right: — we’re placing explicitly */
+    left: 554px; /* was 560px */
     width: 440px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
