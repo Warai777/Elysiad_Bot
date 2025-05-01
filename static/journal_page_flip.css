@@ -33,7 +33,7 @@ body {
 /* Left page (Hints from the Archivist) */
 .left-page {
     position: absolute;
-    top: 15%;
+    top: 20%;
     left: 4.3%;  /* Moved from 5.2% to 4.4% */
     width: 44%;
     height: 82%;
