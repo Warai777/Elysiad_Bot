@@ -28,7 +28,7 @@ body {
 .left-page {
     position: absolute;
     top: 80px; /* Fine-tuning top position */
-    left: 0px; /* Aligned with the spine */
+    left: 490px; /* Aligned with the spine */
     width: 440px; /* Maintain the width */
     height: 700px; /* Height should fit within the book frame */
     background: url('/static/parchment_texture_overlay.jpg') repeat;
