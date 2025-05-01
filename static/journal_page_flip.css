@@ -26,22 +26,28 @@ body {
     pointer-events: none;
 }
 
-.book-pages {
+.left-page, .right-page {
     position: absolute;
     top: 105px;
-    left: 52px;
-    width: 920px;
+    width: 420px;
     height: 800px;
-    background: url('/static/parchment_texture_overlay.jpg');
+    background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
-    padding: 50px;
-    display: flex;
-    justify-content: space-between;
+    padding: 30px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
     border-radius: 6px;
-    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.25);
     z-index: 1;
     box-sizing: border-box;
 }
+
+.left-page {
+    left: 65px;
+}
+
+.right-page {
+    right: 65px;
+}
+
 
 
 
