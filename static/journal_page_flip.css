@@ -30,7 +30,7 @@ body {
     top: 90px; /* Adjusted to align with the top of the book */
     left: 0px; /* Aligned with the spine */
     width: 440px; /* Maintain the width */
-    height: 700px; /* Reduced height to fit the page correctly inside the frame */
+    height: 717px; /* Reduced height to fit the page correctly inside the frame */
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
     padding: 30px; /* Keep padding for the content */
