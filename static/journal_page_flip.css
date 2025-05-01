@@ -1,24 +1,6 @@
-body {
-    margin: 0;
-    padding: 0;
-    background: url('/static/leather_bg.jpg') no-repeat center center fixed;
-    background-size: cover;
-    font-family: 'EB Garamond', serif;
-    color: #2a1c0f;
-    overflow: hidden;
-}
-
-.journal-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
 .book-frame {
-    width: 960px; /* smaller */
-    height: 640px;
+    width: 512px;  /* half of 1024 to match image scale if side-by-side */
+    height: 512px;
     background: url('/static/book_inner_frame.png') no-repeat center center;
     background-size: contain;
     position: relative;
@@ -26,17 +8,17 @@ body {
 
 .book-pages {
     position: absolute;
-    top: 70px;
-    left: 60px;
-    width: 840px;
-    height: 500px;
-    background: url('/static/parchment_texture_overlay.jpg') repeat;
+    top: 60px;     /* space from top edge */
+    left: 50px;    /* space from left edge */
+    width: 412px;  /* total width: 512 - 2*50 padding */
+    height: 392px; /* total height: 512 - top/bottom padding */
+    background: url('/static/parchment_texture_overlay.jpg');
     background-size: cover;
-    padding: 35px;
+    padding: 30px;
     display: flex;
     justify-content: space-between;
-    border-radius: 6px;
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.25);
-    z-index: 1;
+    border-radius: 4px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
+    z-index: 1;
 }
