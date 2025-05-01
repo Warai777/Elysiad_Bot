@@ -30,30 +30,32 @@ body {
     pointer-events: none;
 }
 
+/* Left page (Hints from the Archivist) */
 .left-page {
     position: absolute;
-    top: 90px;
-    left: 90px; /* Pushes it into visible range inside the left page frame */
-    width: 440px; /* Slightly increased if you want it wider */
-    height: 717px;
+    top: 8.7%;
+    left: 6%;
+    width: 42%;
+    height: 82%;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
-    padding: 30px;
+    padding: 2%;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
     border-radius: 6px;
     z-index: 1;
     box-sizing: border-box;
 }
 
+/* Right page (Discovered Lore) */
 .right-page {
     position: absolute;
-    top: 90px;
-    left: 530px; /* Slightly adjusted to center right page in frame */
-    width: 440px;
-    height: 717px;
+    top: 8.7%;
+    left: 52%;
+    width: 42%;
+    height: 82%;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
-    padding: 30px;
+    padding: 2%;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
     border-radius: 6px;
     z-index: 1;
