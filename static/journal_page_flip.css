@@ -17,8 +17,8 @@ body {
 }
 
 .book-frame {
-    width: 1133px; /* Use actual PNG size */
-    height: 845px;
+    width: 1536px; /* Use actual PNG size */
+    height: 1024px;
     position: relative;
     background: url('/static/book_inner_frame.png') no-repeat center center;
     background-size: cover;
