@@ -34,8 +34,8 @@ body {
 .left-page {
     position: absolute;
     top: 8.7%;
-    left: 5.2%;              /* Adjusted to fill left gap */
-    width: 44%;              /* Slightly wider to close edge space */
+    left: 4.4%;  /* Moved from 5.2% to 4.4% */
+    width: 44%;
     height: 82%;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
