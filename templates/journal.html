@@ -1,103 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Dynamic Journal</title>
+  <meta charset="UTF-8">
+  <title>Elysiad Journal</title>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/journal_page_flip.css">
 </head>
 <body>
   <div class="journal-wrapper">
+
+    <!-- Page Spread (Double page) -->
+    <div class="page-spread">
+      <div class="page left-page">
+        <h2>Hints from the Archivist</h2>
+        <ul>
+          <li>The key was hidden beneath the roots.</li>
+          <li>Ancient carvings mentioned ‘Elysiad’.</li>
+          <li>A mirror that whispers names...</li>
+          <li>The Archivist has eyes in every world.</li>
+        </ul>
+      </div>
+
+      <div class="page right-page">
+        <h2>Discovered Lore</h2>
+        <ul>
+          <li>A coin flipped through dimensions.</li>
+          <li>They return on lunar eclipses.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Book Frame (always last so it's visually on top) -->
     <div class="book-frame"></div>
   </div>
 
+  <!-- Navigation & Notes -->
   <div class="button-container">
-    <button class="flip-button" onclick="flipPrev()">Previous</button>
-    <button class="flip-button" onclick="flipNext()">Next</button>
+    <button class="flip-button" onclick="flipBack()">Previous</button>
+    <button class="flip-button" onclick="flipForward()">Next</button>
   </div>
 
-  <input type="text" class="note-input" id="noteInput" placeholder="Type your note and press Enter..." onkeydown="handleNoteInput(event)" />
+  <input class="note-input" type="text" placeholder="Type your note and press Enter..." onkeydown="submitNote(event)">
 
   <script>
-    const lore = [
-      "The key was hidden beneath the roots.",
-      "Ancient carvings mentioned 'Elysiad'.",
-      "A mirror that whispers names...",
-      "The Archivist has eyes in every world.",
-      "A coin flipped through dimensions.",
-      "They return on lunar eclipses."
-    ];
-
-    let notes = [];
     let currentPage = 0;
-    const maxItemsPerPage = 4;
-    const wrapper = document.querySelector(".journal-wrapper");
-    const input = document.getElementById("noteInput");
-
-    function generateSpreads() {
-      wrapper.querySelectorAll(".page-spread").forEach(e => e.remove());
-
-      const entries = [...lore, ...notes];
-      const totalSpreads = Math.ceil(entries.length / (maxItemsPerPage * 2));
-
-      for (let i = 0; i < totalSpreads; i++) {
-        const spread = document.createElement("div");
-        spread.className = "page-spread";
-        spread.style.zIndex = 100 - i;
-        spread.id = `spread${i}`;
-
-        const left = document.createElement("div");
-        left.className = "page left-page";
-        const leftEntries = entries.slice(i * maxItemsPerPage * 2, i * maxItemsPerPage * 2 + maxItemsPerPage);
-        left.innerHTML = `<h2>${i === 0 ? 'Hints from the Archivist' : 'Lore'}</h2><ul>` + leftEntries.map(t => `<li>${t}</li>`).join('') + "</ul>";
-
-        const right = document.createElement("div");
-        right.className = "page right-page";
-        const rightEntries = entries.slice(i * maxItemsPerPage * 2 + maxItemsPerPage, (i + 1) * maxItemsPerPage * 2);
-        right.innerHTML = `<h2>${i === 0 ? 'Discovered Lore' : 'Notes'}</h2><ul>` + rightEntries.map(t => `<li>${t}</li>`).join('') + "</ul>";
-
-        spread.appendChild(left);
-        spread.appendChild(right);
-        wrapper.appendChild(spread);
-      }
+    function flipForward() {
+      const spread = document.querySelector('.page-spread');
+      spread.classList.add('flipped');
     }
 
-    function flipNext() {
-      if (currentPage < document.querySelectorAll('.page-spread').length) {
-        document.getElementById(`spread${currentPage}`)?.classList.add('flipped');
-        currentPage++;
-      }
+    function flipBack() {
+      const spread = document.querySelector('.page-spread');
+      spread.classList.remove('flipped');
     }
 
-    function flipPrev() {
-      if (currentPage > 0) {
-        currentPage--;
-        document.getElementById(`spread${currentPage}`)?.classList.remove('flipped');
+    function submitNote(event) {
+      if (event.key === 'Enter') {
+        alert("Note submitted: " + event.target.value);
+        event.target.value = "";
       }
     }
-
-    function handleNoteInput(e) {
-      if (e.key === "Enter" && input.value.trim()) {
-        const entry = input.value.trim();
-        input.disabled = true;
-        input.value = "";
-
-        const lines = entry.match(/.{1,80}/g) || [];
-        let i = 0;
-        const interval = setInterval(() => {
-          if (i < lines.length) {
-            notes.push("Note: " + lines[i]);
-            generateSpreads();
-            i++;
-          } else {
-            clearInterval(interval);
-            input.disabled = false;
-          }
-        }, 300);
-      }
-    }
-
-    generateSpreads();
   </script>
 </body>
 </html>
