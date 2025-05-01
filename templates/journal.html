@@ -74,13 +74,24 @@
     });
 
     function updateTabs() {
-      tabEls.forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.dataset.section === currentSection) {
-          tab.classList.add('active');
-        }
-      });
+  tabEls.forEach(tab => {
+    tab.classList.remove('active');
+    if (tab.dataset.section === currentSection) {
+      tab.classList.add('active');
     }
+  });
+
+  const tabContainer = document.querySelector('.tab-container');
+  tabContainer.classList.remove('left', 'right');
+
+  if (currentSection === 'hints') {
+    tabContainer.classList.add('right');
+  } else if (currentSection === 'lore') {
+    tabContainer.classList.add('right');
+  } else if (currentSection === 'notes') {
+    tabContainer.classList.add('left');
+  }
+}
 
     noteInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && currentSection === 'notes') {
