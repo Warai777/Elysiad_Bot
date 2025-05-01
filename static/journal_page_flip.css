@@ -8,6 +8,33 @@ body {
   overflow-x: hidden;
 }
 
+.tab-container {
+  position: absolute;
+  top: 5%;
+  right: 2%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 3;
+}
+
+.tab {
+  writing-mode: vertical-rl;
+  background: #d1b478;
+  padding: 6px 10px;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+  transform: translateY(-10%);
+}
+
+.tab.active {
+  background: #5c3a1e;
+  color: #fff;
+}
+
 .journal-wrapper {
   position: relative;
   width: 100%;
@@ -19,6 +46,8 @@ body {
 
 .book-frame {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background: url('/static/book__inner_frame.png') no-repeat center center;
@@ -27,10 +56,14 @@ body {
   pointer-events: none;
 }
 
-.pages-container {
-  position: relative;
+.page-spread {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  transform-style: preserve-3d;
+  transform-origin: center left;
   z-index: 1;
 }
 
@@ -42,21 +75,20 @@ body {
   background: url('/static/parchment_texture_overlay.jpg') repeat;
   background-size: cover;
   padding: 2%;
-  border-radius: 6px;
   box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
-  transform-style: preserve-3d;
+  border-radius: 6px;
   backface-visibility: hidden;
   box-sizing: border-box;
-  z-index: 1;
+  white-space: pre-line;
+  overflow-wrap: break-word;
 }
 
-.left-page { left: 4.3%; }
-.right-page { left: 50.5%; }
+.left-page {
+  left: 4.3%;
+}
 
-.page-content {
-  font-size: 18px;
-  line-height: 1.5;
-  white-space: pre-wrap;
+.right-page {
+  left: 50.5%;
 }
 
 .flip-button {
@@ -74,13 +106,8 @@ body {
   z-index: 10;
 }
 
-.button-container {
-  text-align: center;
-  margin-top: 10px;
-}
-
 .note-input {
-  display: none;
+  display: block;
   margin: 10px auto 0;
   padding: 10px;
   font-family: 'EB Garamond', serif;
@@ -90,45 +117,11 @@ body {
   border-radius: 4px;
   border: 1px solid #aaa;
   z-index: 10;
+}
+
+.button-container {
+  text-align: center;
+  margin-top: 20px;
+  z-index: 10;
   position: relative;
-}
-
-.tabs-container {
-  position: absolute;
-  top: 6%;
-  width: 100%;
-  height: 0;
-  z-index: 5;
-  pointer-events: none;
-}
-
-.tab-button {
-  position: absolute;
-  width: 60px;
-  height: 24px;
-  background: #d8c5a1;
-  color: #2a1c0f;
-  font-family: 'EB Garamond', serif;
-  font-size: 14px;
-  border: 1px solid #6b4c2f;
-  border-radius: 4px 4px 0 0;
-  transform: rotate(-90deg);
-  transform-origin: top left;
-  pointer-events: auto;
-  cursor: pointer;
-  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-}
-
-.tab-button.left-tab {
-  left: -40px;
-}
-
-.tab-button.right-tab {
-  right: -40px;
-}
-
-.tab-button.active-tab {
-  background: #b59d78;
-  font-weight: bold;
-  z-index: 6;
 }
