@@ -27,19 +27,20 @@ body {
 
 .book-pages {
     position: absolute;
-    top: 115px;
-    left: 100px;
-    width: 933px;
-    height: 615px;
+    top: 135px;       /* raised slightly more */
+    left: 100px;      /* still good */
+    width: 933px;     /* fits both pages */
+    height: 575px;    /* shortened to reveal bottom edge */
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
-    padding: 50px;
+    padding: 45px;
     display: flex;
     justify-content: space-between;
     border-radius: 6px;
     box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.25);
     z-index: 1;
 }
+
 
 
 
