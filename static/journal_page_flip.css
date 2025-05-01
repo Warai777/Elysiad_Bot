@@ -27,9 +27,9 @@ body {
 
 .left-page, .right-page {
     position: absolute;
-    top: 112px;
-    width: 388px;
-    height: 790px;
+    top: 85px;
+    width: 482px;
+    height: 738px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
     padding: 30px;
@@ -40,12 +40,13 @@ body {
 }
 
 .left-page {
-    left: 102px;
+    left: 98px;
 }
 
 .right-page {
-    right: 102px;
+    right: 98px;
 }
+
 
 
 
