@@ -28,13 +28,13 @@ body {
 .left-page {
     position: absolute;
     top: 90px;
-    left: 72px; /* moved 6px more left */
+    left: 69px; /* precisely fits left cutout */
     width: 437px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
     padding: 30px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
     border-radius: 6px;
     z-index: 1;
     box-sizing: border-box;
@@ -43,18 +43,17 @@ body {
 .right-page {
     position: absolute;
     top: 90px;
-    left: 548px; /* moved 6px more left */
+    left: 545px; /* precisely fits right cutout */
     width: 440px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
     padding: 30px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
     border-radius: 6px;
     z-index: 1;
     box-sizing: border-box;
 }
-
 
 
 
