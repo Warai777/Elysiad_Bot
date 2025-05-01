@@ -1,34 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Journal</title>
-    <link rel="stylesheet" href="/static/journal_page_flip.css">
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Journal Flip</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="journal-wrapper">
-        <!-- Decorative book frame -->
-        <div class="book-frame"></div>
+  <div class="journal-wrapper">
+    <div class="book-frame"></div>
 
-        <!-- Left page -->
-        <div class="left-page">
-            <h2>Hints from the Archivist</h2>
-            <ul>
-                <li>No hints yet.</li>
-            </ul>
-        </div>
-
-        <!-- Right page -->
-        <div class="right-page">
-            <h2>Discovered Lore</h2>
-            <ul>
-                <li>No lore discovered yet.</li>
-            </ul>
-        </div>
+    <!-- Page Set 1 -->
+    <div class="left-page page" data-page="1">
+      <h2>Hints from the Archivist</h2>
+      <ul><li>No hints yet.</li></ul>
+    </div>
+    <div class="right-page page" data-page="1">
+      <h2>Discovered Lore</h2>
+      <ul><li>No lore discovered yet.</li></ul>
     </div>
 
-    <!-- Flip button (optional) -->
-    <button class="flip-button">Flip</button>
+    <!-- Page Set 2 -->
+    <div class="left-page page hidden" data-page="2">
+      <h2>Hints Continued</h2>
+      <ul><li>There may be secrets hidden in dreams.</li></ul>
+    </div>
+    <div class="right-page page hidden" data-page="2">
+      <h2>More Lore</h2>
+      <ul><li>A fragment from the age before records began...</li></ul>
+    </div>
+  </div>
+
+  <!-- Flip Controls -->
+  <div class="button-container">
+    <button class="flip-button" onclick="prevPage()">Previous</button>
+    <button class="flip-button" onclick="nextPage()">Next</button>
+  </div>
+
+  <script>
+    let currentPage = 1;
+    const totalPages = 2;
+
+    function showPage(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll(`.page[data-page="${page}"]`).forEach(p => p.classList.remove('hidden'));
+    }
+
+    function nextPage() {
+      currentPage = (currentPage % totalPages) + 1;
+      showPage(currentPage);
+    }
+
+    function prevPage() {
+      currentPage = (currentPage - 2 + totalPages) % totalPages + 1;
+      showPage(currentPage);
+    }
+  </script>
 </body>
 </html>
