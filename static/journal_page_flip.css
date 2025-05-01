@@ -1,3 +1,21 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: url('/static/leather_bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'EB Garamond', serif;
+    color: #2a1c0f;
+    overflow: hidden;
+}
+
+.journal-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
 .book-frame {
     width: 512px;  /* half of 1024 to match image scale if side-by-side */
     height: 512px;
