@@ -1,142 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Journal</title>
+  <meta charset="UTF-8">
+  <title>Elysiad Journal</title>
+  <link rel="stylesheet" href="journal.css">
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/journal_page_flip.css">
 </head>
 <body>
+  <div class="tab-container">
+    <div class="tab" data-section="hints">Hints</div>
+    <div class="tab" data-section="lore">Lore</div>
+    <div class="tab" data-section="notes">Notes</div>
+  </div>
+
   <div class="journal-wrapper">
-    <div class="tabs-container">
-  <button class="tab-button" data-tab="hints">Hints</button>
-  <button class="tab-button" data-tab="lore">Lore</button>
-  <button class="tab-button" data-tab="notes">Notes</button>
-</div>
     <div class="book-frame"></div>
-    <div class="tabs-container">
-      <button class="tab-button" data-tab="hints">Hints</button>
-      <button class="tab-button" data-tab="lore">Lore</button>
-      <button class="tab-button" data-tab="notes">Notes</button>
+    <div id="pageSpread" class="page-spread">
+      <div class="page left-page" id="leftPage"></div>
+      <div class="page right-page" id="rightPage"></div>
     </div>
-    <div class="pages-container" id="pagesContainer"></div>
   </div>
 
   <div class="button-container">
-    <button class="flip-button" onclick="flipPrev()">Previous</button>
-    <button class="flip-button" onclick="flipNext()">Next</button>
+    <button class="flip-button" id="prevBtn">Previous</button>
+    <button class="flip-button" id="nextBtn">Next</button>
   </div>
 
-  <input class="note-input" id="noteInput" type="text" placeholder="Write your note and press Enter..." onkeydown="handleNoteInput(event)" />
+  <input class="note-input" id="noteInput" placeholder="Write your note and press Enter..."/>
 
   <script>
-    let currentTab = 'hints';
-    let currentPageIndex = 0;
-    let isWriting = false;
-
-    const data = {
+    const sections = {
       hints: ["The Archivist awaits.", "Only fools touch the mirror."],
-      lore: ["There was once a gate carved from shadow.", "The mark glows only in moonlight."],
+      lore: ["A coin flipped through dimensions.", "They return on lunar eclipses."],
       notes: []
     };
 
-    const pagesContainer = document.getElementById('pagesContainer');
+    const tabEls = document.querySelectorAll('.tab');
+    const leftPage = document.getElementById('leftPage');
+    const rightPage = document.getElementById('rightPage');
     const noteInput = document.getElementById('noteInput');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let currentSection = 'hints';
+    let currentPage = 0;
 
-    function createPage(content, side, index) {
-      const page = document.createElement('div');
-      page.className = 'page ' + side + '-page';
-      page.style.zIndex = 1000 - index;
-      page.innerHTML = '<div class="page-content"></div>';
-      animateText(page.querySelector('.page-content'), content);
-      return page;
-    }
-
-    function animateText(el, text) {
-      el.innerHTML = '';
-      let i = 0;
-      function type() {
-        if (i < text.length) {
-          el.innerHTML += text.charAt(i);
-          i++;
-          setTimeout(type, 20);
-        } else {
-          isWriting = false;
-          noteInput.disabled = false;
+    function paginate(content, charsPerPage = 200) {
+      const lines = [];
+      let buffer = '';
+      for (let item of content) {
+        if ((buffer + item).length > charsPerPage) {
+          lines.push(buffer.trim());
+          buffer = '';
         }
+        buffer += item + '\n';
       }
-      isWriting = true;
-      noteInput.disabled = true;
-      type();
+      if (buffer.trim()) lines.push(buffer.trim());
+      return lines;
     }
 
     function renderPages() {
-      pagesContainer.innerHTML = '';
-      const sectionData = data[currentTab];
-      const leftContent = sectionData[currentPageIndex * 2] || '';
-      const rightContent = sectionData[currentPageIndex * 2 + 1] || '';
-
-      const leftPage = createPage(leftContent, 'left', currentPageIndex * 2);
-      const rightPage = createPage(rightContent, 'right', currentPageIndex * 2 + 1);
-
-      pagesContainer.appendChild(leftPage);
-      pagesContainer.appendChild(rightPage);
-
-      updateTabsPosition();
+      const pages = paginate(sections[currentSection]);
+      leftPage.textContent = pages[currentPage] || '';
+      rightPage.textContent = pages[currentPage + 1] || '';
     }
 
-    function flipNext() {
-      const sectionData = data[currentTab];
-      if ((currentPageIndex + 1) * 2 < sectionData.length) {
-        currentPageIndex++;
+    tabEls.forEach(tab => {
+      tab.addEventListener('click', () => {
+        currentSection = tab.dataset.section;
+        currentPage = 0;
         renderPages();
-      }
-    }
-
-    function flipPrev() {
-      if (currentPageIndex > 0) {
-        currentPageIndex--;
-        renderPages();
-      }
-    }
-
-    function handleNoteInput(e) {
-      if (e.key === 'Enter' && !isWriting) {
-        const value = e.target.value.trim();
-        if (value) {
-          const chunks = value.match(/.{1,60}/g) || [value];
-          chunks.forEach(chunk => data.notes.push(chunk));
-          e.target.value = '';
-          currentTab = 'notes';
-          currentPageIndex = Math.floor((data.notes.length - 1) / 2);
-          renderPages();
-        }
-      }
-    }
-
-    function updateTabsPosition() {
-      const tabs = document.querySelectorAll('.tab-button');
-      tabs.forEach(tab => {
-        tab.classList.remove('left-tab', 'right-tab', 'active-tab');
-        if (tab.dataset.tab === currentTab) {
-          tab.classList.add('active-tab');
-          tab.classList.add('left-tab');
-        } else {
-          tab.classList.add('right-tab');
-        }
-      });
-    }
-
-    document.querySelectorAll('.tab-button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentTab = btn.dataset.tab;
-        currentPageIndex = 0;
-        renderPages();
-        noteInput.style.display = currentTab === 'notes' ? 'block' : 'none';
+        updateTabs();
       });
     });
 
+    function updateTabs() {
+      tabEls.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.section === currentSection) {
+          tab.classList.add('active');
+        }
+      });
+    }
+
+    noteInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && currentSection === 'notes') {
+        const value = noteInput.value.trim();
+        if (value) {
+          const chars = value.split('');
+          let buffer = '';
+          function animateWrite() {
+            if (chars.length > 0) {
+              buffer += chars.shift();
+              sections.notes.push(buffer);
+              renderPages();
+              sections.notes.pop();
+              requestAnimationFrame(animateWrite);
+            } else {
+              sections.notes.push(buffer);
+              renderPages();
+              noteInput.value = '';
+            }
+          }
+          animateWrite();
+        }
+      }
+    });
+
+    prevBtn.onclick = () => {
+      if (currentPage - 2 >= 0) {
+        currentPage -= 2;
+        renderPages();
+      }
+    };
+
+    nextBtn.onclick = () => {
+      const maxPages = paginate(sections[currentSection]).length;
+      if (currentPage + 2 < maxPages) {
+        currentPage += 2;
+        renderPages();
+      }
+    };
+
+    // Initial setup
     renderPages();
+    updateTabs();
   </script>
 </body>
 </html>
