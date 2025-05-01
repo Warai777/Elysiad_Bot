@@ -50,7 +50,7 @@ body {
 .right-page {
     position: absolute;
     top: 13%;
-    left: 52%;               /* Anchored to right side of spine */
+    left: 50.5%;               /* Anchored to right side of spine */
     width: 42%;
     height: 65.5%;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
