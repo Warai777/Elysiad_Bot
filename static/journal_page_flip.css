@@ -25,7 +25,7 @@ body {
   height: 100%;
   background: url('/static/book__inner_frame.png') no-repeat center center;
   background-size: contain;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -38,7 +38,7 @@ body {
   transform-style: preserve-3d;
   transform-origin: center left;
   transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
-  z-index: 5;
+  z-index: 1;
 }
 
 .page-spread.flipped {
