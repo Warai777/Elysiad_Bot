@@ -43,7 +43,7 @@ body {
 .right-page {
     position: absolute;
     top: 90px;
-    left: 540px; /* from 542 → 540 */
+    left: 500px; /* from 542 → 540 */
     width: 440px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
