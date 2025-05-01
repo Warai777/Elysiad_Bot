@@ -1,99 +1,98 @@
 body {
-    margin: 0;
-    padding: 0;
-    background: url('/static/leather_bg.jpg') no-repeat center center fixed;
-    background-size: cover;
-    font-family: 'EB Garamond', serif;
-    color: #2a1c0f;
-    overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  background: url('/static/leather_bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'EB Garamond', serif;
+  color: #2a1c0f;
+  overflow-x: hidden;
 }
 
-/* Container for the whole journal */
 .journal-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 1024px;
-    aspect-ratio: 1 / 1;
-    margin: 0 auto;
+  position: relative;
+  width: 100%;
+  max-width: 1024px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  perspective: 2000px;
 }
 
-/* Decorative book frame image */
 .book-frame {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('/static/book__inner_frame.png') no-repeat center center;
-    background-size: contain;
-    z-index: 2;
-    pointer-events: none;
-}
-
-/* Left page (Hints from the Archivist) */
-.left-page {
-    position: absolute;
-    top: 13%;
-    left: 4.3%;  /* Moved from 5.2% to 4.4% */
-    width: 44%;
-    height: 65.5%;
-    background: url('/static/parchment_texture_overlay.jpg') repeat;
-    background-size: cover;
-    padding: 2%;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
-    border-radius: 6px;
-    z-index: 1;
-    box-sizing: border-box;
-}
-
-/* Right page (Discovered Lore) */
-.right-page {
-    position: absolute;
-    top: 13%;
-    left: 50.5%;               /* Anchored to right side of spine */
-    width: 44%;
-    height: 65.5%;
-    background: url('/static/parchment_texture_overlay.jpg') repeat;
-    background-size: cover;
-    padding: 2%;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
-    border-radius: 6px;
-    z-index: 1;
-    box-sizing: border-box;
-}
-
-/* Optional: flip button styling */
-.flip-button {
-    display: block;
-    margin: 30px auto 0 auto;
-    padding: 10px 20px;
-    background-color: #5c3a1e;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-family: 'EB Garamond', serif;
-    font-size: 16px;
-    cursor: pointer;
-    z-index: 3;
-    position: relative;
-}
-
-/* Page flipping */
-/* Flip animation */
-.page {
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
-}
-
-.page.hidden {
-  opacity: 0;
-  transform: scale(0.98);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/static/book__inner_frame.png') no-repeat center center;
+  background-size: contain;
+  z-index: 1;
   pointer-events: none;
-  position: absolute; /* Prevent content overlap during fade */
 }
-/* Flip button container */
+
+.page-spread {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform-origin: center left;
+  transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+  z-index: 5;
+}
+
+.page-spread.flipped {
+  transform: rotateY(-180deg);
+}
+
+.page {
+  position: absolute;
+  top: 13%;
+  width: 44%;
+  height: 65.5%;
+  background: url('/static/parchment_texture_overlay.jpg') repeat;
+  background-size: cover;
+  padding: 2%;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
+  border-radius: 6px;
+  backface-visibility: hidden;
+  box-sizing: border-box;
+}
+
+.left-page { left: 4.3%; }
+.right-page { left: 50.5%; }
+
+.flip-button {
+  display: inline-block;
+  margin: 20px 10px;
+  padding: 10px 20px;
+  background-color: #5c3a1e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: 'EB Garamond', serif;
+  font-size: 16px;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.note-input {
+  display: block;
+  margin: 10px auto 0;
+  padding: 10px;
+  font-family: 'EB Garamond', serif;
+  font-size: 16px;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 4px;
+  border: 1px solid #aaa;
+}
+
+.note-input:disabled {
+  opacity: 0.6;
+}
+
 .button-container {
   text-align: center;
   margin-top: 20px;
