@@ -2,45 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Archivist’s Journal</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}">
+    <title>Journal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="journal-wrapper">
-        <!-- Background book frame -->
         <div class="book-frame">
-            <img src="{{ url_for('static', filename='book_inner_frame.png') }}" alt="Journal Book Frame">
-        </div>
-
-        <!-- Text content layered above the book -->
-        <div class="journal-content">
-            <div class="left-page">
-                <h2>Hints from the Archivist</h2>
-                <ul>
-                    {% for hint in journal.get("Hints", []) %}
-                        <li>{{ hint }}</li>
-                    {% else %}
+            <div class="book-pages">
+                <div class="page-section">
+                    <h2>Hints from the Archivist</h2>
+                    <ul>
                         <li>No hints yet.</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div class="right-page">
-                <h2>Discovered Lore</h2>
-                <ul>
-                    {% for lore in journal.get("Lore", []) %}
-                        <li>{{ lore }}</li>
-                    {% else %}
+                    </ul>
+                </div>
+                <div class="page-section">
+                    <h2>Discovered Lore</h2>
+                    <ul>
                         <li>No lore discovered yet.</li>
-                    {% endfor %}
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
-
-        <!-- Flip button -->
-        <div class="flip-button-container">
-            <button class="flip-button">Flip</button>
-        </div>
+        <button class="flip-button">Flip</button>
     </div>
 </body>
 </html>
