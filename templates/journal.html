@@ -1,68 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Journal Flip</title>
+  <meta charset="UTF-8" />
+  <title>Dynamic Journal</title>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/journal_page_flip.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="journal-wrapper">
     <div class="book-frame"></div>
-
-    <!-- Page Set 1 -->
-    <div class="left-page page" data-page="1">
-      <h2>Hints from the Archivist</h2>
-      <ul><li>No hints yet.</li></ul>
-    </div>
-    <div class="right-page page" data-page="1">
-      <h2>Discovered Lore</h2>
-      <ul><li>No lore discovered yet.</li></ul>
-    </div>
-
-    <!-- Page Set 2 -->
-    <div class="left-page page hidden" data-page="2">
-      <h2>Hints Continued</h2>
-      <ul><li>There may be secrets hidden in dreams.</li></ul>
-    </div>
-    <div class="right-page page hidden" data-page="2">
-      <h2>More Lore</h2>
-      <ul><li>A fragment from the age before records began...</li></ul>
-    </div>
   </div>
 
-  <!-- Flip Controls -->
   <div class="button-container">
-    <button class="flip-button" onclick="prevPage()">Previous</button>
-    <button class="flip-button" onclick="nextPage()">Next</button>
+    <button class="flip-button" onclick="flipPrev()">Previous</button>
+    <button class="flip-button" onclick="flipNext()">Next</button>
   </div>
+
+  <input type="text" class="note-input" id="noteInput" placeholder="Type your note and press Enter..." onkeydown="handleNoteInput(event)" />
 
   <script>
-  let currentPage = 1;
-  const totalPages = 2;
+    const lore = [
+      "The key was hidden beneath the roots.",
+      "Ancient carvings mentioned 'Elysiad'.",
+      "A mirror that whispers names...",
+      "The Archivist has eyes in every world.",
+      "A coin flipped through dimensions.",
+      "They return on lunar eclipses."
+    ];
 
-  function showPage(page) {
-    document.querySelectorAll('.page').forEach(p => {
-      if (parseInt(p.dataset.page) === page) {
-        p.classList.remove('hidden');
-      } else {
-        p.classList.add('hidden');
+    let notes = [];
+    let currentPage = 0;
+    const maxItemsPerPage = 4;
+    const wrapper = document.querySelector(".journal-wrapper");
+    const input = document.getElementById("noteInput");
+
+    function generateSpreads() {
+      wrapper.querySelectorAll(".page-spread").forEach(e => e.remove());
+
+      const entries = [...lore, ...notes];
+      const totalSpreads = Math.ceil(entries.length / (maxItemsPerPage * 2));
+
+      for (let i = 0; i < totalSpreads; i++) {
+        const spread = document.createElement("div");
+        spread.className = "page-spread";
+        spread.style.zIndex = 100 - i;
+        spread.id = `spread${i}`;
+
+        const left = document.createElement("div");
+        left.className = "page left-page";
+        const leftEntries = entries.slice(i * maxItemsPerPage * 2, i * maxItemsPerPage * 2 + maxItemsPerPage);
+        left.innerHTML = `<h2>${i === 0 ? 'Hints from the Archivist' : 'Lore'}</h2><ul>` + leftEntries.map(t => `<li>${t}</li>`).join('') + "</ul>";
+
+        const right = document.createElement("div");
+        right.className = "page right-page";
+        const rightEntries = entries.slice(i * maxItemsPerPage * 2 + maxItemsPerPage, (i + 1) * maxItemsPerPage * 2);
+        right.innerHTML = `<h2>${i === 0 ? 'Discovered Lore' : 'Notes'}</h2><ul>` + rightEntries.map(t => `<li>${t}</li>`).join('') + "</ul>";
+
+        spread.appendChild(left);
+        spread.appendChild(right);
+        wrapper.appendChild(spread);
       }
-    });
-  }
+    }
 
-  function nextPage() {
-    currentPage = (currentPage % totalPages) + 1;
-    showPage(currentPage);
-  }
+    function flipNext() {
+      if (currentPage < document.querySelectorAll('.page-spread').length) {
+        document.getElementById(`spread${currentPage}`)?.classList.add('flipped');
+        currentPage++;
+      }
+    }
 
-  function prevPage() {
-    currentPage = (currentPage - 2 + totalPages) % totalPages + 1;
-    showPage(currentPage);
-  }
+    function flipPrev() {
+      if (currentPage > 0) {
+        currentPage--;
+        document.getElementById(`spread${currentPage}`)?.classList.remove('flipped');
+      }
+    }
 
-  // Initial call to display the first page
-  showPage(currentPage);
-</script>
+    function handleNoteInput(e) {
+      if (e.key === "Enter" && input.value.trim()) {
+        const entry = input.value.trim();
+        input.disabled = true;
+        input.value = "";
+
+        const lines = entry.match(/.{1,80}/g) || [];
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < lines.length) {
+            notes.push("Note: " + lines[i]);
+            generateSpreads();
+            i++;
+          } else {
+            clearInterval(interval);
+            input.disabled = false;
+          }
+        }, 300);
+      }
+    }
+
+    generateSpreads();
+  </script>
 </body>
 </html>
