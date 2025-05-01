@@ -33,8 +33,8 @@ body {
 .left-page {
     position: absolute;
     top: 90px;
-    left: 480px; /* was 490px */
-    width: 460px; /* was 440px */
+    left: 90px; /* Pushes it into visible range inside the left page frame */
+    width: 440px; /* Slightly increased if you want it wider */
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
