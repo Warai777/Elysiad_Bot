@@ -48,8 +48,8 @@ body {
 .right-page {
     position: absolute;
     top: 90px;
-    left: 500px; /* keep the same or adjust slightly if needed */
-    width: 460px; /* was 440px */
+    left: 530px; /* Slightly adjusted to center right page in frame */
+    width: 440px;
     height: 717px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
