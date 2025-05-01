@@ -28,7 +28,7 @@ body {
 .left-page {
     position: absolute;
     top: 90px; /* Keep this value the same */
-    left: 200px; /* Adjust this value to move the page right */
+    left: 490px; /* Adjust this value to move the page right */
     width: 440px; /* Adjust width to fit inside the frame */
     height: 717px; /* Make sure the height is consistent with the book size */
     background: url('/static/parchment_texture_overlay.jpg') repeat;
