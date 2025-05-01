@@ -33,7 +33,85 @@ body {
 /* Left page (Hints from the Archivist) */
 .left-page {
     position: absolute;
+    top: body {
+    margin: 0;
+    padding: 0;
+    background: url('/static/leather_bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'EB Garamond', serif;
+    color: #2a1c0f;
+    overflow-x: hidden;
+}
+
+/* Container for the whole journal */
+.journal-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1024px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+}
+
+/* Decorative book frame image */
+.book-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/static/book__inner_frame.png') no-repeat center center;
+    background-size: contain;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Left page (Hints from the Archivist) */
+.left-page {
+    position: absolute;
     top: 8.7%;
+    left: 7.5%; /* Was 6%, nudged right closer to the spine */
+    width: 43%;  /* Slightly increased width to better fill the frame */
+    height: 82%;
+    background: url('/static/parchment_texture_overlay.jpg') repeat;
+    background-size: cover;
+    padding: 2%;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+/* Right page (Discovered Lore) */
+.right-page {
+    position: absolute;
+    top: 8.7%;
+    left: 52%;
+    width: 42%;
+    height: 82%;
+    background: url('/static/parchment_texture_overlay.jpg') repeat;
+    background-size: cover;
+    padding: 2%;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+/* Optional: flip button styling */
+.flip-button {
+    display: block;
+    margin: 30px auto 0 auto;
+    padding: 10px 20px;
+    background-color: #5c3a1e;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 3;
+    position: relative;
+};
     left: 6%;
     width: 42%;
     height: 82%;
