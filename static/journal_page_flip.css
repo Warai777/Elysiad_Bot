@@ -17,8 +17,8 @@ body {
 }
 
 .book-frame {
-    width: 1024px; /* Use actual PNG size */
-    height: 768px;
+    width: 1133px; /* Use actual PNG size */
+    height: 845px;
     position: relative;
     background: url('/static/book_inner_frame.png') no-repeat center center;
     background-size: cover;
@@ -27,10 +27,10 @@ body {
 
 .book-pages {
     position: absolute;
-    top: 90px;     /* adjust to visually align with book center */
-    left: 90px;
-    width: 844px;
-    height: 588px;
+    top: 95px;     /* adjust to visually align with book center */
+    left: 95px;
+    width: 940px;
+    height: 655px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
     padding: 50px;
