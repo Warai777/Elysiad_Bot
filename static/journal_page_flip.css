@@ -19,8 +19,8 @@ body {
 .book-frame {
     background: url('/static/book_inner_frame.png') no-repeat center center;
     background-size: contain;
-    width: 1000px;
-    height: 650px;
+    width: 900px;
+    height: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,24 +29,26 @@ body {
 }
 
 .book-pages {
-    background: url('/static/parchment_texture_overlay.jpg') repeat;
+    background: url('/static/parchment_texture_overlay.jpg');
     background-size: cover;
-    width: 880px;
-    height: 520px;
-    padding: 60px;
+    width: 760px; /* smaller to fit visible area */
+    height: 440px;
+    padding: 40px;
     display: flex;
     justify-content: space-between;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
+    position: relative;
+    z-index: 2;
 }
 
 .page-section {
-    width: 45%;
+    width: 48%;
 }
 
 .page-section h2 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
+    font-size: 1.6rem;
+    margin-bottom: 12px;
     text-align: center;
     text-shadow: 1px 1px #d4b98a;
 }
@@ -54,8 +56,8 @@ body {
 .page-section ul {
     list-style-type: disc;
     padding-left: 20px;
-    font-size: 1.2rem;
-    line-height: 1.6;
+    font-size: 1.1rem;
+    line-height: 1.5;
 }
 
 .flip-button {
