@@ -27,16 +27,16 @@ body {
 
 .left-page {
     position: absolute;
-    top: 90px; /* Adjusted to align with the top of the book */
+    top: 80px; /* Fine-tuning top position */
     left: 0px; /* Aligned with the spine */
     width: 440px; /* Maintain the width */
-    height: 700px; /* Reduced height to fit the page correctly inside the frame */
+    height: 700px; /* Height should fit within the book frame */
     background: url('/static/parchment_texture_overlay.jpg') repeat;
     background-size: cover;
     padding: 30px; /* Keep padding for the content */
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25); /* Optional: shadow for depth */
     border-radius: 6px; /* Optional: smooth edges */
-    z-index: 1; /* Keep behind the right page */
+    z-index: 1; /* Keep it behind the right page */
     box-sizing: border-box;
 }
 
