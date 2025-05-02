@@ -58,19 +58,20 @@ body {
 
 .tab-container {
   position: absolute;
-  top: 5%;
+  top: 20%;
   display: flex;
   flex-direction: column;
   gap: 10px;
   z-index: 2;
 }
 
+
 .left-tabs {
-  left: -55px;
+  left: -40px; /* negative so it appears tucked under left page */
 }
 
 .right-tabs {
-  right: -55px;
+  right: -40px; /* negative so it appears tucked under right page */
 }
 
 .tab {
@@ -85,7 +86,6 @@ body {
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   transition: transform 0.6s;
   backface-visibility: hidden;
-  perspective: 1000px;
 }
 
 .tab.flipped {
