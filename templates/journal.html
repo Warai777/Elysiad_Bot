@@ -5,48 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Stylized Journal</title>
   <link href="https://fonts.googleapis.com/css2?family=Zeyada&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/journal_page_flip.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="journal-wrapper">
-    
-    <!-- Tabs (z-index: 2) -->
     <div class="tab-container left-tabs" id="left-tabs"></div>
     <div class="tab-container right-tabs" id="right-tabs"></div>
-    
-    <!-- Book Frame (z-index: 1) -->
+
     <div class="book-frame"></div>
 
-    <!-- Pages (z-index: 3) -->
     <div class="page-spread">
       <div class="page left-page" id="left-page"></div>
       <div class="page right-page" id="right-page"></div>
     </div>
   </div>
 
-  <!-- Page Flip Controls -->
   <div class="button-container">
     <button class="flip-button" onclick="flipPage(-1)">Previous</button>
     <button class="flip-button" onclick="flipPage(1)">Next</button>
   </div>
 
-  <!-- Notes Input -->
   <input type="text" class="note-input" id="noteInput" placeholder="Write your note and press Enter..." onkeypress="handleNoteInput(event)">
 
-  <!-- Journal Script -->
   <script>
     let currentTab = 'hints';
     let pageIndex = 0;
 
     const content = {
-      hints: [
-        "The Archivist awaits.",
-        "Only fools touch the mirror."
-      ],
-      lore: [
-        "The moon cracked once before.",
-        "An ancient bell that rings in dreams."
-      ],
+      hints: ["The Archivist awaits.", "Only fools touch the mirror."],
+      lore: ["The moon cracked once before.", "An ancient bell that rings in dreams."],
       notes: []
     };
 
@@ -84,6 +71,7 @@
     }
 
     function switchTab(tab) {
+      if (tab === currentTab) return;
       currentTab = tab;
       pageIndex = 0;
       updateTabPositions();
@@ -98,8 +86,8 @@
 
       const tabMap = {
         hints: ['lore', 'notes'],
-        lore: ['hints', 'lore'],
-        notes: ['hints', 'lore', 'notes']
+        lore: ['hints', 'notes'],
+        notes: ['hints', 'lore']
       };
 
       tabMap[currentTab].forEach(tab => {
@@ -108,14 +96,15 @@
         tabDiv.innerText = tab.charAt(0).toUpperCase() + tab.slice(1);
         tabDiv.dataset.tab = tab;
         tabDiv.onclick = () => switchTab(tab);
-        if (currentTab === "hints") {
-          rightTabs.appendChild(tabDiv);
-        } else if (currentTab === "lore" && tab === "notes") {
-          rightTabs.appendChild(tabDiv);
-        } else {
-          leftTabs.appendChild(tabDiv);
-        }
+        rightTabs.appendChild(tabDiv);
       });
+
+      const currentTabDiv = document.createElement("div");
+      currentTabDiv.className = "tab flipped";
+      currentTabDiv.innerText = currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
+      currentTabDiv.dataset.tab = currentTab;
+      currentTabDiv.onclick = () => switchTab(currentTab);
+      leftTabs.appendChild(currentTabDiv);
     }
 
     updateTabPositions();
