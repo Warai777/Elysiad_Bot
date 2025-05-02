@@ -9,24 +9,31 @@
 </head>
 <body>
   <div class="journal-wrapper">
+    
+    <!-- Tabs (z-index: 2) -->
     <div class="tab-container left-tabs" id="left-tabs"></div>
     <div class="tab-container right-tabs" id="right-tabs"></div>
-
+    
+    <!-- Book Frame (z-index: 1) -->
     <div class="book-frame"></div>
 
+    <!-- Pages (z-index: 3) -->
     <div class="page-spread">
       <div class="page left-page" id="left-page"></div>
       <div class="page right-page" id="right-page"></div>
     </div>
   </div>
 
+  <!-- Page Flip Controls -->
   <div class="button-container">
     <button class="flip-button" onclick="flipPage(-1)">Previous</button>
     <button class="flip-button" onclick="flipPage(1)">Next</button>
   </div>
 
+  <!-- Notes Input -->
   <input type="text" class="note-input" id="noteInput" placeholder="Write your note and press Enter..." onkeypress="handleNoteInput(event)">
 
+  <!-- Journal Script -->
   <script>
     let currentTab = 'hints';
     let pageIndex = 0;
