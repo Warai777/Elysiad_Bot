@@ -3,111 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Journal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Zeyada&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/journal_page_flip.css" />
+  <title>Journal with Tabs</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/journal_page_flip.css">
 </head>
 <body>
   <div class="journal-wrapper">
-    <div class="tab-container left-tabs" id="left-tabs"></div>
-    <div class="tab-container right-tabs" id="right-tabs"></div>
-
     <div class="book-frame"></div>
 
+    <div class="tabs" id="tabs">
+      <div class="tab" data-section="hints">Hints</div>
+      <div class="tab" data-section="lore">Lore</div>
+      <div class="tab" data-section="notes">Notes</div>
+    </div>
+
     <div class="page-spread">
-      <div class="page left-page" id="left-page"></div>
-      <div class="page right-page" id="right-page"></div>
+      <div class="page left-page" id="leftPage">
+        <ul id="leftContent">
+          <li>The Archivist awaits.</li>
+        </ul>
+      </div>
+      <div class="page right-page" id="rightPage">
+        <ul id="rightContent">
+          <li>Only fools touch the mirror.</li>
+        </ul>
+      </div>
     </div>
+  </div>
 
-    <div class="button-container">
-      <button class="flip-button" onclick="flipPage(-1)">Previous</button>
-      <button class="flip-button" onclick="flipPage(1)">Next</button>
-    </div>
-
-    <input type="text" class="note-input" id="noteInput" placeholder="Write your note and press Enter..." onkeypress="handleNoteInput(event)">
+  <div class="button-container">
+    <button class="flip-button" id="prevBtn">Previous</button>
+    <button class="flip-button" id="nextBtn">Next</button>
   </div>
 
   <script>
-    let currentTab = 'hints';
-    let pageIndex = 0;
+    const tabs = document.querySelectorAll(".tab");
+    const tabsContainer = document.getElementById("tabs");
 
-    const content = {
-      hints: ["The Archivist awaits.", "Only fools touch the mirror."],
-      lore: ["The moon cracked once before.", "An ancient bell that rings in dreams."],
-      notes: []
-    };
-
-    const pages = {
-      left: document.getElementById('left-page'),
-      right: document.getElementById('right-page')
-    };
-
-    function renderPages() {
-      const data = content[currentTab];
-      const start = pageIndex * 2;
-      pages.left.innerHTML = data[start] ? "<p>" + data[start] + "</p>" : "";
-      pages.right.innerHTML = data[start + 1] ? "<p>" + data[start + 1] + "</p>" : "";
-    }
-
-    function flipPage(direction) {
-      const data = content[currentTab];
-      const maxIndex = Math.ceil(data.length / 2) - 1;
-      pageIndex = Math.max(0, Math.min(maxIndex, pageIndex + direction));
-      renderPages();
-    }
-
-    function handleNoteInput(event) {
-      if (event.key === 'Enter') {
-        const input = event.target.value.trim();
-        if (input) {
-          content.notes.push(input);
-          event.target.value = "";
-          if (currentTab === 'notes') {
-            pageIndex = Math.ceil(content.notes.length / 2) - 1;
-            renderPages();
-          }
-        }
+    function updateTabs(view) {
+      if (view === "hints") {
+        tabsContainer.style.left = "unset";
+        tabsContainer.style.right = "-3%";
+        tabs.forEach(tab => {
+          tab.style.display = (tab.dataset.section === "hints") ? "block" : "block";
+        });
+      } else if (view === "lore") {
+        tabsContainer.style.right = "-3%";
+        tabs.forEach(tab => {
+          tab.style.display = (tab.dataset.section === "notes") ? "block" : "block";
+        });
+      } else if (view === "notes") {
+        tabsContainer.style.right = "unset";
+        tabsContainer.style.left = "-3%";
+        tabs.forEach(tab => {
+          tab.style.display = "block";
+        });
       }
     }
 
-    function switchTab(tab) {
-      currentTab = tab;
-      pageIndex = 0;
-      updateTabPositions();
-      renderPages();
-    }
-
-    function updateTabPositions() {
-      const leftTabs = document.getElementById('left-tabs');
-      const rightTabs = document.getElementById('right-tabs');
-      leftTabs.innerHTML = "";
-      rightTabs.innerHTML = "";
-
-      const tabMap = {
-        hints: ['lore', 'notes'],
-        lore: ['hints', 'lore'],
-        notes: ['hints', 'lore', 'notes']
-      };
-
-      tabMap[currentTab].forEach(tab => {
-        const tabDiv = document.createElement("div");
-        tabDiv.className = "tab";
-        tabDiv.innerText = tab.charAt(0).toUpperCase() + tab.slice(1);
-        tabDiv.dataset.tab = tab;
-        tabDiv.onclick = () => switchTab(tab);
-
-        if (currentTab === "hints") {
-          rightTabs.appendChild(tabDiv);
-        } else if (currentTab === "lore" && tab === "notes") {
-          rightTabs.appendChild(tabDiv);
-        } else {
-          leftTabs.appendChild(tabDiv);
-        }
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        const section = tab.dataset.section;
+        updateTabs(section);
       });
-    }
+    });
 
-    updateTabPositions();
-    renderPages();
+    updateTabs("hints"); // default view
   </script>
 </body>
 </html>
