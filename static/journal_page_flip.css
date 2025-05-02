@@ -71,7 +71,7 @@ body {
 }
 
 .right-tabs {
-  right: -40px; /* negative so it appears tucked under right page */
+  right: -60px; /* negative so it appears tucked under right page */
 }
 
 .tab {
