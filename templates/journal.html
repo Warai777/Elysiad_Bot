@@ -99,7 +99,7 @@
 
       rightTabsConfig.forEach(({ tab, label, top, right }) => {
         const tabDiv = document.createElement("div");
-        tabDiv.className = "tab" + (currentTab === tab ? " active" : "");
+        tabDiv.className = "tab right-tab" + (currentTab === tab ? " active" : "");
         tabDiv.innerText = label;
         tabDiv.dataset.tab = tab;
         tabDiv.style.top = top;
