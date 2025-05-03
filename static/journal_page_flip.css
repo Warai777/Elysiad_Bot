@@ -93,7 +93,9 @@ body {
 }
 
 .tab.right-tab {
+  writing-mode: vertical-rl;
   transform: rotate(180deg);
+  direction: rtl;
 }
 
 .tab.active {
