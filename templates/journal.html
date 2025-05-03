@@ -84,26 +84,25 @@
       leftTabs.innerHTML = "";
       rightTabs.innerHTML = "";
 
-      const tabStyles = {
-        hints: { top: '10%' },
-        lore: { top: '40%' },
-        notes: { top: '75%' }
-      };
+      const hintTab = document.createElement("div");
+      hintTab.className = "tab" + (currentTab === 'hints' ? " active" : "");
+      hintTab.innerText = "Hints";
+      hintTab.dataset.tab = "hints";
+      hintTab.style.top = "10%";
+      hintTab.onclick = () => switchTab("hints");
+      leftTabs.appendChild(hintTab);
 
-      const currentTabDiv = document.createElement("div");
-      currentTabDiv.className = "tab active";
-      currentTabDiv.innerText = currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
-      currentTabDiv.dataset.tab = currentTab;
-      Object.assign(currentTabDiv.style, tabStyles[currentTab] || { top: '10%' });
-      leftTabs.appendChild(currentTabDiv);
+      const rightTabsConfig = [
+        { tab: "lore", label: "Lore", top: "40%" },
+        { tab: "notes", label: "Notes", top: "75%" }
+      ];
 
-      Object.entries(tabStyles).forEach(([tab, style]) => {
-        if (tab === currentTab) return;
+      rightTabsConfig.forEach(({ tab, label, top }) => {
         const tabDiv = document.createElement("div");
-        tabDiv.className = "tab";
-        tabDiv.innerText = tab.charAt(0).toUpperCase() + tab.slice(1);
+        tabDiv.className = "tab" + (currentTab === tab ? " active" : "");
+        tabDiv.innerText = label;
         tabDiv.dataset.tab = tab;
-        Object.assign(tabDiv.style, style);
+        tabDiv.style.top = top;
         tabDiv.onclick = () => switchTab(tab);
         rightTabs.appendChild(tabDiv);
       });
