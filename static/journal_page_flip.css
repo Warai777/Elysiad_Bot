@@ -67,11 +67,11 @@ body {
 }
 
 .left-tabs {
-  left: 4.3%;
+  left: calc(4.3% - 10px); /* slightly overlaps the left page edge */
 }
 
 .right-tabs {
-  right: 0.7%; /* Adjust so it sticks out just a bit */
+  right: calc(4.2% - 10px); /* slightly overlaps the right page edge */
 }
 
 .tab {
