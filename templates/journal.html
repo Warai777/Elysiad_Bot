@@ -88,21 +88,22 @@
       hintTab.className = "tab" + (currentTab === 'hints' ? " active" : "");
       hintTab.innerText = "Hints";
       hintTab.dataset.tab = "hints";
-      hintTab.style.top = "10%";
+      hintTab.style.top = "13%";
       hintTab.onclick = () => switchTab("hints");
       leftTabs.appendChild(hintTab);
 
       const rightTabsConfig = [
-        { tab: "lore", label: "Lore", top: "40%" },
-        { tab: "notes", label: "Notes", top: "75%" }
+        { tab: "lore", label: "Lore", top: "40%", right: "4.5%" },
+        { tab: "notes", label: "Notes", top: "75%", right: "4.8%" }
       ];
 
-      rightTabsConfig.forEach(({ tab, label, top }) => {
+      rightTabsConfig.forEach(({ tab, label, top, right }) => {
         const tabDiv = document.createElement("div");
         tabDiv.className = "tab" + (currentTab === tab ? " active" : "");
         tabDiv.innerText = label;
         tabDiv.dataset.tab = tab;
         tabDiv.style.top = top;
+        tabDiv.style.right = right;
         tabDiv.onclick = () => switchTab(tab);
         rightTabs.appendChild(tabDiv);
       });
