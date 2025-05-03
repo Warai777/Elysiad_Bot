@@ -79,33 +79,35 @@
     }
 
     function updateTabPositions() {
-  const leftTabs = document.getElementById('left-tabs');
-  const rightTabs = document.getElementById('right-tabs');
-  leftTabs.innerHTML = "";
-  rightTabs.innerHTML = "";
+      const leftTabs = document.getElementById('left-tabs');
+      const rightTabs = document.getElementById('right-tabs');
+      leftTabs.innerHTML = "";
+      rightTabs.innerHTML = "";
 
-  const tabMap = {
-    hints: ['lore', 'notes'],
-    lore: ['hints', 'notes'],
-    notes: ['hints', 'lore']
-  };
+      const tabStyles = {
+        hints: { top: '10%' },
+        lore: { top: '40%' },
+        notes: { top: '75%' }
+      };
 
-  tabMap[currentTab].forEach(tab => {
-    const tabDiv = document.createElement("div");
-    tabDiv.className = "tab";
-    tabDiv.innerText = tab.charAt(0).toUpperCase() + tab.slice(1);
-    tabDiv.dataset.tab = tab;
-    tabDiv.onclick = () => switchTab(tab);
-    rightTabs.appendChild(tabDiv);
-  });
+      const currentTabDiv = document.createElement("div");
+      currentTabDiv.className = "tab active";
+      currentTabDiv.innerText = currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
+      currentTabDiv.dataset.tab = currentTab;
+      Object.assign(currentTabDiv.style, tabStyles[currentTab] || { top: '10%' });
+      leftTabs.appendChild(currentTabDiv);
 
-  const currentTabDiv = document.createElement("div");
-  currentTabDiv.className = "tab flipped active";
-  currentTabDiv.innerText = currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
-  currentTabDiv.dataset.tab = currentTab;
-  currentTabDiv.onclick = () => switchTab(currentTab);
-  leftTabs.appendChild(currentTabDiv);
-}
+      Object.entries(tabStyles).forEach(([tab, style]) => {
+        if (tab === currentTab) return;
+        const tabDiv = document.createElement("div");
+        tabDiv.className = "tab";
+        tabDiv.innerText = tab.charAt(0).toUpperCase() + tab.slice(1);
+        tabDiv.dataset.tab = tab;
+        Object.assign(tabDiv.style, style);
+        tabDiv.onclick = () => switchTab(tab);
+        rightTabs.appendChild(tabDiv);
+      });
+    }
 
     updateTabPositions();
     renderPages();
