@@ -88,13 +88,13 @@
       hintTab.className = "tab" + (currentTab === 'hints' ? " active" : "");
       hintTab.innerText = "Hints";
       hintTab.dataset.tab = "hints";
-      hintTab.style.top = "13%";
+      hintTab.style.top = "16%";
       hintTab.onclick = () => switchTab("hints");
       leftTabs.appendChild(hintTab);
 
       const rightTabsConfig = [
-        { tab: "lore", label: "Lore", top: "40%", right: "4.5%" },
-        { tab: "notes", label: "Notes", top: "75%", right: "4.8%" }
+        { tab: "lore", label: "Lore", top: "40%", right: "5%" },
+        { tab: "notes", label: "Notes", top: "70%", right: "4.8%" }
       ];
 
       rightTabsConfig.forEach(({ tab, label, top, right }) => {
