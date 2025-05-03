@@ -76,7 +76,7 @@ body {
 .tab {
   position: absolute;
   width: 20px;
-  height: 60px;
+  height: 80px;
   background-image: url('/static/parchment_tab.png');
   background-size: cover;
   background-repeat: no-repeat;
