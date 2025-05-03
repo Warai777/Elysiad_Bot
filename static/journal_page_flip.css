@@ -82,7 +82,7 @@ body {
   background-repeat: no-repeat;
   font-family: 'Zeyada', cursive;
   font-size: 17px;
-  color: #d4af37;
+  color: #1e90ff;
   cursor: pointer;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
@@ -101,7 +101,7 @@ body {
 .tab.active {
   background-image: url('/static/parchment_tab_active.PNG');
   font-weight: bold;
-  color: #ffd700;
+  color: #1e90ff;
 }
 
 .flip-button {
