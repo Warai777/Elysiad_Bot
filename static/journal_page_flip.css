@@ -1,3 +1,12 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url('/static/leather_bg.png') repeat center center;
+  background-size: cover;
+  overflow: hidden;
+  height: 100vh;
+}
+
 .journal-wrapper {
   position: relative;
   width: 100%;
@@ -5,13 +14,6 @@
   aspect-ratio: 1 / 1;
   margin: 0 auto;
   z-index: 0;
-}
-
-body {
-  margin: 0;
-  background: url('/static/leather_bg.jpg') repeat;
-  background-size: cover;
-  overflow: hidden;
 }
 
 .book-frame {
@@ -80,28 +82,18 @@ body {
   color: #ffd700;
 }
 
-.tab[data-tab="hints"] {
-  top: 25%;
-  left: -20px;
-}
-
-.tab[data-tab="lore"] {
-  top: 35%;
-  right: 0.7%;
-}
-
-.tab[data-tab="notes"] {
-  top: 70%;
-  right: -1%;
-}
+.tab[data-tab="hints"] { top: 25%; left: -20px; }
+.tab[data-tab="lore"] { top: 35%; right: 0.7%; }
+.tab[data-tab="notes"] { top: 70%; right: -1%; }
 
 .note-input {
   display: block;
-  margin: 0 auto 10px auto;
+  margin: 10px auto 6px auto;
   padding: 10px;
   font-family: 'Zeyada', cursive;
   font-size: 16px;
-  width: 50%;
+  width: 80%;
+  max-width: 500px;
   border-radius: 4px;
   border: 1px solid #aaa;
   z-index: 5;
@@ -109,38 +101,20 @@ body {
 
 .button-container {
   text-align: center;
-  margin-top: 5px;
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 
 .flip-button {
-  margin: 0 10px;
-  padding: 10px 20px;
+  display: inline-block;
+  margin: 0 5px;
+  padding: 8px 18px;
   background-color: #5c3a1e;
   color: #fff;
   border: none;
   border-radius: 4px;
   font-family: 'Zeyada', cursive;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   z-index: 5;
-}
-
-.controls {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 5;
-}
-
-.controls input,
-.controls .flip-button {
-  display: block;
-  margin: 5px auto;
-}
-
-html, body {
-  height: 100%;
-  overflow: hidden;
 }
