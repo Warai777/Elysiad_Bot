@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import os
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
 
 @app.route("/")
 def home():
@@ -17,13 +18,18 @@ def submit_character():
     background = request.form.get("background")
     trait = request.form.get("trait")
 
-    print(f"Character Created: {name}, {background}, {trait}")
+    session["player"] = {
+        "name": name,
+        "background": background,
+        "trait": trait
+    }
 
     return redirect(url_for("library"))
 
 @app.route("/library")
 def library():
-    return render_template("library.html")
+    player = session.get("player")
+    return render_template("library.html", player=player)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
