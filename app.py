@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+import os
 
 app = Flask(__name__)
 
@@ -16,7 +17,6 @@ def submit_character():
     background = request.form.get("background")
     trait = request.form.get("trait")
 
-    # TODO: Connect with Player system or store in session
     print(f"Character Created: {name}, {background}, {trait}")
 
     return redirect(url_for("library"))
@@ -26,4 +26,5 @@ def library():
     return render_template("library.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
