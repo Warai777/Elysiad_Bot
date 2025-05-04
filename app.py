@@ -35,6 +35,10 @@ def library():
 def choose_world():
     return render_template("choose_world.html")
 
+@app.route("/journal")
+def journal():
+    return render_template("journal.html")
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
