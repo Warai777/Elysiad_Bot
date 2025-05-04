@@ -1,11 +1,3 @@
-body {
-  margin: 0;
-  padding: 0;
-  background: url('/static/leather_bg.jpg') repeat;
-  background-size: cover;
-  overflow: hidden;
-}
-
 .journal-wrapper {
   position: relative;
   width: 100%;
@@ -13,6 +5,13 @@ body {
   aspect-ratio: 1 / 1;
   margin: 0 auto;
   z-index: 0;
+}
+
+body {
+  margin: 0;
+  background: url('/static/leather_bg.jpg') repeat;
+  background-size: cover;
+  overflow: hidden;
 }
 
 .book-frame {
@@ -51,13 +50,8 @@ body {
   font-family: 'Zeyada', cursive;
 }
 
-.left-page {
-  left: 4.3%;
-}
-
-.right-page {
-  left: 50.5%;
-}
+.left-page { left: 4.3%; }
+.right-page { left: 50.5%; }
 
 .tab {
   position: absolute;
@@ -107,30 +101,46 @@ body {
   padding: 10px;
   font-family: 'Zeyada', cursive;
   font-size: 16px;
-  width: 80%;
-  max-width: 500px;
+  width: 50%;
   border-radius: 4px;
   border: 1px solid #aaa;
   z-index: 5;
-  position: relative;
-  top: 25px;
 }
 
 .button-container {
   text-align: center;
-  margin-top: 10px;
-  position: relative;
-  top: 25px;
+  margin-top: 5px;
 }
 
 .flip-button {
   margin: 0 10px;
-  padding: 8px 16px;
+  padding: 10px 20px;
   background-color: #5c3a1e;
   color: #fff;
   border: none;
   border-radius: 4px;
   font-family: 'Zeyada', cursive;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
+  z-index: 5;
+}
+
+.controls {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 5;
+}
+
+.controls input,
+.controls .flip-button {
+  display: block;
+  margin: 5px auto;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
 }
