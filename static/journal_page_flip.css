@@ -3,10 +3,11 @@ body {
   padding: 0;
   background: url('/static/leather_bg.jpg') repeat center center;
   background-size: cover;
-  overflow: hidden;
-  height: 100vh;
+  overflow-x: hidden;
+  height: auto;
+  min-height: 100vh;
   font-family: 'Caveat', cursive;
   color: #fff;
 }
 
-/* ...rest of the CSS remains unchanged... */
+/* all other CSS stays the same below this line */
