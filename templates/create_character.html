@@ -1,100 +1,10 @@
+<!-- Test edit to verify sync -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Create Your Character - Elysiad</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        body {
-            font-family: "Segoe UI", sans-serif;
-            background-color: #1e1f22;
-            color: #f2f3f5;
-            margin: 0;
-            padding: 2rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        .form-box {
-            background-color: #2b2d31;
-            padding: 2rem;
-            border-radius: 12px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 0 10px rgba(0,0,0,0.4);
-        }
-
-        .form-box h1 {
-            color: #f2f3f5;
-            font-size: 24px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            margin-top: 1rem;
-            margin-bottom: 0.4rem;
-            font-weight: 500;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 0.6rem;
-            border-radius: 8px;
-            border: none;
-            background-color: #313338;
-            color: #fff;
-            font-size: 14px;
-        }
-
-        input::placeholder, textarea::placeholder {
-            color: #7f838a;
-        }
-
-        button {
-            background-color: #5865f2;
-            color: white;
-            padding: 0.8rem;
-            margin-top: 1.5rem;
-            width: 100%;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        button:hover {
-            background-color: #4752c4;
-        }
-    </style>
+  <title>Create Character</title>
 </head>
 <body>
-    <div class="form-box">
-        <h1>Create Your Character</h1>
-        <form method="POST">
-            <label for="name">Name</label>
-            <input type="text" name="name" placeholder="Enter your character's name" required>
-
-            <label for="background">Background</label>
-            <textarea name="background" rows="3" placeholder="Write a short background or origin story..." required></textarea>
-
-            <label for="genre">Genre Preference</label>
-            <select name="genre">
-                {% for genre in genres %}
-                    <option value="{{ genre }}">{{ genre }}</option>
-                {% endfor %}
-            </select>
-
-            <button type="submit">Begin Your Journey</button>
-        </form>
-    </div>
-
-    <div class="mascot-container">
-    <img src="{{ url_for('static', filename='elysiad_mascot.png') }}" alt="Elysiad Mascot">
-</div>
-
+  <h1>Create Your Character</h1>
 </body>
 </html>
