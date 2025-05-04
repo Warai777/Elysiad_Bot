@@ -1,3 +1,12 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url('/static/leather_bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Zeyada', cursive;
+  overflow-x: hidden;
+}
+
 .journal-wrapper {
   position: relative;
   width: 100%;
