@@ -1,10 +1,33 @@
-<!-- Test edit to verify sync -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Create Character</title>
+    <meta charset="UTF-8">
+    <title>Create Your Character</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <h1>Create Your Character</h1>
+    <div class="container">
+        <h1>Create Your Character</h1>
+        <form action="/submit_character" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="background">Background:</label>
+            <select id="background" name="background">
+                <option value="orphan">Orphan</option>
+                <option value="scholar">Scholar</option>
+                <option value="wanderer">Wanderer</option>
+            </select>
+
+            <label for="trait">Dominant Trait:</label>
+            <select id="trait" name="trait">
+                <option value="bravery">Bravery</option>
+                <option value="cunning">Cunning</option>
+                <option value="wisdom">Wisdom</option>
+            </select>
+
+            <button type="submit">Begin Journey</button>
+        </form>
+    </div>
 </body>
 </html>
