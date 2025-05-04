@@ -1,18 +1,3 @@
-body {
-  margin: 0;
-  padding: 0;
-  background: url('/static/leather_bg.jpg') no-repeat center center fixed;
-  background-size: cover;
-  font-family: 'Zeyada', cursive;
-  color: #2a1c0f;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
 .journal-wrapper {
   position: relative;
   width: 100%;
@@ -103,17 +88,9 @@ body {
   right: -1%;
 }
 
-.navigation-buttons {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 5;
-}
-
 .flip-button {
   display: inline-block;
-  margin: 20px 10px;
+  margin: 0 5px;
   padding: 10px 20px;
   background-color: #5c3a1e;
   color: #fff;
@@ -126,11 +103,8 @@ body {
 }
 
 .note-input {
-  position: fixed;
-  bottom: 70px;
-  left: 50%;
-  transform: translateX(-50%);
   display: block;
+  margin: 20px auto 10px auto;
   padding: 10px;
   font-family: 'Zeyada', cursive;
   font-size: 16px;
@@ -143,5 +117,10 @@ body {
 
 .button-container {
   text-align: center;
-  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  z-index: 5;
+  position: relative;
 }
