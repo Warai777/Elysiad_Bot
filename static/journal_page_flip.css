@@ -1,3 +1,13 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url('/static/leather_bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Zeyada', cursive;
+  color: #2a1c0f;
+  overflow-x: hidden;
+}
+
 .journal-wrapper {
   position: relative;
   width: 100%;
@@ -90,7 +100,7 @@
 
 .flip-button {
   display: inline-block;
-  margin: 0 5px;
+  margin: 10px;
   padding: 10px 20px;
   background-color: #5c3a1e;
   color: #fff;
@@ -104,7 +114,7 @@
 
 .note-input {
   display: block;
-  margin: 20px auto 10px auto;
+  margin: 0 auto 10px auto;
   padding: 10px;
   font-family: 'Zeyada', cursive;
   font-size: 16px;
@@ -117,10 +127,5 @@
 
 .button-container {
   text-align: center;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-  z-index: 5;
-  position: relative;
+  margin-bottom: 20px;
 }
