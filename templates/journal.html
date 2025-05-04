@@ -1,116 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Stylized Journal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Zeyada&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/journal_page_flip.css" />
-</head>
-<body>
-  <div class="journal-wrapper">
-    <div class="tab-container left-tabs" id="left-tabs"></div>
-    <div class="tab-container right-tabs" id="right-tabs"></div>
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/journal_page_flip.css">
 
-    <div class="book-frame"></div>
+<div class="journal-wrapper">
+  <div class="book-frame"></div>
+  <div class="page-spread">
+    <div class="page left-page" id="leftPage">{{ left_text|safe }}</div>
+    <div class="page right-page" id="rightPage">{{ right_text|safe }}</div>
 
-    <div class="page-spread">
-      <div class="page left-page" id="left-page"></div>
-      <div class="page right-page" id="right-page"></div>
-    </div>
+    <div class="tab" data-tab="hints">Hints</div>
+    <div class="tab" data-tab="lore">Lore</div>
+    <div class="tab" data-tab="notes">Notes</div>
   </div>
+</div>
 
-  <div class="button-container">
-    <button class="flip-button" onclick="flipPage(-1)">Previous</button>
-    <button class="flip-button" onclick="flipPage(1)">Next</button>
-  </div>
+<div class="navigation-buttons">
+  <button id="prevPage">Previous</button>
+  <button id="nextPage">Next</button>
+</div>
 
-  <input type="text" class="note-input" id="noteInput" placeholder="Write your note and press Enter..." onkeypress="handleNoteInput(event)">
+<input class="note-input" type="text" id="noteInput" placeholder="Write your note and press Enter...">
 
-  <script>
-    let currentTab = 'hints';
-    let pageIndex = 0;
-
-    const content = {
-      hints: ["The Archivist awaits.", "Only fools touch the mirror."],
-      lore: ["The moon cracked once before.", "An ancient bell that rings in dreams."],
-      notes: []
-    };
-
-    const pages = {
-      left: document.getElementById('left-page'),
-      right: document.getElementById('right-page')
-    };
-
-    function renderPages() {
-      const data = content[currentTab];
-      const start = pageIndex * 2;
-      pages.left.innerHTML = data[start] ? "<p>" + data[start] + "</p>" : "";
-      pages.right.innerHTML = data[start + 1] ? "<p>" + data[start + 1] + "</p>" : "";
-    }
-
-    function flipPage(direction) {
-      const data = content[currentTab];
-      const maxIndex = Math.ceil(data.length / 2) - 1;
-      pageIndex = Math.max(0, Math.min(maxIndex, pageIndex + direction));
-      renderPages();
-    }
-
-    function handleNoteInput(event) {
-      if (event.key === 'Enter') {
-        const input = event.target.value.trim();
-        if (input) {
-          content.notes.push(input);
-          event.target.value = "";
-          if (currentTab === 'notes') {
-            pageIndex = Math.ceil(content.notes.length / 2) - 1;
-            renderPages();
-          }
-        }
-      }
-    }
-
-    function switchTab(tab) {
-      if (tab === currentTab) return;
-      currentTab = tab;
-      pageIndex = 0;
-      updateTabPositions();
-      renderPages();
-    }
-
-    function updateTabPositions() {
-      const leftTabs = document.getElementById('left-tabs');
-      const rightTabs = document.getElementById('right-tabs');
-      leftTabs.innerHTML = "";
-      rightTabs.innerHTML = "";
-
-      const hintTab = document.createElement("div");
-      hintTab.className = "tab" + (currentTab === 'hints' ? " active" : "");
-      hintTab.innerText = "Hints";
-      hintTab.dataset.tab = "hints";
-      hintTab.style.top = "16%";
-      hintTab.onclick = () => switchTab("hints");
-      leftTabs.appendChild(hintTab);
-
-      const rightTabsConfig = [
-        { tab: "lore", label: "Lore", top: "40%", right: "5%" },
-        { tab: "notes", label: "Notes", top: "65%", right: "4.2%" }
-      ];
-
-      rightTabsConfig.forEach(({ tab, label, top, right }) => {
-        const tabDiv = document.createElement("div");
-        tabDiv.className = "tab right-tab" + (currentTab === tab ? " active" : "");
-        tabDiv.innerText = label;
-        tabDiv.dataset.tab = tab;
-        tabDiv.style.top = top;
-        tabDiv.style.right = right;
-        tabDiv.onclick = () => switchTab(tab);
-        rightTabs.appendChild(tabDiv);
-      });
-    }
-
-    updateTabPositions();
-    renderPages();
-  </script>
-</body>
-</html>
+<script src="/static/journal.js"></script>
+{% endblock %}
