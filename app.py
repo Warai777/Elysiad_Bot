@@ -31,6 +31,10 @@ def library():
     player = session.get("player")
     return render_template("library.html", player=player)
 
+@app.route("/choose_world")
+def choose_world():
+    return render_template("choose_world.html")
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
