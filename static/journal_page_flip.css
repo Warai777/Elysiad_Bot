@@ -5,6 +5,8 @@ body {
   background-size: cover;
   overflow: hidden;
   height: 100vh;
+  font-family: 'Caveat', cursive;
+  color: #fff;
 }
 
 .journal-wrapper {
@@ -85,6 +87,89 @@ body {
 .tab[data-tab="hints"] { top: 25%; left: -20px; }
 .tab[data-tab="lore"] { top: 35%; right: 0.7%; }
 .tab[data-tab="notes"] { top: 70%; right: -1%; }
+
+.chat-container {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+}
+
+.typing-bar {
+  display: flex;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+.typing-bar input {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px 0 0 8px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #000;
+}
+
+.send-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  background-color: #5a3e2b;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.action-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #5a3e2b;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.action-button:hover,
+.send-button:hover {
+  background-color: #7b5e44;
+  transition: background-color 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .typing-bar {
+    flex-direction: column;
+  }
+
+  .typing-bar input,
+  .send-button {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .action-button {
+    width: 100%;
+  }
+}
 
 .note-input {
   display: block;
