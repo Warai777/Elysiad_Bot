@@ -1,26 +1,32 @@
 {% block content %}
 <link rel="stylesheet" href="/static/journal_page_flip.css">
 
-<div class="journal-wrapper">
-  <div class="book-frame"></div>
-  <div class="page-spread">
-    <div class="page left-page" id="leftPage">{{ left_text|safe }}</div>
-    <div class="page right-page" id="rightPage">{{ right_text|safe }}</div>
-
+<div class="journal-container">
+  <div class="journal-tabs">
     <div class="tab" data-tab="hints">Hints</div>
     <div class="tab" data-tab="lore">Lore</div>
     <div class="tab" data-tab="notes">Notes</div>
   </div>
-</div>
 
-<div class="chat-container">
-  <div class="typing-bar">
-    <input type="text" id="noteInput" placeholder="Write your note and press Enter...">
-    <button class="send-button">Send</button>
-  </div>
-  <div class="action-buttons">
-    <button class="action-button">Record Memory</button>
-    <button class="action-button">Seal Page</button>
+  <div class="journal-pages">
+    <div class="journal-wrapper">
+      <div class="book-frame"></div>
+      <div class="page-spread">
+        <div class="page left-page" id="leftPage">{{ left_text|safe }}</div>
+        <div class="page right-page" id="rightPage">{{ right_text|safe }}</div>
+      </div>
+    </div>
+
+    <div class="chat-container">
+      <div class="typing-bar">
+        <input type="text" id="noteInput" placeholder="Write your note and press Enter...">
+        <button class="send-button">Send</button>
+      </div>
+      <div class="action-buttons">
+        <button class="action-button">Record Memory</button>
+        <button class="action-button">Seal Page</button>
+      </div>
+    </div>
   </div>
 </div>
 
