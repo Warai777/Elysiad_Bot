@@ -71,6 +71,25 @@ body {
   transition: background-color 0.3s ease;
 }
 
+.tab {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #3e2b23;
+  font-weight: bold;
+  padding: 12px 16px;
+  margin: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+}
+
+.tab:hover,
+.tab.active {
+  background-color: #d8c9a6;
+  color: #2e1b0f;
+}
+
 @media (max-width: 768px) {
   .typing-bar {
     flex-direction: column;
@@ -90,5 +109,11 @@ body {
 
   .action-button {
     width: 100%;
+  }
+
+  .tab {
+    flex: 1;
+    font-size: 16px;
+    padding: 10px;
   }
 }
