@@ -12,8 +12,8 @@
     <div class="journal-wrapper">
       <div class="book-frame"></div>
       <div class="page-spread">
-        <div class="page left-page" id="leftPage">{{ left_text|safe }}</div>
-        <div class="page right-page" id="rightPage">{{ right_text|safe }}</div>
+        <div class="page left-page" id="leftPage">{{ left_text|default:"Left page is blank."|safe }}</div>
+        <div class="page right-page" id="rightPage">{{ right_text|default:"Right page is blank."|safe }}</div>
       </div>
     </div>
 
