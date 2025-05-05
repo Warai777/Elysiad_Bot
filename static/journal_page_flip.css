@@ -97,8 +97,8 @@ body {
   }
 
   .journal-wrapper {
-    width: 95vw;
-    height: calc(95vw * 0.75);
+    width: 98vw;
+    height: calc(98vw * 0.75);
   }
 
   .book-frame,
@@ -110,12 +110,13 @@ body {
   }
 
   .page-spread {
-    padding: 10% 8%;
+    padding: 10% 7%;
     box-sizing: border-box;
+    gap: 0.75rem;
   }
 
   .page {
-    font-size: 0.95rem;
-    padding: 0.75rem;
+    font-size: 1rem;
+    padding: 1rem;
   }
 }
