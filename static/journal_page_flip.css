@@ -16,9 +16,9 @@ body {
 .journal-wrapper {
   position: relative;
   z-index: 2;
-  width: 100%;
+  width: 90vw;
+  height: calc(90vw * 0.75);
   max-width: 800px;
-  height: 600px;
   margin: auto;
 }
 
@@ -56,6 +56,7 @@ body {
   backface-visibility: hidden;
   color: #2e1b0f;
   z-index: 1;
+  font-size: 1rem;
 }
 
 .flip-left {
@@ -96,28 +97,25 @@ body {
   }
 
   .journal-wrapper {
-    height: 700px;
-    max-width: 95%;
+    width: 95vw;
+    height: calc(95vw * 0.75);
   }
 
-  .book-frame {
+  .book-frame,
+  .page-spread {
+    width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
   }
 
   .page-spread {
-    position: absolute;
-    top: 17%;
-    left: 7%;
-    width: 86%;
-    height: 66%;
-    flex-direction: row;
-    gap: 0.75rem;
+    padding: 10% 8%;
+    box-sizing: border-box;
   }
 
   .page {
-    width: 100%;
-    height: 100%;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     padding: 0.75rem;
   }
 }
