@@ -8,9 +8,7 @@ body {
   min-height: 100vh;
   font-family: 'Caveat', cursive;
   color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
 }
 
 .journal-wrapper {
@@ -77,16 +75,10 @@ body {
   }
 
   .journal-container {
+    display: flex;
     flex-direction: column;
-    padding: 0;
     align-items: center;
-  }
-
-  .journal-tabs {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-around;
-    margin-bottom: 0.5rem;
+    padding: 0;
   }
 
   .journal-pages {
@@ -100,6 +92,7 @@ body {
   .journal-wrapper {
     width: 100vw;
     height: calc(100vw * 0.75);
+    margin: 0;
   }
 
   .book-frame,
