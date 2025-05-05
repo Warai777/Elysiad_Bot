@@ -11,23 +11,36 @@ body {
 }
 
 .book-frame {
+  position: relative;
   background: url('/static/book__inner_frame.png') no-repeat center center;
   background-size: contain;
   width: 100%;
-  height: 300px;
-  margin-bottom: 1rem;
+  max-width: 600px;
+  height: 400px;
+  margin: 0 auto;
 }
 
-/* Page flip animation */
+.page-spread {
+  position: absolute;
+  top: 12%;
+  left: 8%;
+  width: 84%;
+  height: 76%;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .page {
+  flex: 1;
+  padding: 1rem;
+  background: url('/static/parchment_texture_overlay.jpg') center/cover;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
   transition: transform 0.6s ease, opacity 0.6s ease;
   transform-origin: center;
   backface-visibility: hidden;
-  background: url('/static/parchment_texture_overlay.jpg') center/cover;
   color: #2e1b0f;
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
 .flip-left {
@@ -40,7 +53,6 @@ body {
   opacity: 0.5;
 }
 
-/* Responsive mobile layout fix */
 @media (max-width: 768px) {
   .journal-container {
     flex-direction: column;
@@ -64,11 +76,14 @@ body {
     align-items: center;
   }
 
+  .book-frame {
+    height: 300px;
+  }
+
   .page-spread {
-    display: flex;
+    position: static;
     flex-direction: column;
     width: 100%;
-    gap: 1rem;
   }
 
   .page {
