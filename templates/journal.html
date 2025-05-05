@@ -1,44 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="journal-container">
-  <!-- Tabs -->
-  <div class="journal-tabs">
-    <div class="tab" data-tab="hints">Hints</div>
-    <div class="tab" data-tab="lore">Lore</div>
-    <div class="tab" data-tab="notes">Notes</div>
-  </div>
-
-  <!-- Journal Pages -->
-  <div class="journal-pages">
-    {% if is_mobile %}
-      <!-- MOBILE VIEW -->
-      <div class="journal-wrapper mobile-journal">
-        <div class="book-frame"></div>
-        <div class="left-page" id="leftPage">{{ left_text }}</div>
-        <div class="right-page" id="rightPage">{{ right_text }}</div>
-      </div>
-    {% else %}
-      <!-- DESKTOP VIEW -->
-      <div class="journal-wrapper desktop-journal">
-        <div class="book-frame"></div>
-        <div class="page-spread">
-          <div class="page left-page" id="leftPage">{{ left_text }}</div>
-          <div class="page right-page" id="rightPage">{{ right_text }}</div>
-        </div>
-      </div>
-    {% endif %}
-
-    <!-- Notes input -->
-    <div class="chat-container">
-      <div class="typing-bar">
-        <input type="text" id="noteInput" placeholder="Write your note and press Enter...">
-        <button class="send-button">Send</button>
-      </div>
-      <div class="action-buttons">
-        <button class="action-button">Record Memory</button>
-        <button class="action-button">Seal Page</button>
-      </div>
-    </div>
-  </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}">
+<div class="journal-wrapper">
+    <div class="book-frame"></div>
+    <div class="left-page">{{ left_text|default("Left page is blank.")|safe }}</div>
+    <div class="right-page">{{ right_text|default("Right page is blank.")|safe }}</div>
 </div>
+<div class="button-bar">
+    <button class="parchment-button">&#8592; Previous</button>
+    <input type="text" id="noteInput" placeholder="Write your note and press Enter...">
+    <button class="parchment-button">Next &#8594;</button>
+</div>
+<script src="{{ url_for('static', filename='journal.js') }}"></script>
 {% endblock %}
