@@ -10,4 +10,21 @@ body {
   color: #fff;
 }
 
+/* Page flip animation */
+.page {
+  transition: transform 0.6s ease, opacity 0.6s ease;
+  transform-origin: center;
+  backface-visibility: hidden;
+}
+
+.flip-left {
+  transform: rotateY(-180deg);
+  opacity: 0.5;
+}
+
+.flip-right {
+  transform: rotateY(180deg);
+  opacity: 0.5;
+}
+
 /* all other CSS stays the same below this line */
