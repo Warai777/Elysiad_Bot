@@ -1,5 +1,8 @@
 // journal.js — handles tab switching and animated page flips
 
+const flipSound = new Audio('/static/page-flip.mp3');
+flipSound.volume = 0.4;
+
 document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('.tab');
   const leftPage = document.getElementById('leftPage');
@@ -10,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Remove active from all tabs
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
+
+      // Play page flip sound
+      flipSound.currentTime = 0;
+      flipSound.play();
 
       // Animate flip effect
       leftPage.classList.add('flip-left');
