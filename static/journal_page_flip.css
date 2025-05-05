@@ -27,6 +27,17 @@ body {
   opacity: 0.5;
 }
 
+/* Debug visibility for mobile */
+#leftPage, #rightPage {
+  display: block !important;
+  min-height: 200px;
+  background: rgba(255,255,255,0.8);
+  color: #2e1b0f;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
 /* Responsive mobile layout fix */
 @media (max-width: 768px) {
   .journal-container {
