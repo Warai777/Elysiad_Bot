@@ -91,7 +91,7 @@ body {
 
   .journal-wrapper {
     width: 100vw;
-    height: calc(100vw * 0.75);
+    height: calc(100vw * 1.2);
     margin: 0;
   }
 
@@ -104,13 +104,13 @@ body {
   }
 
   .page-spread {
-    padding: 9% 6%;
+    padding: 10% 6%;
     gap: 0.5rem;
     box-sizing: border-box;
   }
 
   .page {
-    font-size: 1.05rem;
-    padding: 0.9rem;
+    font-size: 1.1rem;
+    padding: 1rem;
   }
 }
