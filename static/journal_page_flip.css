@@ -11,21 +11,23 @@ body {
 .journal-wrapper {
     position: relative;
     width: 100vw;
-    height: 100vh;
     max-width: 1400px;
-    margin: 0 auto;
+    height: auto;
+    margin: 5vh auto 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .book-frame {
     position: absolute;
-    top: 3vh;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90vw;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: auto;
     background: url('/static/book__inner_frame.png') no-repeat center center;
     background-size: contain;
-    z-index: 2;
+    z-index: 1;
     pointer-events: none;
 }
 
@@ -40,7 +42,7 @@ body {
     padding: 2%;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
     border-radius: 6px;
-    z-index: 1;
+    z-index: 2;
     box-sizing: border-box;
 }
 
@@ -55,13 +57,13 @@ body {
     padding: 2%;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
     border-radius: 6px;
-    z-index: 1;
+    z-index: 2;
     box-sizing: border-box;
 }
 
 .button-bar {
     position: relative;
-    margin-top: 88vh;
+    margin-top: 24px;
     width: 100%;
     display: flex;
     justify-content: center;
