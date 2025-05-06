@@ -79,18 +79,18 @@
         padding: 2px;
     }
 
-    .tab.hints {
-        left: -20px;
+    .tab-hints {
+        left: 0;
         top: 30%;
     }
 
-    .tab.lore {
-        right: -20px;
+    .tab-lore {
+        left: 93.5%;
         top: 25%;
     }
 
-    .tab.notes {
-        right: -20px;
+    .tab-notes {
+        left: 93.5%;
         top: 45%;
     }
 
