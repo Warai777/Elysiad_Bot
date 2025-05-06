@@ -61,11 +61,11 @@
 
     .tab-container {
         position: absolute;
-        top: 10%;
-        right: -28px;
+        top: 13%;
+        left: calc(94.5%); /* aligned to right-page */
         width: 48px;
-        height: 260px;
-        background: url('/static/parchment_tab_texture.jpg') no-repeat center center;
+        height: 230px;
+        background: url('/static/parchment_tab.png') no-repeat center center;
         background-size: cover;
         border-radius: 8px;
         z-index: 3;
