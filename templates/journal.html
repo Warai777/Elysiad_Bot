@@ -3,12 +3,18 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}">
 <div class="journal-wrapper">
     <div class="book-frame"></div>
-    <div class="left-page">{{ left_text|default("Left page is blank.")|safe }}</div>
+
+    <div class="left-page">
+        {{ left_text|default("Left page is blank.")|safe }}
+        <div class="tab-container left-tabs">
+            <div class="tab hints">Hints</div>
+        </div>
+    </div>
+
     <div class="right-page">
         {{ right_text|default("Right page is blank.")|safe }}
-        <div class="tab-container">
+        <div class="tab-container right-tabs">
             <div class="tab lore">Lore</div>
-            <div class="tab hints">Hints</div>
             <div class="tab notes">Notes</div>
         </div>
     </div>
