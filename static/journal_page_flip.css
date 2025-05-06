@@ -120,4 +120,26 @@
         color: #6b4c2d;
         font-style: italic;
     }
+
+    .tab {
+        position: absolute;
+        width: 36px;
+        height: 100px;
+        background: url('/static/parchment_tab_texture.jpg') no-repeat center center;
+        background-size: cover;
+        color: #f9d46d;
+        font-family: 'EB Garamond', serif;
+        font-size: 0.9rem;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        padding: 6px 0;
+        border-radius: 4px;
+        text-align: center;
+        right: -14px;
+        z-index: 3;
+    }
+
+    .tab.notes { top: 55%; }
+    .tab.hints { top: 30%; }
+    .tab.lore  { top: 10%; }
 }
