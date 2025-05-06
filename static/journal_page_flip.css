@@ -27,7 +27,7 @@ body {
     height: auto;
     background: url('/static/book__inner_frame.png') no-repeat center center;
     background-size: contain;
-    z-index: 1;
+    z-index: 3;
     pointer-events: none;
 }
 
