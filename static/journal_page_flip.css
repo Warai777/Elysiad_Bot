@@ -38,6 +38,7 @@
         border-radius: 6px;
         z-index: 1;
         box-sizing: border-box;
+        overflow: visible;
     }
 
     .left-page {
@@ -61,7 +62,7 @@
         width: 32px;
         height: 45px;
         background: url('/static/parchment_tab.png') no-repeat center center;
-        background-size: cover;
+        background-size: 90% auto;
         color: #f9d46d;
         font-family: 'EB Garamond', serif;
         font-size: 0.65rem;
@@ -71,7 +72,7 @@
         line-height: 1;
         cursor: pointer;
         border-radius: 4px;
-        z-index: 3;
+        z-index: 4;
         display: flex;
         align-items: center;
         justify-content: center;
