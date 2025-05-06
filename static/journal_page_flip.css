@@ -17,6 +17,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    flex-wrap: wrap;
 }
 
 .book-frame {
@@ -31,10 +32,10 @@ body {
     pointer-events: none;
 }
 
-.left-page {
+.left-page,
+.right-page {
     position: absolute;
     top: 112px;
-    left: 11px;
     width: 500px;
     height: 712px;
     background: url('/static/parchment_texture_overlay.jpg') repeat;
@@ -46,19 +47,12 @@ body {
     box-sizing: border-box;
 }
 
+.left-page {
+    left: 11px;
+}
+
 .right-page {
-    position: absolute;
-    top: 113px;
     left: 512px;
-    width: 487px;
-    height: 711px;
-    background: url('/static/parchment_texture_overlay.jpg') repeat;
-    background-size: cover;
-    padding: 2%;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
-    border-radius: 6px;
-    z-index: 2;
-    box-sizing: border-box;
 }
 
 .button-bar {
@@ -69,6 +63,7 @@ body {
     justify-content: center;
     gap: 1rem;
     z-index: 10;
+    flex-wrap: wrap;
 }
 
 input#noteInput {
@@ -93,4 +88,42 @@ input#noteInput {
     border-radius: 6px;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     cursor: pointer;
+}
+
+/* ===== Responsive for Mobile Devices ===== */
+@media (max-width: 768px) {
+    .journal-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .left-page,
+    .right-page {
+        position: relative;
+        width: 90%;
+        height: auto;
+        top: auto;
+        left: auto;
+        margin: 10px 0;
+        padding: 5%;
+    }
+
+    .book-frame {
+        display: none;
+    }
+
+    .button-bar {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    input#noteInput {
+        width: 90%;
+    }
+
+    .parchment-button {
+        width: 90%;
+        text-align: center;
+    }
 }
