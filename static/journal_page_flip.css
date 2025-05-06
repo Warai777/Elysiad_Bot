@@ -9,7 +9,6 @@
         overflow-x: hidden;
     }
 
-    /* Container for the whole journal */
     .journal-wrapper {
         position: relative;
         width: 100%;
@@ -18,7 +17,6 @@
         margin: 0 auto;
     }
 
-    /* Decorative book frame image */
     .book-frame {
         position: absolute;
         top: 0;
@@ -31,7 +29,6 @@
         pointer-events: none;
     }
 
-    /* Left page (Hints from the Archivist) */
     .left-page {
         position: absolute;
         top: 13%;
@@ -47,7 +44,6 @@
         box-sizing: border-box;
     }
 
-    /* Right page (Discovered Lore) */
     .right-page {
         position: absolute;
         top: 13%;
@@ -63,19 +59,65 @@
         box-sizing: border-box;
     }
 
-    /* Optional: flip button styling */
     .flip-button {
         display: block;
         margin: 30px auto 0 auto;
-        padding: 10px 20px;
-        background-color: #5c3a1e;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
+        padding: 14px 28px;
+        background: url('/static/parchment_texture_overlay.jpg') repeat;
+        background-size: cover;
+        color: #3b2a1a;
+        border: 2px solid #2a1c0f;
+        border-radius: 8px;
         font-family: 'EB Garamond', serif;
-        font-size: 16px;
+        font-size: 18px;
         cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 0 4px rgba(0,0,0,0.2);
         z-index: 3;
         position: relative;
+    }
+
+    .button-bar {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2rem;
+        gap: 1rem;
+        z-index: 3;
+    }
+
+    .parchment-button {
+        background: url('/static/parchment_texture_overlay.jpg') repeat;
+        background-size: cover;
+        color: #3b2a1a;
+        font-size: 18px;
+        padding: 12px 24px;
+        border: 2px solid #2a1c0f;
+        border-radius: 8px;
+        font-family: 'EB Garamond', serif;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 0 6px rgba(0,0,0,0.2);
+        cursor: pointer;
+        width: 80%;
+        max-width: 300px;
+    }
+
+    #noteInput {
+        font-family: 'Cedarville Cursive', cursive;
+        font-size: 18px;
+        width: 80%;
+        max-width: 320px;
+        padding: 14px 20px;
+        border: 2px solid #2a1c0f;
+        border-radius: 10px;
+        background: url('/static/parchment_texture_overlay.jpg') repeat;
+        background-size: cover;
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+        color: #2a1c0f;
+    }
+
+    #noteInput::placeholder {
+        color: #6b4c2d;
+        font-style: italic;
     }
 }
