@@ -11,8 +11,8 @@
     .left-page,
     .right-page {
         position: absolute;
-        width: 47vw;
-        height: 72vh;
+        width: 44vw;
+        height: 64vh;
         padding: 4%;
         font-family: 'Cedarville Cursive', 'EB Garamond', serif;
         font-size: 1rem;
@@ -21,6 +21,7 @@
         border-radius: 12px;
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25), inset 0 0 10px rgba(0, 0, 0, 0.2);
         text-align: left;
+        z-index: 1;
     }
 
     .left-page {
@@ -40,7 +41,7 @@
         height: auto;
         background: url('/static/book__inner_frame.png') no-repeat center center;
         background-size: contain;
-        z-index: 1;
+        z-index: 2;
         pointer-events: none;
     }
 
@@ -91,7 +92,7 @@
         padding: 6px;
         border-radius: 4px 4px 0 0;
         right: 0;
-        z-index: 5;
+        z-index: 3;
     }
 
     .tab.notes { top: 55%; }
