@@ -56,39 +56,41 @@
         padding: 2%;
     }
 
-    .tab-container {
+    .tab {
         position: absolute;
-        top: 5%;
         width: 32px;
-        height: 145px;
+        height: 45px;
         background: url('/static/parchment_tab.png') no-repeat center center;
         background-size: cover;
-        border-radius: 6px;
-        z-index: 3;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-evenly;
-        padding: 2px 0;
-    }
-
-    .right-tabs {
-        right: -20px;
-    }
-
-    .left-tabs {
-        left: -20px;
-    }
-
-    .tab {
         color: #f9d46d;
         font-family: 'EB Garamond', serif;
         font-size: 0.65rem;
         writing-mode: vertical-rl;
         text-orientation: mixed;
         text-align: center;
+        line-height: 1;
         cursor: pointer;
-        padding: 2px 0;
+        border-radius: 4px;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px;
+    }
+
+    .tab.hints {
+        left: -20px;
+        top: 30%;
+    }
+
+    .tab.lore {
+        right: -20px;
+        top: 25%;
+    }
+
+    .tab.notes {
+        right: -20px;
+        top: 45%;
     }
 
     .button-bar {
