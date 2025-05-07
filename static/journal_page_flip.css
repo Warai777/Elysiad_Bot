@@ -80,8 +80,9 @@
 
     .tab-hints {
         width: 32px;
-        left: 0;
+        left: 4.3%;
         top: 30%;
+        transform: translateX(-100%);
     }
 
     .tab-lore {
