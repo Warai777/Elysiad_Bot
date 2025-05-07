@@ -82,19 +82,21 @@
         width: 32px;
         left: 4.3%;
         top: 30%;
-        transform: translateX(-calc(100% - 4px));
+        transform: translateX(-110%);
     }
 
     .tab-lore {
         width: 26px;
-        left: 93.5%;
+        left: calc(50.5% + 44%);
         top: 25%;
+        transform: translateX(10%);
     }
 
     .tab-notes {
         width: 26px;
-        left: 93.5%;
+        left: calc(50.5% + 44%);
         top: 45%;
+        transform: translateX(10%);
     }
 
     .button-bar {
