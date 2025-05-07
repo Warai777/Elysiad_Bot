@@ -87,16 +87,16 @@
 
     .tab-lore {
         width: 26px;
-        left: calc(50.5% + 44%);
+        left: 93.5%;
         top: 25%;
-        transform: translateX(10%);
+        transform: none;
     }
 
     .tab-notes {
         width: 26px;
-        left: calc(50.5% + 44%);
+        left: 93.5%;
         top: 45%;
-        transform: translateX(10%);
+        transform: none;
     }
 
     .button-bar {
