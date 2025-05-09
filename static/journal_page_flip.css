@@ -60,6 +60,7 @@
     .tab {
         position: absolute;
         height: 120px;
+        min-height: 120px;
         width: 13px;
         background: url('/static/parchment_tab.png') no-repeat center center;
         background-size: contain;
@@ -69,13 +70,15 @@
         writing-mode: vertical-rl;
         text-orientation: mixed;
         text-align: center;
-        line-height: 120px;
+        line-height: normal;
+        padding-top: 10px;
+        padding-bottom: 10px;
         cursor: pointer;
         border-radius: 4px;
         z-index: 4;
         display: flex;
         justify-content: center;
-        padding: 2px;
+        overflow: visible;
     }
 
     .tab-hints {
