@@ -60,12 +60,12 @@
     .tab {
         position: absolute;
         height: 45px;
-        width: 26px;
+        width: 13px;
         background: url('/static/parchment_tab.png') no-repeat center center;
         background-size: 90% auto;
         color: #f9d46d;
         font-family: 'EB Garamond', serif;
-        font-size: 0.65rem;
+        font-size: 0.55rem;
         writing-mode: vertical-rl;
         text-orientation: mixed;
         text-align: center;
