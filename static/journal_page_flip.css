@@ -60,12 +60,12 @@
     .tab {
         position: absolute;
         height: 45px;
-        width: auto;
+        width: 26px;
         background: url('/static/parchment_tab.png') no-repeat center center;
-        background-size: contain;
+        background-size: 90% auto;
         color: #f9d46d;
         font-family: 'EB Garamond', serif;
-        font-size: 0.55rem;
+        font-size: 0.65rem;
         writing-mode: vertical-rl;
         text-orientation: mixed;
         text-align: center;
@@ -76,25 +76,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 6px 2px;
+        padding: 2px;
     }
 
     .tab-hints {
-        width: 16px;
         left: calc(5% + 0.5px);
         top: 15%;
         transform: translateX(-100%);
     }
 
     .tab-lore {
-        width: 13px;
         left: 93.5%;
         top: 25%;
         transform: none;
     }
 
     .tab-notes {
-        width: 13px;
         left: 93.5%;
         top: 45%;
         transform: none;
