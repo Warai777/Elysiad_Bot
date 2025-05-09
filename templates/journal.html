@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}?v=3">
 <div class="journal-wrapper">
     <div class="book-frame"></div>
 
@@ -13,9 +13,9 @@
     </div>
 
     <!-- Floating Tabs outside pages -->
-    <div class="tab tab-hints">Hints</div>
-    <div class="tab tab-lore">Lore</div>
-    <div class="tab tab-notes">Notes</div>
+    <div class="tab tab-hints"><span>Hints</span></div>
+    <div class="tab tab-lore"><span>Lore</span></div>
+    <div class="tab tab-notes"><span>Notes</span></div>
 </div>
 
 <div class="button-bar">
