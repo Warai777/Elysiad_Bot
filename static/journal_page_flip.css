@@ -75,11 +75,13 @@
 
     .tab span {
         color: #f9d46d;
-        font-family: 'EB Garamond', serif;
+        font-family: 'UnifrakturCook', cursive;
         font-size: 0.55rem;
         writing-mode: vertical-rl;
         text-orientation: mixed;
-        line-height: normal;
+        line-height: 1.1;
+        padding: 1px 0;
+        text-shadow: 0 0 1px #000;
     }
 
     .tab-hints span {
