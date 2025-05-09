@@ -59,7 +59,7 @@
 
     .tab {
         position: absolute;
-        height: 45px;
+        height: 60px;
         width: 13px;
         background: url('/static/parchment_tab.png') no-repeat center center;
         background-size: 90% auto;
