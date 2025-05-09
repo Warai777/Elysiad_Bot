@@ -59,8 +59,7 @@
 
     .tab {
         position: absolute;
-        height: 120px;
-        min-height: 120px;
+        height: 60px;
         width: 13px;
         background: url('/static/parchment_tab.png') no-repeat center center;
         background-size: contain;
@@ -79,24 +78,29 @@
         display: flex;
         justify-content: center;
         overflow: visible;
+        transform: scaleY(2);
+        transform-origin: top center;
     }
 
     .tab-hints {
         left: calc(5% + 0.5px);
         top: 15%;
-        transform: translateX(-100%);
+        transform: translateX(-100%) scaleY(2);
+        transform-origin: top center;
     }
 
     .tab-lore {
         left: 93.5%;
         top: 25%;
-        transform: none;
+        transform: scaleY(2);
+        transform-origin: top center;
     }
 
     .tab-notes {
         left: 93.5%;
         top: 45%;
-        transform: none;
+        transform: scaleY(2);
+        transform-origin: top center;
     }
 
     .button-bar {
