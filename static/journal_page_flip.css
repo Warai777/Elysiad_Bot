@@ -80,7 +80,10 @@
         writing-mode: vertical-rl;
         text-orientation: mixed;
         line-height: normal;
-        transform: scaleY(0.5);
+    }
+
+    .tab-hints span {
+        transform: rotate(180deg);
     }
 
     .tab-hints {
