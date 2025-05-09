@@ -62,7 +62,7 @@
         height: 120px;
         width: 13px;
         background: url('/static/parchment_tab.png') no-repeat center center;
-        background-size: 90% auto;
+        background-size: contain;
         color: #f9d46d;
         font-family: 'EB Garamond', serif;
         font-size: 0.55rem;
