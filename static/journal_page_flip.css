@@ -63,23 +63,24 @@
         width: 13px;
         background: url('/static/parchment_tab.png') no-repeat center center;
         background-size: contain;
+        transform: scaleY(2);
+        transform-origin: top center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: visible;
+        z-index: 4;
+        border-radius: 4px;
+    }
+
+    .tab span {
         color: #f9d46d;
         font-family: 'EB Garamond', serif;
         font-size: 0.55rem;
         writing-mode: vertical-rl;
         text-orientation: mixed;
-        text-align: center;
         line-height: normal;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        cursor: pointer;
-        border-radius: 4px;
-        z-index: 4;
-        display: flex;
-        justify-content: center;
-        overflow: visible;
-        transform: scaleY(2);
-        transform-origin: top center;
+        transform: scaleY(0.5);
     }
 
     .tab-hints {
