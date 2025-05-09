@@ -84,21 +84,21 @@
     }
 
     .tab-hints {
-        left: calc(5% + 0.5px);
+        left: calc(5%);
         top: 15%;
         transform: translateX(-100%) scaleY(2);
         transform-origin: top center;
     }
 
     .tab-lore {
-        left: 93.5%;
+        left: 94.5%;
         top: 25%;
         transform: scaleY(2);
         transform-origin: top center;
     }
 
     .tab-notes {
-        left: 93.5%;
+        left: 94.5%;
         top: 45%;
         transform: scaleY(2);
         transform-origin: top center;
