@@ -79,21 +79,21 @@
     }
 
     .tab-hints {
-        width: 32px;
+        width: 16px;
         left: calc(5% + 0.5px);
         top: 15%;
         transform: translateX(-100%);
     }
 
     .tab-lore {
-        width: 26px;
+        width: 13px;
         left: 93.5%;
         top: 25%;
         transform: none;
     }
 
     .tab-notes {
-        width: 26px;
+        width: 13px;
         left: 93.5%;
         top: 45%;
         transform: none;
