@@ -85,7 +85,7 @@
 
     .tab-hints {
         left: calc(5%);
-        top: 15%;
+        top: 13.5%;
         transform: translateX(-100%) scaleY(2);
         transform-origin: top center;
     }
