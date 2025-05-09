@@ -80,7 +80,7 @@
 
     .tab-hints {
         width: 32px;
-        left: 6%;
+        left: 4%; /* moved 2% left from 6% */
         top: 30%;
         transform: translateX(-100%);
     }
