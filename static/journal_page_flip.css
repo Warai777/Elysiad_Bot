@@ -69,12 +69,11 @@
         writing-mode: vertical-rl;
         text-orientation: mixed;
         text-align: center;
-        line-height: 1;
+        line-height: 120px;
         cursor: pointer;
         border-radius: 4px;
         z-index: 4;
         display: flex;
-        align-items: center;
         justify-content: center;
         padding: 2px;
     }
