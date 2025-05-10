@@ -25,15 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const topValue = topMap[tabClass] || '20%';
       tab.style.top = topValue;
 
-      if (index <= activeIndex) {
-        // Flip to left
+      if (index === activeIndex) {
+        // Flip selected tab to left
         tab.classList.add('flipped-tab');
         tab.style.left = 'calc(5%)';
         tab.style.transform = 'translateX(-100%) scaleY(2)';
-        tab.style.zIndex = 10 + index;
+        tab.style.zIndex = 10;
         slot.appendChild(tab);
       } else {
-        // Flip back to right
+        // Return all others to right
         tab.classList.remove('flipped-tab');
         tab.style.left = '';
         tab.style.transform = '';
