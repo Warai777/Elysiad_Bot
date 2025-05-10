@@ -4,18 +4,19 @@
 <div class="journal-wrapper">
     <div class="book-frame"></div>
 
-    <div class="left-page">
+    <div class="left-page" id="leftPage">
         {{ left_text|default("Left page is blank.")|safe }}
+        <div id="active-tab-slot"></div>
     </div>
 
-    <div class="right-page">
+    <div class="right-page" id="rightPage">
         {{ right_text|default("Right page is blank.")|safe }}
     </div>
 
     <!-- Floating Tabs outside pages -->
-    <div class="tab tab-hints"><span>Hints</span></div>
-    <div class="tab tab-lore"><span>Lore</span></div>
-    <div class="tab tab-notes"><span>Notes</span></div>
+    <div class="tab tab-hints" data-tab="Hints"><span>Hints</span></div>
+    <div class="tab tab-lore" data-tab="Lore"><span>Lore</span></div>
+    <div class="tab tab-notes" data-tab="Notes"><span>Notes</span></div>
 </div>
 
 <div class="button-bar">
@@ -23,5 +24,5 @@
     <input type="text" id="noteInput" placeholder="Write your note and press Enter...">
     <button class="parchment-button">Next &#8594;</button>
 </div>
-<script src="{{ url_for('static', filename='journal.js') }}"></script>
+<script src="{{ url_for('static', filename='journal.js') }}?v=2"></script>
 {% endblock %}
