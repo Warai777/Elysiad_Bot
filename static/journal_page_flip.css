@@ -77,6 +77,10 @@
         transition: transform 0.4s ease, left 0.4s ease, top 0.4s ease;
     }
 
+    .flipped-tab {
+        background-image: url('/static/parchment_tab_active.png');
+    }
+
     .tab span {
         color: #f9d46d;
         font-family: 'Astloch', cursive;
@@ -116,12 +120,6 @@
     .flipping {
         transform: scaleY(2) translateX(-50vw) rotate(-2deg) !important;
         z-index: 10;
-    }
-
-    .flipped-tab {
-        left: 2%;
-        transform: translateX(0) scaleY(2);
-        z-index: 5;
     }
 
     .button-bar {
