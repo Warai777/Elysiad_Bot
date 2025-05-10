@@ -6,8 +6,7 @@ flipSound.volume = 0.4;
 document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('.tab');
   const slot = document.getElementById('active-tab-slot');
-  let activeTab = null;
-  let tabZIndex = 10; // incrementing to keep newest tab on top
+  const tabOrder = ['tab-hints', 'tab-lore', 'tab-notes'];
 
   const topMap = {
     'tab-hints': '11.5%',
@@ -15,29 +14,47 @@ document.addEventListener('DOMContentLoaded', () => {
     'tab-notes': '45%'
   };
 
+  function updateTabPositions(activeTabClass) {
+    tabs.forEach(tab => {
+      const tabClass = [...tab.classList].find(cls => tabOrder.includes(cls));
+      if (!tabClass) return;
+
+      const index = tabOrder.indexOf(tabClass);
+      const activeIndex = tabOrder.indexOf(activeTabClass);
+
+      const topValue = topMap[tabClass] || '20%';
+      tab.style.top = topValue;
+
+      if (index <= activeIndex) {
+        // Flip to left
+        tab.classList.add('flipped-tab');
+        tab.style.left = 'calc(5%)';
+        tab.style.transform = 'translateX(-100%) scaleY(2)';
+        tab.style.zIndex = 10 + index;
+        slot.appendChild(tab);
+      } else {
+        // Reset to right
+        tab.classList.remove('flipped-tab');
+        tab.style.left = '';
+        tab.style.transform = '';
+        tab.style.zIndex = '';
+        document.body.appendChild(tab);
+      }
+    });
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      if (activeTab && activeTab !== tab) {
-        activeTab.classList.remove('flipped-tab');
-        document.body.appendChild(activeTab);
-      }
+      const activeTabClass = [...tab.classList].find(cls => tabOrder.includes(cls));
+      if (!activeTabClass) return;
 
       flipSound.currentTime = 0;
       flipSound.play();
 
-      const tabClass = [...tab.classList].find(cls => topMap[cls]);
-      const topValue = topMap[tabClass] || '20%';
-
       tab.classList.add('flipping');
       setTimeout(() => {
         tab.classList.remove('flipping');
-        tab.classList.add('flipped-tab');
-        tab.style.top = topValue;
-        tab.style.left = 'calc(5%)';
-        tab.style.transform = 'translateX(-100%) scaleY(2)';
-        tab.style.zIndex = tabZIndex++;
-        slot.appendChild(tab);
-        activeTab = tab;
+        updateTabPositions(activeTabClass);
       }, 500);
     });
   });
