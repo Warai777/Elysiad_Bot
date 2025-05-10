@@ -1,11 +1,20 @@
-// journal.js — handles tab switching and animated page flips
+// journal.js — handles tab switching and animated page flips with infinite inner flipping per tab
 
 const flipSound = new Audio('/static/page-flip.mp3');
 flipSound.volume = 0.4;
 
+let currentSection = 'tab-hints';
+let currentPageIndex = {
+  'tab-hints': 0,
+  'tab-lore': 0,
+  'tab-notes': 0
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('.tab');
   const slot = document.getElementById('active-tab-slot');
+  const leftPage = document.getElementById('leftPage');
+  const rightPage = document.getElementById('rightPage');
   const tabOrder = ['tab-hints', 'tab-lore', 'tab-notes'];
 
   const hintTab = document.querySelector('.tab-hints');
@@ -17,8 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
   slot.appendChild(hintTab);
 
   function updateTabPositions(activeTabClass) {
-    const activeIndex = tabOrder.indexOf(activeTabClass);
+    currentSection = activeTabClass;
 
+    const activeIndex = tabOrder.indexOf(activeTabClass);
     tabs.forEach(tab => {
       const tabClass = [...tab.classList].find(cls => tabOrder.includes(cls));
       if (!tabClass || tabClass === 'tab-hints') return;
@@ -26,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const index = tabOrder.indexOf(tabClass);
 
       if (index <= activeIndex) {
-        // Flip to left
         tab.classList.add('flipped-tab');
         tab.style.left = 'calc(5%)';
         tab.style.transform = 'translateX(-100%) scaleY(2)';
@@ -34,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.style.backgroundImage = "url('/static/parchment_tab_active.png')";
         slot.appendChild(tab);
       } else {
-        // Return to right
         tab.classList.remove('flipped-tab');
         tab.style.left = '';
         tab.style.transform = '';
@@ -43,6 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(tab);
       }
     });
+    renderCurrentPages();
+  }
+
+  function renderCurrentPages() {
+    const index = currentPageIndex[currentSection];
+    leftPage.innerHTML = `<div>Section: ${currentSection}, Page: ${index * 2 + 1}</div>`;
+    rightPage.innerHTML = `<div>Section: ${currentSection}, Page: ${index * 2 + 2}</div>`;
   }
 
   tabs.forEach(tab => {
@@ -62,4 +77,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 500);
     });
   });
+
+  document.querySelector('.parchment-button.next').addEventListener('click', () => {
+    currentPageIndex[currentSection]++;
+    flipSound.currentTime = 0;
+    flipSound.play();
+    renderCurrentPages();
+  });
+
+  document.querySelector('.parchment-button.prev').addEventListener('click', () => {
+    if (currentPageIndex[currentSection] > 0) currentPageIndex[currentSection]--;
+    flipSound.currentTime = 0;
+    flipSound.play();
+    renderCurrentPages();
+  });
+
+  renderCurrentPages();
 });
