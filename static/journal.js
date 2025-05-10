@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('.tab');
   const slot = document.getElementById('active-tab-slot');
   let activeTab = null;
+  let tabZIndex = 10; // incrementing to keep newest tab on top
 
   const topMap = {
     'tab-hints': '11.5%',
@@ -34,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.style.top = topValue;
         tab.style.left = 'calc(5%)';
         tab.style.transform = 'translateX(-100%) scaleY(2)';
-        tab.style.zIndex = '5';
+        tab.style.zIndex = tabZIndex++;
         slot.appendChild(tab);
         activeTab = tab;
       }, 500);
