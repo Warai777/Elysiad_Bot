@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import os
+from player import load_player
+from lore_manager import get_lore_pages
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
@@ -37,7 +39,18 @@ def choose_world():
 
 @app.route("/journal")
 def journal():
-    return render_template("journal.html")
+    player_info = session.get("player")
+    if not player_info:
+        return redirect(url_for("home"))
+
+    player = load_player(player_info["name"])
+    lore_pages = get_lore_pages(player, page_index=0)
+
+    return render_template("journal.html",
+                           player=player,
+                           left_page=lore_pages["left"],
+                           right_page=lore_pages["right"],
+                           page_info=lore_pages)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
