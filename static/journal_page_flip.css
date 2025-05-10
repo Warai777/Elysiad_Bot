@@ -121,6 +121,7 @@
     .flipped-tab {
         left: 2%;
         transform: translateX(0) scaleY(2);
+        z-index: 5;
     }
 
     .button-bar {
