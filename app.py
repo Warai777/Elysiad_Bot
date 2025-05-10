@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import os
 from player import load_player
-from lore_manager import get_lore_pages
+from lore_manager import get_lore_pages, unlock_lore
+from archivist_lore import ARCHIVIST_LORE
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
@@ -44,6 +45,11 @@ def journal():
         return redirect(url_for("home"))
 
     player = load_player(player_info["name"])
+
+    # TEMP: Unlock all lore for testing
+    for i in range(len(ARCHIVIST_LORE)):
+        unlock_lore(player, i)
+
     lore_pages = get_lore_pages(player, page_index=0)
 
     return render_template("journal.html",
@@ -60,6 +66,11 @@ def get_lore_page():
 
     page_index = int(request.args.get("page", 0))
     player = load_player(player_info["name"])
+
+    # TEMP: Unlock all lore for testing
+    for i in range(len(ARCHIVIST_LORE)):
+        unlock_lore(player, i)
+
     lore_pages = get_lore_pages(player, page_index=page_index)
 
     return jsonify({
