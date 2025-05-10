@@ -1,44 +1,52 @@
-/* Base tab styling */
+/* Updated tab styling for page-flip effect */
 .tab-button {
   position: absolute;
-  width: 40px;
+  width: 28px;
   height: 60px;
-  background-image: url('/static/parchment_tab.png');
   background-size: cover;
   border: none;
-  color: #fff;
   font-family: 'Astloch', cursive;
-  font-size: 14px;
+  font-size: 10px;
+  color: #e8d6b8;
   writing-mode: vertical-rl;
-  text-orientation: mixed;
   text-align: center;
-  line-height: 1.1;
+  line-height: 1;
+  padding: 4px 0;
   cursor: pointer;
-  padding: 0;
-  z-index: 4;
+  transition: transform 0.6s ease-in-out, left 0.6s ease-in-out, right 0.6s ease-in-out;
+  z-index: 5;
 }
 
-.tab-button.active {
-  background-image: url('/static/parchment_tab_active.PNG');
+.tab-button.hint-tab {
+  left: -13px;
+  top: 64px;
+  background-image: url("/static/images/parchment_tab_active.png");
+  z-index: 6;
+  cursor: default;
 }
 
-/* Hints tab fixed styling */
-.tab-hints {
-  left: calc(5%);
-  top: 11.5%;
-  transform: translateX(-100%) scaleY(2);
-  transform-origin: top center;
-  background-image: url('/static/parchment_tab_active.PNG');
-  pointer-events: none;
-  z-index: 4;
+.tab-button[data-tab="lore"] {
+  right: -13px;
+  top: 64px;
+  background-image: url("/static/images/parchment_tab.png");
 }
 
-.tab-hints span {
-  transform: rotate(180deg);
+.tab-button[data-tab="notes"] {
+  right: -13px;
+  top: 128px;
+  background-image: url("/static/images/parchment_tab.png");
 }
 
-/* Hide tab from tab flipping logic */
-.tab-hints.flipped {
-  transform: translateX(-100%) scaleY(2);
-  left: calc(5%);
+.tab-button.active[data-tab="lore"] {
+  left: -13px;
+  top: 128px;
+  right: auto;
+  background-image: url("/static/images/parchment_tab_active.png");
+}
+
+.tab-button.active[data-tab="notes"] {
+  left: -13px;
+  top: 192px;
+  right: auto;
+  background-image: url("/static/images/parchment_tab_active.png");
 }
