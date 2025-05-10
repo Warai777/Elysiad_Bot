@@ -68,14 +68,13 @@
         width: 13px;
         background: url('/static/parchment_tab.png') no-repeat center center;
         background-size: contain;
-        transform: scaleY(2);
-        transform-origin: top center;
         display: flex;
         justify-content: center;
         align-items: center;
         overflow: visible;
         z-index: 4;
         border-radius: 4px;
+        transition: transform 0.4s ease, left 0.4s ease, top 0.4s ease;
     }
 
     .tab span {
@@ -112,6 +111,16 @@
         top: 45%;
         transform: scaleY(2);
         transform-origin: top center;
+    }
+
+    .flipping {
+        transform: scaleY(2) translateX(-50vw) rotate(-2deg) !important;
+        z-index: 10;
+    }
+
+    .flipped-tab {
+        left: 2%;
+        transform: translateX(0) scaleY(2);
     }
 
     .button-bar {
