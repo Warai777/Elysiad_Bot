@@ -8,6 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const slot = document.getElementById('active-tab-slot');
   let activeTab = null;
 
+  const topMap = {
+    'tab-hints': '11.5%',
+    'tab-lore': '25%',
+    'tab-notes': '45%'
+  };
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       if (activeTab && activeTab !== tab) {
@@ -17,12 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       flipSound.currentTime = 0;
       flipSound.play();
-
-      const topMap = {
-        'tab-hints': '11.5%',
-        'tab-lore': '25%',
-        'tab-notes': '45%'
-      };
 
       const tabClass = [...tab.classList].find(cls => topMap[cls]);
       const topValue = topMap[tabClass] || '20%';
