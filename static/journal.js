@@ -15,13 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function updateTabPositions(activeTabClass) {
+    const activeIndex = tabOrder.indexOf(activeTabClass);
+
     tabs.forEach(tab => {
       const tabClass = [...tab.classList].find(cls => tabOrder.includes(cls));
       if (!tabClass) return;
 
       const index = tabOrder.indexOf(tabClass);
-      const activeIndex = tabOrder.indexOf(activeTabClass);
-
       const topValue = topMap[tabClass] || '20%';
       tab.style.top = topValue;
 
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.style.zIndex = 10 + index;
         slot.appendChild(tab);
       } else {
-        // Reset to right
+        // Flip back to right
         tab.classList.remove('flipped-tab');
         tab.style.left = '';
         tab.style.transform = '';
