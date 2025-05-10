@@ -7,25 +7,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('.tab');
   const leftPage = document.getElementById('leftPage');
   const rightPage = document.getElementById('rightPage');
+  const slot = document.getElementById('active-tab-slot');
+  let activeTab = null;
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      // Remove active from all tabs
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+      // Reset active tab
+      if (activeTab) {
+        document.body.appendChild(activeTab);
+        activeTab.classList.remove('active');
+      }
 
-      // Play page flip sound
+      // Mark current as active
+      tab.classList.add('active');
+      activeTab = tab;
+      slot.appendChild(tab);
+
+      // Play sound and animate
       flipSound.currentTime = 0;
       flipSound.play();
-
-      // Animate flip effect
       leftPage.classList.add('flip-left');
       rightPage.classList.add('flip-right');
 
-      // Fake page change (could replace with real fetch/update)
+      // Simulated content change
       setTimeout(() => {
         leftPage.innerHTML = `<em>${tab.dataset.tab} - left page content</em>`;
         rightPage.innerHTML = `<em>${tab.dataset.tab} - right page content</em>`;
+        leftPage.appendChild(slot);
+        slot.appendChild(tab);
         leftPage.classList.remove('flip-left');
         rightPage.classList.remove('flip-right');
       }, 600);
