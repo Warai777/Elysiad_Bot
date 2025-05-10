@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tabs.forEach(tab => {
       const tabClass = [...tab.classList].find(cls => tabOrder.includes(cls));
-      if (!tabClass) return;
+      if (!tabClass || tabClass === 'tab-hints') return;
 
       const index = tabOrder.indexOf(tabClass);
       const topValue = topMap[tabClass] || '20%';
@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   tabs.forEach(tab => {
+    if (tab.classList.contains('tab-hints')) return;
+
     tab.addEventListener('click', () => {
       const activeTabClass = [...tab.classList].find(cls => tabOrder.includes(cls));
       if (!activeTabClass) return;
