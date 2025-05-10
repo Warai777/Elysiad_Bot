@@ -19,10 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
       flipSound.currentTime = 0;
       flipSound.play();
 
+      const tabClass = tab.classList.contains('tab-lore') ? 'top: 25%;' :
+                       tab.classList.contains('tab-notes') ? 'top: 45%;' :
+                       'top: 11.5%;';
+
       tab.classList.add('flipping');
       setTimeout(() => {
         tab.classList.remove('flipping');
         tab.classList.add('flipped-tab');
+        tab.style.top = tabClass.match(/top: (.*?);/)[1];
+        tab.style.left = '2%';
         slot.appendChild(tab);
         activeTab = tab;
       }, 500);
