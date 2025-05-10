@@ -54,10 +54,24 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCurrentPages();
   }
 
+  async function fetchLorePage(pageIndex) {
+    const response = await fetch(`/get_lore_page?page=${pageIndex}`);
+    const data = await response.json();
+    if (data.left !== undefined && data.right !== undefined) {
+      leftPage.innerHTML = `<div>${data.left}</div>`;
+      rightPage.innerHTML = `<div>${data.right}</div>`;
+      currentPageIndex[currentSection] = data.current_page;
+    }
+  }
+
   function renderCurrentPages() {
-    const index = currentPageIndex[currentSection];
-    leftPage.innerHTML = `<div>Section: ${currentSection}, Page: ${index * 2 + 1}</div>`;
-    rightPage.innerHTML = `<div>Section: ${currentSection}, Page: ${index * 2 + 2}</div>`;
+    if (currentSection === 'tab-lore') {
+      fetchLorePage(currentPageIndex[currentSection]);
+    } else {
+      const index = currentPageIndex[currentSection];
+      leftPage.innerHTML = `<div>Section: ${currentSection}, Page: ${index * 2 + 1}</div>`;
+      rightPage.innerHTML = `<div>Section: ${currentSection}, Page: ${index * 2 + 2}</div>`;
+    }
   }
 
   tabs.forEach(tab => {
