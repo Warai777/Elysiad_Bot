@@ -14,8 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     'tab-notes': '45%'
   };
 
+  let currentActiveIndex = 0;
+
   function updateTabPositions(activeTabClass) {
-    const activeIndex = tabOrder.indexOf(activeTabClass);
+    const newActiveIndex = tabOrder.indexOf(activeTabClass);
+    currentActiveIndex = newActiveIndex;
 
     tabs.forEach(tab => {
       const tabClass = [...tab.classList].find(cls => tabOrder.includes(cls));
@@ -25,15 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const topValue = topMap[tabClass] || '20%';
       tab.style.top = topValue;
 
-      if (index === activeIndex) {
-        // Flip selected tab to left
+      if (index <= newActiveIndex) {
+        // Flip to left
         tab.classList.add('flipped-tab');
         tab.style.left = 'calc(5%)';
         tab.style.transform = 'translateX(-100%) scaleY(2)';
-        tab.style.zIndex = 10;
+        tab.style.zIndex = 10 + (newActiveIndex - index);
         slot.appendChild(tab);
       } else {
-        // Return all others to right
+        // Return to right
         tab.classList.remove('flipped-tab');
         tab.style.left = '';
         tab.style.transform = '';
