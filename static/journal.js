@@ -19,14 +19,23 @@ document.addEventListener('DOMContentLoaded', () => {
       flipSound.currentTime = 0;
       flipSound.play();
 
-      const computedTop = getComputedStyle(tab).top;
-      tab.style.top = computedTop;
+      // Use exact positioning for flipped tabs
+      const topMap = {
+        'tab-hints': '11.5%',
+        'tab-lore': '25%',
+        'tab-notes': '45%'
+      };
+
+      const tabClass = [...tab.classList].find(cls => topMap[cls]);
+      const topValue = topMap[tabClass] || '20%';
 
       tab.classList.add('flipping');
       setTimeout(() => {
         tab.classList.remove('flipping');
         tab.classList.add('flipped-tab');
+        tab.style.top = topValue;
         tab.style.left = 'calc(5%)';
+        tab.style.transform = 'translateX(-100%) scaleY(2)';
         slot.appendChild(tab);
         activeTab = tab;
       }, 500);
