@@ -5,7 +5,6 @@ flipSound.volume = 0.4;
 
 document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('.tab');
-  const leftPage = document.getElementById('leftPage');
   const slot = document.getElementById('active-tab-slot');
   let activeTab = null;
 
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
       flipSound.currentTime = 0;
       flipSound.play();
 
-      // Use exact positioning for flipped tabs
       const topMap = {
         'tab-hints': '11.5%',
         'tab-lore': '25%',
@@ -36,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.style.top = topValue;
         tab.style.left = 'calc(5%)';
         tab.style.transform = 'translateX(-100%) scaleY(2)';
+        tab.style.zIndex = '5';
         slot.appendChild(tab);
         activeTab = tab;
       }, 500);
