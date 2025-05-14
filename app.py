@@ -1,15 +1,62 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 import os
-from player import load_player
-from lore_manager import get_lore_pages, unlock_lore
-from archivist_lore import ARCHIVIST_LORE
+import random
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
 
+# Mock user database
+users = {}
+reset_codes = {}
+
 @app.route("/")
-def home():
+def login_page():
     return render_template("home.html")
+
+@app.route("/login", methods=["POST"])
+def login():
+    identifier = request.form["identifier"]
+    password = request.form["password"]
+    user = users.get(identifier)
+    if user and user["password"] == password:
+        session["user"] = identifier
+        return redirect(url_for("library"))
+    flash("Invalid credentials")
+    return redirect(url_for("login_page"))
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        email = request.form["email"]
+        phone = request.form["phone"]
+        username = request.form["username"]
+        password = request.form["password"]
+        users[email] = {"username": username, "password": password, "phone": phone}
+        users[phone] = {"username": username, "password": password, "email": email}
+        return redirect(url_for("login_page"))
+    return "Signup Page Placeholder"
+
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        identifier = request.form["identifier"]
+        if identifier in users:
+            code = str(random.randint(100000, 999999))
+            reset_codes[identifier] = code
+            print(f"Sending code to {identifier}: {code}")  # Replace with real email/SMS logic
+            return f"Verification code sent to {identifier}."
+        return "Identifier not found."
+    return "Forgot Password Placeholder"
+
+@app.route("/reset-password", methods=["POST"])
+def reset_password():
+    identifier = request.form["identifier"]
+    code = request.form["code"]
+    new_password = request.form["new_password"]
+    if reset_codes.get(identifier) == code:
+        users[identifier]["password"] = new_password
+        return "Password reset successful."
+    return "Invalid code."
 
 @app.route("/create_character")
 def create_character():
@@ -42,11 +89,14 @@ def choose_world():
 def journal():
     player_info = session.get("player")
     if not player_info:
-        return redirect(url_for("home"))
+        return redirect(url_for("login_page"))
+
+    from player import load_player
+    from lore_manager import get_lore_pages, unlock_lore
+    from archivist_lore import ARCHIVIST_LORE
 
     player = load_player(player_info["name"])
 
-    # TEMP: Unlock all lore for testing
     for i in range(len(ARCHIVIST_LORE)):
         unlock_lore(player, i)
 
@@ -64,10 +114,13 @@ def get_lore_page():
     if not player_info:
         return jsonify({"error": "No player found"}), 401
 
+    from player import load_player
+    from lore_manager import get_lore_pages, unlock_lore
+    from archivist_lore import ARCHIVIST_LORE
+
     page_index = int(request.args.get("page", 0))
     player = load_player(player_info["name"])
 
-    # TEMP: Unlock all lore for testing
     for i in range(len(ARCHIVIST_LORE)):
         unlock_lore(player, i)
 
