@@ -43,7 +43,7 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for("login_page"))
-    return "Signup Page Placeholder"
+    return render_template("signup_page.html")
 
 @app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
@@ -63,20 +63,22 @@ def forgot_password():
                     body=f"Your Elysiad code is: {code}", from_=TWILIO_NUMBER, to=user.phone)
             return f"Code sent to {identifier}."
         return "Identifier not found."
-    return "Forgot Password Placeholder"
+    return render_template("forgot-password.html")
 
-@app.route("/reset-password", methods=["POST"])
+@app.route("/reset-password", methods=["GET", "POST"])
 def reset_password():
-    identifier = request.form["identifier"]
-    code = request.form["code"]
-    new_password = request.form["new_password"]
-    if reset_codes.get(identifier) == code:
-        user = User.query.filter((User.email == identifier) | (User.phone == identifier)).first()
-        if user:
-            user.password = new_password
-            db.session.commit()
-            return "Password reset successful."
-    return "Invalid code."
+    if request.method == "POST":
+        identifier = request.form["identifier"]
+        code = request.form["code"]
+        new_password = request.form["new_password"]
+        if reset_codes.get(identifier) == code:
+            user = User.query.filter((User.email == identifier) | (User.phone == identifier)).first()
+            if user:
+                user.password = new_password
+                db.session.commit()
+                return "Password reset successful."
+        return "Invalid code."
+    return render_template("reset-password.html")
 
 @app.route("/create_character")
 def create_character():
