@@ -18,6 +18,10 @@ TWILIO_NUMBER = os.getenv("TWILIO_NUMBER")
 reset_codes = {}
 
 @app.route("/")
+def login_page_redirect():
+    return redirect(url_for("login_page"))
+
+@app.route("/login")
 def login_page():
     return render_template("home.html")
 
