@@ -1,2 +1,5 @@
 flask
-openai>=1.0.0
+flask_sqlalchemy
+twilio
+sendgrid
+python-dotenv
