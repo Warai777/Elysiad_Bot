@@ -1,65 +1,85 @@
-/* === General Tab Styling === */
-.tab-button {
+/* Reset base */
+.tab-container {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 100vw;
+  pointer-events: none;
+}
+
+.tab-hints,
+.tab-lore,
+.tab-notes {
   position: absolute;
-  width: 40px;
-  height: 60px;
-  background-image: url("/static/parchment_tab.png");
+  width: 38px;
+  height: 110px;
   background-size: cover;
-  color: white;
+  background-repeat: no-repeat;
+  color: #3c1e1e;
   font-family: 'Astloch', cursive;
-  font-size: 12px;
+  font-size: 16px;
   writing-mode: vertical-rl;
   text-align: center;
+  line-height: 1.2;
+  padding: 10px 5px;
+  pointer-events: auto;
   border: none;
-  cursor: pointer;
-  z-index: 10;
-  transition: transform 0.6s ease-in-out;
+  z-index: 5;
 }
 
-.tab-button.active {
-  background-image: url("/static/parchment_tab_active.PNG");
-}
-
-/* === Tab Positions (Right Page) === */
-.tab-hint {
+/* Hints tab is always left */
+.tab-hints {
   left: 0;
-  top: 110px;
-  z-index: 11;
+  top: 120px;
+  background-image: url('/static/parchment_tab_active.PNG');
+}
+
+/* Inactive tabs */
+.tab-lore,
+.tab-notes {
+  right: 0;
+  background-image: url('/static/parchment_tab.png');
+}
+
+/* When active, they flip to left */
+.tab-lore.active,
+.tab-notes.active {
+  left: 0;
+  right: auto;
+  background-image: url('/static/parchment_tab_active.PNG');
+}
+
+#active-tab-slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.tab-hints span,
+.tab-lore span,
+.tab-notes span {
+  display: block;
+  transform: rotate(180deg);
+}
+
+.tab-lore.active,
+.tab-notes.active {
+  top: 200px; /* Keep vertically stable on flip */
 }
 
 .tab-lore {
-  right: 0;
-  top: 110px;
+  top: 200px;
 }
 
 .tab-notes {
-  right: 0;
-  top: 200px;
+  top: 300px;
 }
 
-/* === Tab Flipped to Left Page === */
-.tab-left.tab-lore {
-  left: 0;
-  top: 200px;
-  right: auto;
-}
-
-.tab-left.tab-notes {
-  left: 0;
-  top: 290px;
-  right: auto;
-}
-
-/* === Z-Index Control === */
-.tab-left {
-  z-index: 12;
-}
-
-/* === Page Flip Animation === */
-.page {
-  transition: transform 0.6s ease-in-out;
-}
-
-.page-flip {
-  transform: rotateY(180deg);
+.tab-lore.active span,
+.tab-notes.active span {
+  transform: rotate(180deg);
 }
