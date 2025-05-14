@@ -1,12 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
-import os
-import random
+from flask_sqlalchemy import SQLAlchemy
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from twilio.rest import Client
+import os, random
+from player import User
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///elysiad.db'
 app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
+db = SQLAlchemy(app)
 
-# Mock user database
-users = {}
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+TWILIO_SID = os.getenv("TWILIO_SID")
+TWILIO_TOKEN = os.getenv("TWILIO_TOKEN")
+TWILIO_NUMBER = os.getenv("TWILIO_NUMBER")
 reset_codes = {}
 
 @app.route("/")
@@ -17,9 +25,9 @@ def login_page():
 def login():
     identifier = request.form["identifier"]
     password = request.form["password"]
-    user = users.get(identifier)
-    if user and user["password"] == password:
-        session["user"] = identifier
+    user = User.query.filter((User.email == identifier) | (User.phone == identifier)).first()
+    if user and user.password == password:
+        session["user"] = user.username
         return redirect(url_for("library"))
     flash("Invalid credentials")
     return redirect(url_for("login_page"))
@@ -31,8 +39,9 @@ def signup():
         phone = request.form["phone"]
         username = request.form["username"]
         password = request.form["password"]
-        users[email] = {"username": username, "password": password, "phone": phone}
-        users[phone] = {"username": username, "password": password, "email": email}
+        new_user = User(email=email, phone=phone, username=username, password=password)
+        db.session.add(new_user)
+        db.session.commit()
         return redirect(url_for("login_page"))
     return "Signup Page Placeholder"
 
@@ -40,11 +49,19 @@ def signup():
 def forgot_password():
     if request.method == "POST":
         identifier = request.form["identifier"]
-        if identifier in users:
+        user = User.query.filter((User.email == identifier) | (User.phone == identifier)).first()
+        if user:
             code = str(random.randint(100000, 999999))
             reset_codes[identifier] = code
-            print(f"Sending code to {identifier}: {code}")  # Replace with real email/SMS logic
-            return f"Verification code sent to {identifier}."
+            if identifier == user.email:
+                message = Mail(from_email='no-reply@elysiad.com', to_emails=user.email,
+                               subject='Elysiad Password Reset Code',
+                               html_content=f'<p>Your code is: <strong>{code}</strong></p>')
+                SendGridAPIClient(SENDGRID_API_KEY).send(message)
+            else:
+                Client(TWILIO_SID, TWILIO_TOKEN).messages.create(
+                    body=f"Your Elysiad code is: {code}", from_=TWILIO_NUMBER, to=user.phone)
+            return f"Code sent to {identifier}."
         return "Identifier not found."
     return "Forgot Password Placeholder"
 
@@ -54,8 +71,11 @@ def reset_password():
     code = request.form["code"]
     new_password = request.form["new_password"]
     if reset_codes.get(identifier) == code:
-        users[identifier]["password"] = new_password
-        return "Password reset successful."
+        user = User.query.filter((User.email == identifier) | (User.phone == identifier)).first()
+        if user:
+            user.password = new_password
+            db.session.commit()
+            return "Password reset successful."
     return "Invalid code."
 
 @app.route("/create_character")
@@ -67,13 +87,7 @@ def submit_character():
     name = request.form.get("name")
     background = request.form.get("background")
     trait = request.form.get("trait")
-
-    session["player"] = {
-        "name": name,
-        "background": background,
-        "trait": trait
-    }
-
+    session["player"] = {"name": name, "background": background, "trait": trait}
     return redirect(url_for("library"))
 
 @app.route("/library")
@@ -96,16 +110,11 @@ def journal():
     from archivist_lore import ARCHIVIST_LORE
 
     player = load_player(player_info["name"])
-
     for i in range(len(ARCHIVIST_LORE)):
         unlock_lore(player, i)
-
     lore_pages = get_lore_pages(player, page_index=0)
-
-    return render_template("journal.html",
-                           player=player,
-                           left_page=lore_pages["left"],
-                           right_page=lore_pages["right"],
+    return render_template("journal.html", player=player,
+                           left_page=lore_pages["left"], right_page=lore_pages["right"],
                            page_info=lore_pages)
 
 @app.route("/get_lore_page")
@@ -120,18 +129,11 @@ def get_lore_page():
 
     page_index = int(request.args.get("page", 0))
     player = load_player(player_info["name"])
-
     for i in range(len(ARCHIVIST_LORE)):
         unlock_lore(player, i)
-
     lore_pages = get_lore_pages(player, page_index=page_index)
-
-    return jsonify({
-        "left": lore_pages["left"],
-        "right": lore_pages["right"],
-        "current_page": lore_pages["current_page"],
-        "total_pages": lore_pages["total_pages"]
-    })
+    return jsonify({"left": lore_pages["left"], "right": lore_pages["right"],
+                    "current_page": lore_pages["current_page"], "total_pages": lore_pages["total_pages"]})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
