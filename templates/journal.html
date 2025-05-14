@@ -1,28 +1,26 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}?v=3">
-<div class="journal-wrapper">
-    <div class="book-frame"></div>
+<link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}">
+<div class="journal-container">
+    <div class="journal-book">
+        <div class="page left-page">
+            <div class="page-content" id="left-page">{{ left_page|safe }}</div>
+        </div>
+        <div class="page right-page">
+            <div class="page-content" id="right-page">{{ right_page|safe }}</div>
+        </div>
 
-    <div class="left-page" id="leftPage">
-        {{ left_text|default("Left page is blank.")|safe }}
-        <div id="active-tab-slot"></div>
+        <!-- Fixed Hints Tab on left -->
+        <div id="tab-hints" class="journal-tab flipped-tab">Hints</div>
+        <div id="tab-lore" class="journal-tab {% if active_tab == 'lore' %}flipped-tab{% %}" onclick="switchTab('lore')">Lore</div>
+        <div id="tab-notes" class="journal-tab {% if active_tab == 'notes' %}flipped-tab{% endif %}" onclick="switchTab('notes')">Notes</div>
     </div>
 
-    <div class="right-page" id="rightPage">
-        {{ right_text|default("Right page is blank.")|safe }}
+    <div class="journal-controls">
+        <button onclick="changePage(-2)">&larr; Previous</button>
+        <input type="text" id="noteInput" placeholder="Write your note and press Enter...">
+        <button onclick="changePage(2)">Next &rarr;</button>
     </div>
-
-    <!-- Floating Tabs outside pages -->
-    <div class="tab tab-hints" data-tab="Hints"><span>Hints</span></div>
-    <div class="tab tab-lore" data-tab="Lore"><span>Lore</span></div>
-    <div class="tab tab-notes" data-tab="Notes"><span>Notes</span></div>
 </div>
-
-<div class="button-bar">
-    <button class="parchment-button">&#8592; Previous</button>
-    <input type="text" id="noteInput" placeholder="Write your note and press Enter...">
-    <button class="parchment-button">Next &#8594;</button>
-</div>
-<script src="{{ url_for('static', filename='journal.js') }}?v=2"></script>
+<script src="{{ url_for('static', filename='journal.js') }}"></script>
 {% endblock %}
