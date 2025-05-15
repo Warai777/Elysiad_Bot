@@ -3,3 +3,4 @@ flask_sqlalchemy
 twilio
 sendgrid
 python-dotenv
+gunicorn
