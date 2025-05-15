@@ -5,6 +5,18 @@
 </head>
 <body>
     <h1>Your Journal</h1>
+    <form method="get">
+        <label for="type">Filter by Type:</label>
+        <select name="type">
+            <option value="">All</option>
+            <option value="lore" {% if filter_type == 'lore' %}selected{% endif %}>Lore</option>
+            <option value="system" {% if filter_type == 'system' %}selected{% endif %}>System</option>
+        </select>
+        <label for="keyword">Search:</label>
+        <input type="text" name="keyword" value="{{ keyword }}">
+        <button type="submit">Apply</button>
+    </form>
+    <hr>
     {% if entries %}
         <ul>
         {% for entry in entries %}
@@ -15,7 +27,7 @@
         {% endfor %}
         </ul>
     {% else %}
-        <p>Your journal is empty.</p>
+        <p>No journal entries found.</p>
     {% endif %}
     <a href="/world_scene">Back to World</a>
 </body>
