@@ -71,6 +71,15 @@ class GameSession:
             "timestamp": datetime.utcnow().isoformat()
         })
 
+    def log_lore(self, text):
+        self.log_journal(text, type_="lore", importance="high", tags=["lore"])
+
+    def log_combat(self, text):
+        self.log_journal(text, type_="combat", importance="medium", tags=["combat"])
+
+    def log_custom_note(self, text):
+        self.log_journal(text, type_="note", importance="low", tags=["custom"])
+
     def reveal_items(self):
         revealed = []
         for i in self.inventory:
@@ -87,5 +96,5 @@ class GameSession:
                     i["effect"] = i.pop("true_effect")
                     i["type"] = "revealed"
                     revealed.append(i["name"])
-                    self.log_journal(f"You deciphered {i['name']} — once veiled as '{old_name}'", type_="lore", importance="high", tags=["reveal"])
+                    self.log_lore(f"You deciphered {i['name']} — once veiled as '{old_name}'")
         return revealed
