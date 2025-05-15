@@ -9,8 +9,12 @@ class ActionHandler:
         modifiers = 0
         if action_type == 'canon':
             modifiers += 15
+        elif action_type == 'worldbuilding':
+            modifiers += 5
         elif action_type == 'random':
             modifiers += 0
+        elif action_type == 'death':
+            modifiers -= 20
         elif action_type == 'suspicious':
             modifiers -= 10
 
