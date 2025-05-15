@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Containers</title>
+</head>
+<body>
+    <h1>Inventory Containers</h1>
+    {% if containers %}
+        <ul>
+        {% for c in containers %}
+            <li>
+                <strong>{{ c.name }}</strong> ({{ c.type }}) — Slots Used: {{ c.items|length }}/{{ c.slots }}
+                <ul>
+                    {% for item in c.items %}
+                        <li>
+                            {% if item.type == 'mystery' %}
+                                <em>Unidentified Object</em>: <span style="color:gray">Unusable until understood.</span>
+                            {% else %}
+                                <strong>{{ item.name }}</strong>: {{ item.description }}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>You are not carrying any containers.</p>
+    {% endif %}
+    <a href="/world_scene">Back to World</a>
+</body>
+</html>
