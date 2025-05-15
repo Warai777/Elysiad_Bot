@@ -17,6 +17,17 @@
                         <input type="hidden" name="item" value="{{ item.name }}">
                         <button type="submit">Use</button>
                     </form>
+                    {% if containers %}
+                        <form action="/store_item" method="post" style="display:inline">
+                            <input type="hidden" name="item" value="{{ item.name }}">
+                            <select name="container">
+                                {% for c in containers %}
+                                    <option value="{{ c.name }}">Store in {{ c.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit">Store</button>
+                        </form>
+                    {% endif %}
                 {% endif %}
             </li>
         {% endfor %}
