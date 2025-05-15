@@ -8,7 +8,7 @@ class GameSession:
         self.suspicion = 0
         self.year = 0
         self.inventory = []
-        self.journal = []  # list of dicts with 'text' and optional 'type'/'timestamp'
+        self.journal = []
         self.unlocked_lore = []
         self.tier = 0
         self.strength = 5
@@ -62,10 +62,12 @@ class GameSession:
             return True
         return False
 
-    def log_journal(self, text, type_="system"):
+    def log_journal(self, text, type_="system", importance="medium", tags=None):
         self.journal.append({
             "text": text,
             "type": type_,
+            "importance": importance,
+            "tags": tags or [],
             "timestamp": datetime.utcnow().isoformat()
         })
 
@@ -85,5 +87,5 @@ class GameSession:
                     i["effect"] = i.pop("true_effect")
                     i["type"] = "revealed"
                     revealed.append(i["name"])
-                    self.log_journal(f"You deciphered {i['name']} — once veiled as '{old_name}'", type_="lore")
+                    self.log_journal(f"You deciphered {i['name']} — once veiled as '{old_name}'", type_="lore", importance="high", tags=["reveal"])
         return revealed
