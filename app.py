@@ -3,8 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from twilio.rest import Client
-import os, random
+import os, random, time
 from player import User
+from game_session import GameSession
+from mission_manager import Mission, MissionManager
+from action_handler import ActionHandler
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///elysiad.db'
@@ -16,6 +19,9 @@ TWILIO_SID = os.getenv("TWILIO_SID")
 TWILIO_TOKEN = os.getenv("TWILIO_TOKEN")
 TWILIO_NUMBER = os.getenv("TWILIO_NUMBER")
 reset_codes = {}
+
+player_sessions = {}
+mission_managers = {}
 
 @app.route("/")
 def login_page_redirect():
@@ -63,7 +69,15 @@ def submit_character():
     background = request.form.get("background")
     trait = request.form.get("trait")
     session["player"] = {"name": name, "background": background, "trait": trait}
-    return redirect(url_for("library"))
+    session_id = session["user"]
+    player_sessions[session_id] = GameSession(session_id)
+    mission_managers[session_id] = MissionManager()
+
+    # Example main mission
+    main_mission = Mission("m1", "Uncover the secret under the cathedral.", 86400, is_main=True)
+    mission_managers[session_id].add_mission(main_mission)
+
+    return redirect(url_for("world_scene"))
 
 @app.route("/library")
 def library():
@@ -73,6 +87,23 @@ def library():
 @app.route("/choose_world")
 def choose_world():
     return render_template("choose_world.html")
+
+@app.route("/world_scene")
+def world_scene():
+    return render_template("world_scene.html")
+
+@app.route("/submit_action", methods=["POST"])
+def submit_action():
+    session_id = session.get("user")
+    data = request.get_json()
+    action_text = data.get("action")
+
+    if not session_id or session_id not in player_sessions:
+        return jsonify({"error": "No active session"}), 400
+
+    handler = ActionHandler(player_sessions[session_id])
+    result = handler.handle_action(action_text, action_type="random")  # default type for demo
+    return jsonify(result)
 
 @app.route("/journal")
 def journal():
