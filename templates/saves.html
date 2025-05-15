@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Save Slots</title>
+</head>
+<body>
+    <h1>Your Save Slots</h1>
+
+    <form method="post" action="/create_save">
+        <label for="slot_name">Create New Save Slot:</label>
+        <input type="text" name="slot_name" placeholder="Slot Name">
+        <button type="submit">Save</button>
+    </form>
+
+    <h2>Existing Saves:</h2>
+    {% if slots %}
+        <ul>
+        {% for name in slots.keys() %}
+            <li>{{ name }} — <a href="/load_save/{{ name }}">Load</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no saved slots yet.</p>
+    {% endif %}
+
+    <a href="/world_scene">Back to World</a>
+</body>
+</html>
