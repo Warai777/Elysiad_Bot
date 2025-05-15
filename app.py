@@ -16,22 +16,29 @@ def submit_action():
 
     handler = ActionHandler(player_sessions[session_id])
     result = handler.handle_action(action_text, action_type=action_entry["type"])
-
-    # Add consequence to result
     result["consequence"] = action_entry["consequence"]
 
-    # Update lore if critical success
-    if result['outcome'] == 'critical_success':
-        lore_trackers[session_id].unlock(f"lore_{len(lore_trackers[session_id].unlocked_fragments)+1}")
+    # Load lore data
+    with open("data/lore_fragments/lotm_lore.json") as f:
+        lore_data = json.load(f)
 
-    # Check suspicion events
+    # Unlock lore fragment based on consequence
+    unlocked = None
+    for key, fragment in lore_data.items():
+        if fragment["source"] == action_text:
+            lore_trackers[session_id].unlock(key)
+            unlocked = fragment
+            break
+
+    # Add lore and suspicion event
+    result["unlocked_lore"] = lore_trackers[session_id].get_all_unlocked()
+    result["lore_text"] = unlocked
     result["suspicion_event"] = check_suspicion_thresholds(player_sessions[session_id])
 
-    # Save progress
+    # Save session state
     save_shard_state(session_id, player_sessions[session_id], mission_managers[session_id])
-
     result["session"] = player_sessions[session_id].to_dict()
-    result["unlocked_lore"] = lore_trackers[session_id].get_all_unlocked()
+
     return jsonify(result)
 
 ...TRUNCATED...
