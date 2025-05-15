@@ -1,46 +1,64 @@
 import random
 
 def generate_item(action_text, session):
-    # Basic templates based on action context
     templates = [
         {
-            "name": "Burned Map Fragment",
-            "description": "A half-charred scrap showing cryptic paths. Faint heat still radiates.",
+            "name": "Blood-Touched Lens",
+            "description": "Magnifies ritual ink. Burns non-initiates.",
             "weight": 2,
-            "type": "clue",
-            "effect": "map_reveal",
-            "requirements": []
-        },
-        {
-            "name": "Shimmering Lens",
-            "description": "Reveals hidden glyphs when held to moonlight.",
-            "weight": 1,
             "type": "tool",
-            "effect": "reveal_glyph",
-            "requirements": []
+            "effect": "glyph_reveal",
+            "requirements": {
+                "strength": 2,
+                "traits": ["ritual_scholar"],
+                "roles": []
+            }
         },
         {
-            "name": "Coal-etched Coin",
-            "description": "Used by dream merchants. Holding it whispers questions in your ear.",
+            "name": "Flame-Etched Coin",
+            "description": "Hot to the touch. You hear whispers from the flame.",
             "weight": 1,
             "type": "currency",
-            "effect": "dream_trigger",
-            "requirements": ["dream_resistance"]
+            "effect": "fire_whisper",
+            "requirements": {
+                "strength": 1,
+                "traits": ["fire_affinity"],
+                "roles": []
+            }
         },
         {
-            "name": "Spirit-locked Scroll",
-            "description": "A sealed scroll that burns any unworthy hand.",
-            "weight": 3,
-            "type": "scroll",
-            "effect": "vision_spell",
-            "requirements": ["fire_affinity"]
+            "name": "Dreamroot Vial",
+            "description": "Causes lucid visions. Only safe for trained minds.",
+            "weight": 1,
+            "type": "consumable",
+            "effect": "vision_dream",
+            "requirements": {
+                "strength": 1,
+                "traits": ["dream_resistance"],
+                "roles": []
+            }
+        },
+        {
+            "name": "Archivist’s Thread",
+            "description": "Only binds to the Chosen. Emits light when truth is near.",
+            "weight": 1,
+            "type": "relic",
+            "effect": "truth_ping",
+            "requirements": {
+                "strength": 0,
+                "traits": [],
+                "roles": ["chosen_one"]
+            }
         }
     ]
 
-    # Match template randomly or based on traits
-    eligible = []
-    for t in templates:
-        if all(req in session.traits for req in t["requirements"]):
-            eligible.append(t)
+    def is_valid(item):
+        r = item["requirements"]
+        return (
+            session.strength >= r.get("strength", 0)
+            and all(trait in session.traits for trait in r.get("traits", []))
+            and (not r.get("roles") or any(role in session.roles for role in r["roles"]))
+        )
 
-    return random.choice(eligible or templates)
+    valid_items = [i for i in templates if is_valid(i)]
+    return random.choice(valid_items or templates)
