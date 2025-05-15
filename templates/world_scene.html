@@ -56,9 +56,13 @@
         <p id="suspicionEvent"></p>
         <p id="unlockedLore"></p>
         <div id="loreReveal" style="margin: 10px 0; font-style: italic;"></div>
+        <p>
+            <a href="/journal_dynamic">View Journal</a> |
+            <a href="/inventory">Inventory (soon)</a>
+        </p>
         <p>Choose an action or type your own:</p>
         <ul>
-            {% for a in shard.actions %}
+            {% for a in actions %}
                 <li><button onclick="submitActionOption('{{ a.text }}')">{{ a.text }}</button></li>
             {% endfor %}
         </ul>
