@@ -20,8 +20,9 @@ class GameSession:
         ]
         self.npc_memory = {}
         self.action_history = []
-        self.chapters = []  # story segments
+        self.chapters = []
         self.current_chapter_index = -1
+        self.start_chapter("Prologue: Your Arrival")
 
     def to_dict(self):
         return {
