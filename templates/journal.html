@@ -2,6 +2,20 @@
 <html>
 <head>
     <title>Journal</title>
+    <style>
+        .entry-high { background-color: #ffe0e0; padding: 8px; border-left: 5px solid red; }
+        .entry-medium { background-color: #f0f0f0; padding: 8px; border-left: 5px solid gray; }
+        .entry-low { background-color: #e0f7e0; padding: 8px; border-left: 5px solid green; }
+        .tag {
+            display: inline-block;
+            background-color: #ddd;
+            color: #333;
+            font-size: 0.8em;
+            padding: 2px 6px;
+            margin: 2px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
     <h1>Your Journal</h1>
@@ -20,9 +34,10 @@
     {% if entries %}
         <ul>
         {% for entry in entries %}
-            <li>
-                <strong>{{ entry.timestamp }}</strong> — <em>{{ entry.type }}</em>:<br>
-                {{ entry.text }}
+            <li class="entry-{{ entry.importance }}">
+                <strong>{{ entry.timestamp }}</strong> — <em>{{ entry.type }}</em><br>
+                {{ entry.text }}<br>
+                {% for tag in entry.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
             </li>
         {% endfor %}
         </ul>
