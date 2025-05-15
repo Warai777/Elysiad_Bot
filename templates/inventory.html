@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory</title>
+</head>
+<body>
+    <h1>Your Inventory</h1>
+    {% if items %}
+        <ul>
+        {% for item in items %}
+            <li>{{ item }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your inventory is currently empty.</p>
+    {% endif %}
+    <a href="/world_scene">Return to World</a>
+</body>
+</html>
