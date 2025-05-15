@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Story Chapters</title>
+</head>
+<body>
+    <h1>Chapters</h1>
+    {% if chapters %}
+        <ul>
+        {% for ch in chapters %}
+            <li>
+                <h3>{{ ch.title }}</h3>
+                <small>{{ ch.timestamp }}</small>
+                <div>
+                    {% for entry in ch.content %}<p>{{ entry }}</p>{% endfor %}
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No chapters recorded yet.</p>
+    {% endif %}
+    <a href="/world_scene">Back to World</a>
+</body>
+</html>
