@@ -16,6 +16,7 @@ class GameSession:
         self.containers = [
             Container("Pockets", "starter", 2, {"length": 6, "width": 4, "height": 0.75, "unit": "in"})
         ]
+        self.journal_limit = 100  # Max number of entries
 
     def to_dict(self):
         return {
@@ -61,6 +62,11 @@ class GameSession:
             return True
         return False
 
+    def log_journal(self, text):
+        self.journal.append(text)
+        if len(self.journal) > self.journal_limit:
+            self.journal.pop(0)
+
     def reveal_items(self):
         revealed = []
         for i in self.inventory:
@@ -77,5 +83,5 @@ class GameSession:
                     i["effect"] = i.pop("true_effect")
                     i["type"] = "revealed"
                     revealed.append(i["name"])
-                    self.journal.append(f"You deciphered {i['name']} — once veiled as '{old_name}'")
+                    self.log_journal(f"You deciphered {i['name']} — once veiled as '{old_name}'")
         return revealed
