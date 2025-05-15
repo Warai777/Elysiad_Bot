@@ -27,6 +27,11 @@
             if (result.unlocked_lore) {
                 document.getElementById('unlockedLore').innerText = `Unlocked Lore Fragments: ${result.unlocked_lore.join(', ')}`;
             }
+
+            if (result.lore_text) {
+                const loreBox = document.getElementById('loreReveal');
+                loreBox.innerHTML = `<strong>${result.lore_text.title}</strong><br>${result.lore_text.text}`;
+            }
         }
     </script>
 </head>
@@ -40,6 +45,7 @@
         <p id="suspicion">Suspicion: 0</p>
         <p id="suspicionEvent"></p>
         <p id="unlockedLore"></p>
+        <div id="loreReveal" style="margin: 10px 0; font-style: italic;"></div>
         <p>Choose an action or type your own:</p>
         <ul>
             {% for a in shard.actions %}
