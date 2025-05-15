@@ -27,9 +27,9 @@ def login_page():
 
 @app.route("/login", methods=["POST"])
 def login():
-    identifier = request.form["identifier"]
+    username = request.form["username"]
     password = request.form["password"]
-    user = User.query.filter((User.email == identifier) | (User.phone == identifier)).first()
+    user = User.query.filter_by(username=username).first()
     if user and user.password == password:
         session["user"] = user.username
         return redirect(url_for("library"))
@@ -40,7 +40,7 @@ def login():
 def signup():
     if request.method == "POST":
         email = request.form["email"]
-        phone = request.form["phone"]
+        phone = request.form.get("phone")
         username = request.form["username"]
         password = request.form["password"]
         new_user = User(email=email, phone=phone, username=username, password=password)
