@@ -32,6 +32,14 @@
                 const loreBox = document.getElementById('loreReveal');
                 loreBox.innerHTML = `<strong>${result.lore_text.title}</strong><br>${result.lore_text.text}`;
             }
+
+            if (result.new_phase) {
+                document.getElementById('phaseInfo').innerHTML = `<strong>Phase:</strong> ${result.new_phase.id} – ${result.new_phase.description}`;
+            }
+
+            if (result.world_state) {
+                document.getElementById('worldState').innerText = `World State: ${JSON.stringify(result.world_state)}`;
+            }
         }
     </script>
 </head>
@@ -39,6 +47,8 @@
     <h1>World Scene</h1>
     <p><strong>World:</strong> {{ shard.world }} | <strong>Year:</strong> {{ shard.year }} | <strong>Location:</strong> {{ shard.location }}</p>
     <p><strong>Main Mission:</strong> {{ shard.main_mission.description }}</p>
+    <p id="phaseInfo"><strong>Phase:</strong> {{ shard.main_mission.phase }}</p>
+    <p id="worldState">World State: {{ shard.world_state }}</p>
     <p><em>{{ shard.initial_message }}</em></p>
     <div>
         <p id="oe">Origin Essence: 0</p>
