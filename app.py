@@ -1,60 +1,37 @@
-@app.route("/create_character")
-def create_character():
-    return render_template("create_character.html")
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
+from flask_sqlalchemy import SQLAlchemy
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from twilio.rest import Client
+import os, random
+from player import User
 
-@app.route("/submit_character", methods=["POST"])
-def submit_character():
-    name = request.form.get("name")
-    background = request.form.get("background")
-    trait = request.form.get("trait")
-    session["player"] = {"name": name, "background": background, "trait": trait}
-    return redirect(url_for("library"))
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///elysiad.db'
+app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
+db = SQLAlchemy(app)
 
-@app.route("/library")
-def library():
-    player = session.get("player")
-    return render_template("library.html", player=player)
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+TWILIO_SID = os.getenv("TWILIO_SID")
+TWILIO_TOKEN = os.getenv("TWILIO_TOKEN")
+TWILIO_NUMBER = os.getenv("TWILIO_NUMBER")
+reset_codes = {}
 
-@app.route("/choose_world")
-def choose_world():
-    return render_template("choose_world.html")
+@app.route("/")
+def login_page_redirect():
+    return redirect(url_for("login_page"))
 
-@app.route("/journal")
-def journal():
-    player_info = session.get("player")
-    if not player_info:
-        return redirect(url_for("login_page"))
+@app.route("/login")
+def login_page():
+    return render_template("home.html")
 
-    from player import load_player
-    from lore_manager import get_lore_pages, unlock_lore
-    from archivist_lore import ARCHIVIST_LORE
-
-    player = load_player(player_info["name"])
-    for i in range(len(ARCHIVIST_LORE)):
-        unlock_lore(player, i)
-    lore_pages = get_lore_pages(player, page_index=0)
-    return render_template("journal.html", player=player,
-                           left_page=lore_pages["left"], right_page=lore_pages["right"],
-                           page_info=lore_pages)
-
-@app.route("/get_lore_page")
-def get_lore_page():
-    player_info = session.get("player")
-    if not player_info:
-        return jsonify({"error": "No player found"}), 401
-
-    from player import load_player
-    from lore_manager import get_lore_pages, unlock_lore
-    from archivist_lore import ARCHIVIST_LORE
-
-    page_index = int(request.args.get("page", 0))
-    player = load_player(player_info["name"])
-    for i in range(len(ARCHIVIST_LORE)):
-        unlock_lore(player, i)
-    lore_pages = get_lore_pages(player, page_index=page_index)
-    return jsonify({"left": lore_pages["left"], "right": lore_pages["right"],
-                    "current_page": lore_pages["current_page"], "total_pages": lore_pages["total_pages"]})
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+@app.route("/login", methods=["POST"])
+def login():
+    identifier = request.form["identifier"]
+    password = request.form["password"]
+    user = User.query.filter((User.email == identifier) | (User.phone == identifier)).first()
+    if user and user.password == password:
+        session["user"] = user.username
+        return redirect(url_for("library"))
+    flash("Invalid credentials")
+    return redirect(url_for("login_page"))
