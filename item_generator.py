@@ -60,5 +60,17 @@ def generate_item(action_text, session):
             and (not r.get("roles") or any(role in session.roles for role in r["roles"]))
         )
 
-    valid_items = [i for i in templates if is_valid(i)]
-    return random.choice(valid_items or templates)
+    item = random.choice(templates)
+    if is_valid(item):
+        return item
+    else:
+        return {
+            "name": "Unidentified Object",
+            "description": "You sense it's not meant for you. It hums faintly in your pack.",
+            "weight": item["weight"],
+            "type": "mystery",
+            "true_name": item["name"],
+            "true_description": item["description"],
+            "true_effect": item["effect"],
+            "requirements": item["requirements"]
+        }
