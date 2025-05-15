@@ -13,12 +13,19 @@
             });
             const result = await response.json();
             document.getElementById('result').innerText = `You rolled ${result.roll}: ${result.outcome}`;
+            document.getElementById('oe').innerText = `Origin Essence: ${result.session.origin_essence}`;
+            document.getElementById('suspicion').innerText = `Suspicion: ${result.session.suspicion}`;
+            const logItem = document.createElement('li');
+            logItem.textContent = `Action: ${result.action} | Outcome: ${result.outcome}`;
+            document.getElementById('log').appendChild(logItem);
         }
     </script>
 </head>
 <body>
     <h1>World Scene</h1>
     <div>
+        <p id="oe">Origin Essence: 0</p>
+        <p id="suspicion">Suspicion: 0</p>
         <p>Choose an action or type your own:</p>
         <ul>
             <li><button onclick="submitActionOption('Investigate the sound near the ruins')">Investigate the sound near the ruins</button></li>
@@ -30,6 +37,8 @@
         <input id="actionInput" type="text" placeholder="Type your action here...">
         <button onclick="submitAction()">Submit</button>
         <p id="result"></p>
+        <h3>Action Log</h3>
+        <ul id="log"></ul>
     </div>
     <script>
         function submitActionOption(text) {
