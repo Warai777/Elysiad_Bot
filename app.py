@@ -1,7 +1,7 @@
 ...TRUNCATED...
 
-@app.route("/transfer_item", methods=["POST"])
-def transfer_item():
+@app.route("/store_item", methods=["POST"])
+def store_item():
     session_id = session.get("user")
     if not session_id or session_id not in player_sessions:
         return redirect(url_for("login_page"))
@@ -12,22 +12,20 @@ def transfer_item():
     container = next((c for c in player.containers if c.name == container_name), None)
 
     if container:
-        item = next((i for i in container.items if i["name"] == item_name), None)
+        item = next((i for i in player.inventory if i["name"] == item_name), None)
         if item:
-            if player.can_carry(item.get("weight", 0)):
-                if container.remove_item(item_name):
-                    player.inventory.append(item)
-                    player.journal.append(f"Transferred {item_name} from {container_name} to main inventory.")
-                    flash(f"You transferred {item_name} to your inventory.")
-                else:
-                    flash("Failed to remove item from container.")
+            if container.fits(item):
+                container.add_item(item)
+                player.inventory.remove(item)
+                player.journal.append(f"Stored {item_name} in {container_name}.")
+                flash(f"Stored {item_name} in {container_name}.")
             else:
-                flash("You cannot carry that much weight.")
+                flash("Item does not fit in that container.")
         else:
-            flash("Item not found in container.")
+            flash("Item not found in inventory.")
     else:
         flash("Container not found.")
 
-    return redirect(url_for("containers"))
+    return redirect(url_for("inventory"))
 
 ...TRUNCATED...
