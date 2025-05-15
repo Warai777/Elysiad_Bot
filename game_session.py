@@ -18,7 +18,8 @@ class GameSession:
         self.containers = [
             Container("Pockets", "starter", 2, {"length": 6, "width": 4, "height": 0.75, "unit": "in"})
         ]
-        self.npc_memory = {}  # Example: {"Garp": {"suspicion": 20, "memories": ["Refused mission"]}}
+        self.npc_memory = {}
+        self.action_history = []  # major player choices
 
     def to_dict(self):
         return {
@@ -34,7 +35,8 @@ class GameSession:
             "traits": self.traits,
             "roles": self.roles,
             "containers": [c.to_dict() for c in self.containers],
-            "npc_memory": self.npc_memory
+            "npc_memory": self.npc_memory,
+            "action_history": self.action_history
         }
 
     def load_from_dict(self, data):
@@ -50,6 +52,7 @@ class GameSession:
         self.roles = data.get("roles", [])
         self.containers = [Container.from_dict(c) for c in data.get("containers", [])]
         self.npc_memory = data.get("npc_memory", {})
+        self.action_history = data.get("action_history", [])
 
     def autosave(self):
         from routes.save_routes import save_slots
@@ -59,6 +62,14 @@ class GameSession:
             if user_id not in save_slots:
                 save_slots[user_id] = {}
             save_slots[user_id][slot_name] = self.to_dict()
+
+    def log_action(self, description, consequence=""):
+        self.action_history.append({
+            "description": description,
+            "consequence": consequence,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+        self.autosave()
 
     def get_total_weight(self):
         return sum(i.get("weight", 0) for i in self.inventory)
