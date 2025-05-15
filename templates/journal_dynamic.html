@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Journal</title>
+</head>
+<body>
+    <h1>Your Journey Notes</h1>
+    {% if journal %}
+        <ul>
+        {% for entry in journal %}
+            <li>{{ entry }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No journal entries yet.</p>
+    {% endif %}
+    <a href="/world_scene">Back to World</a>
+</body>
+</html>
