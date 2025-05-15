@@ -4,11 +4,13 @@ class GameSession:
         self.origin_essence = 0
         self.suspicion = 0
         self.year = 0
-        self.inventory = []
-        self.tier = 0
-        self.choice_log = []
-        self.unlocked_lore = []
+        self.inventory = []  # on-body items only
         self.journal = []
+        self.unlocked_lore = []
+        self.tier = 0
+        self.traits = ["basic_strength"]  # default trait
+        self.strength = 5  # determines carry weight
+        self.containers = []  # backpack, ring, suitcase etc.
 
     def to_dict(self):
         return {
@@ -17,10 +19,12 @@ class GameSession:
             "suspicion": self.suspicion,
             "year": self.year,
             "inventory": self.inventory,
-            "tier": self.tier,
-            "choice_log": self.choice_log,
+            "journal": self.journal,
             "unlocked_lore": self.unlocked_lore,
-            "journal": self.journal
+            "tier": self.tier,
+            "traits": self.traits,
+            "strength": self.strength,
+            "containers": self.containers
         }
 
     def load_from_dict(self, data):
@@ -28,7 +32,9 @@ class GameSession:
         self.suspicion = data.get("suspicion", 0)
         self.year = data.get("year", 0)
         self.inventory = data.get("inventory", [])
-        self.tier = data.get("tier", 0)
-        self.choice_log = data.get("choice_log", [])
-        self.unlocked_lore = data.get("unlocked_lore", [])
         self.journal = data.get("journal", [])
+        self.unlocked_lore = data.get("unlocked_lore", [])
+        self.tier = data.get("tier", 0)
+        self.traits = data.get("traits", ["basic_strength"])
+        self.strength = data.get("strength", 5)
+        self.containers = data.get("containers", [])
