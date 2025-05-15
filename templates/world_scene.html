@@ -15,9 +15,18 @@
             document.getElementById('result').innerText = `You rolled ${result.roll}: ${result.outcome}`;
             document.getElementById('oe').innerText = `Origin Essence: ${result.session.origin_essence}`;
             document.getElementById('suspicion').innerText = `Suspicion: ${result.session.suspicion}`;
+
             const logItem = document.createElement('li');
             logItem.textContent = `Action: ${result.action} | Outcome: ${result.outcome}`;
             document.getElementById('log').appendChild(logItem);
+
+            if (result.suspicion_event) {
+                document.getElementById('suspicionEvent').innerText = `Event: ${result.suspicion_event}`;
+            }
+
+            if (result.unlocked_lore) {
+                document.getElementById('unlockedLore').innerText = `Unlocked Lore Fragments: ${result.unlocked_lore.join(', ')}`;
+            }
         }
     </script>
 </head>
@@ -29,6 +38,8 @@
     <div>
         <p id="oe">Origin Essence: 0</p>
         <p id="suspicion">Suspicion: 0</p>
+        <p id="suspicionEvent"></p>
+        <p id="unlockedLore"></p>
         <p>Choose an action or type your own:</p>
         <ul>
             {% for a in shard.actions %}
