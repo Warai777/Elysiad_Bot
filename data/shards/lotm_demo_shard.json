@@ -1,0 +1,34 @@
+{
+  "shard_id": "lotm_demo_1350",
+  "world": "Lord of the Mysteries",
+  "year": 1350,
+  "location": "Trier",
+  "entry_point": "Pritz Academy Dormitory",
+  "initial_message": "You awaken at your desk. A map you didn't draw is pinned to your notebook.",
+  "main_mission": {
+    "id": "m001",
+    "description": "Decipher Rozel's forbidden map before the Second Moon."
+  },
+  "actions": [
+    {
+      "text": "Follow the wet footsteps outside your door.",
+      "type": "canon"
+    },
+    {
+      "text": "Inspect the map with a magnifying glass.",
+      "type": "worldbuilding"
+    },
+    {
+      "text": "Whisper a prayer to the moon.",
+      "type": "random"
+    },
+    {
+      "text": "Step outside and scream for help.",
+      "type": "death"
+    },
+    {
+      "text": "Touch the page with a silver coin.",
+      "type": "worldbuilding"
+    }
+  ]
+}
