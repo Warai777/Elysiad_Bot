@@ -9,11 +9,15 @@
         <ul>
         {% for item in items %}
             <li>
-                {{ item }}
-                <form action="/use_item" method="post" style="display:inline;">
-                    <input type="hidden" name="item" value="{{ item }}">
-                    <button type="submit">Use</button>
-                </form>
+                {% if item.type == 'mystery' %}
+                    <em>Unidentified Object</em>: <span style="color:gray">You cannot understand this item yet.</span>
+                {% else %}
+                    <strong>{{ item.name }}</strong>: {{ item.description }}
+                    <form action="/use_item" method="post" style="display:inline;">
+                        <input type="hidden" name="item" value="{{ item.name }}">
+                        <button type="submit">Use</button>
+                    </form>
+                {% endif %}
             </li>
         {% endfor %}
         </ul>
