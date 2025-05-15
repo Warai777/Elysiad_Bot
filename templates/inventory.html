@@ -8,7 +8,13 @@
     {% if items %}
         <ul>
         {% for item in items %}
-            <li>{{ item }}</li>
+            <li>
+                {{ item }}
+                <form action="/use_item" method="post" style="display:inline;">
+                    <input type="hidden" name="item" value="{{ item }}">
+                    <button type="submit">Use</button>
+                </form>
+            </li>
         {% endfor %}
         </ul>
     {% else %}
