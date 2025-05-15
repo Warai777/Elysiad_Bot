@@ -9,7 +9,10 @@
         <ul>
         {% for c in containers %}
             <li>
-                <strong>{{ c.name }}</strong> ({{ c.type }}) — Slots Used: {{ c.items|length }}/{{ c.slots }}
+                <strong>{{ c.name }}</strong> ({{ c.type }}) — Slots Used: {{ c.items|length }}/{{ c.slots }}<br>
+                Volume: 
+                {{ c.dimensions.length }}×{{ c.dimensions.width }}×{{ c.dimensions.height }} {{ c.dimensions.unit }}
+                ({{ c.dimensions.length * c.dimensions.width * c.dimensions.height }} {{ c.dimensions.unit }}³ max)
                 <ul>
                     {% for item in c.items %}
                         <li>
