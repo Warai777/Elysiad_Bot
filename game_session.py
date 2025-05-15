@@ -46,8 +46,20 @@ class GameSession:
         self.roles = data.get("roles", [])
         self.containers = [Container.from_dict(c) for c in data.get("containers", [])]
 
+    def get_total_weight(self):
+        return sum(i.get("weight", 0) for i in self.inventory)
+
+    def total_container_volume_used(self):
+        return sum(c.volume_used() for c in self.containers)
+
     def can_carry(self, weight):
-        return sum(i.get("weight", 0) for i in self.inventory) + weight <= self.strength * 5
+        return self.get_total_weight() + weight <= self.strength * 5
+
+    def add_item(self, item):
+        if self.can_carry(item.get("weight", 0)):
+            self.inventory.append(item)
+            return True
+        return False
 
     def reveal_items(self):
         revealed = []
