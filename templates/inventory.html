@@ -5,6 +5,10 @@
 </head>
 <body>
     <h1>Your Inventory</h1>
+    <p>
+        {% set total_weight = items | sum(attribute='weight') %}
+        <strong>Total Carry Weight:</strong> {{ total_weight }} / {{ session.strength * 5 }} lbs
+    </p>
     {% if items %}
         <ul>
         {% for item in items %}
