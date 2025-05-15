@@ -1,0 +1,22 @@
+{
+  "lore_1": {
+    "title": "Whispers Beneath the Cathedral",
+    "text": "You discovered that Rozel mapped something older than the Church foundations. The sigil appears in pre-Imperial texts...",
+    "source": "Follow the wet footsteps"
+  },
+  "lore_2": {
+    "title": "Lunar Script on the Map",
+    "text": "A magnified inspection revealed lunar-phase calligraphy embedded between streets — inked in crushed silver salt.",
+    "source": "Inspect the map with a magnifying glass"
+  },
+  "lore_3": {
+    "title": "Moonlit Prayer Echo",
+    "text": "A prayer not meant for gods answered from below. You sense eyes in your dreams now.",
+    "source": "Whisper a prayer to the moon"
+  },
+  "lore_4": {
+    "title": "Dream-Echoed Chamber",
+    "text": "Touching silver to parchment unlocked a resonance. Part of the dream leaked back into reality.",
+    "source": "Touch the page with a silver coin"
+  }
+}
