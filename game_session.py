@@ -42,6 +42,9 @@ class GameSession:
         self.roles = data.get("roles", [])
         self.containers = data.get("containers", [])
 
+    def can_carry(self, weight):
+        return sum(i.get("weight", 0) for i in self.inventory) + weight <= self.strength * 5
+
     def reveal_items(self):
         revealed = []
         for i in self.inventory:
@@ -52,9 +55,11 @@ class GameSession:
                     and all(trait in self.traits for trait in r.get("traits", []))
                     and (not r.get("roles") or any(role in self.roles for role in r["roles"]))
                 ):
+                    old_name = i["name"]
                     i["name"] = i.pop("true_name")
                     i["description"] = i.pop("true_description")
                     i["effect"] = i.pop("true_effect")
                     i["type"] = "revealed"
                     revealed.append(i["name"])
+                    self.journal.append(f"You deciphered {i['name']} — once veiled as '{old_name}'")
         return revealed
