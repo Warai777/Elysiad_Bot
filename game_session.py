@@ -41,3 +41,20 @@ class GameSession:
         self.traits = data.get("traits", ["basic_strength"])
         self.roles = data.get("roles", [])
         self.containers = data.get("containers", [])
+
+    def reveal_items(self):
+        revealed = []
+        for i in self.inventory:
+            if i.get("type") == "mystery":
+                r = i["requirements"]
+                if (
+                    self.strength >= r.get("strength", 0)
+                    and all(trait in self.traits for trait in r.get("traits", []))
+                    and (not r.get("roles") or any(role in self.roles for role in r["roles"]))
+                ):
+                    i["name"] = i.pop("true_name")
+                    i["description"] = i.pop("true_description")
+                    i["effect"] = i.pop("true_effect")
+                    i["type"] = "revealed"
+                    revealed.append(i["name"])
+        return revealed
