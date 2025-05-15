@@ -34,13 +34,15 @@
       "text": "Follow the wet footsteps outside your door.",
       "type": "canon",
       "consequence": "gain_clue",
-      "phases": ["intro"]
+      "phases": ["intro"],
+      "item_reward": "Wax-stamped Note"
     },
     {
       "text": "Inspect the map with a magnifying glass.",
       "type": "worldbuilding",
       "consequence": "reveal_symbol",
-      "phases": ["intro", "discovery"]
+      "phases": ["intro", "discovery"],
+      "item_reward": "Silver-Laced Lens"
     },
     {
       "text": "Whisper a prayer to the moon.",
@@ -58,7 +60,8 @@
       "text": "Touch the page with a silver coin.",
       "type": "worldbuilding",
       "consequence": "trigger_dream_echo",
-      "phases": ["intro", "discovery"]
+      "phases": ["intro", "discovery"],
+      "item_reward": "Dream-Etched Coin"
     }
   ]
 }
