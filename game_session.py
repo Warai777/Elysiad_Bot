@@ -18,6 +18,7 @@ class GameSession:
         self.containers = [
             Container("Pockets", "starter", 2, {"length": 6, "width": 4, "height": 0.75, "unit": "in"})
         ]
+        self.npc_memory = {}  # Example: {"Garp": {"suspicion": 20, "memories": ["Refused mission"]}}
 
     def to_dict(self):
         return {
@@ -32,7 +33,8 @@ class GameSession:
             "strength": self.strength,
             "traits": self.traits,
             "roles": self.roles,
-            "containers": [c.to_dict() for c in self.containers]
+            "containers": [c.to_dict() for c in self.containers],
+            "npc_memory": self.npc_memory
         }
 
     def load_from_dict(self, data):
@@ -47,6 +49,7 @@ class GameSession:
         self.traits = data.get("traits", ["basic_strength"])
         self.roles = data.get("roles", [])
         self.containers = [Container.from_dict(c) for c in data.get("containers", [])]
+        self.npc_memory = data.get("npc_memory", {})
 
     def autosave(self):
         from routes.save_routes import save_slots
@@ -112,3 +115,11 @@ class GameSession:
         if revealed:
             self.autosave()
         return revealed
+
+    def update_npc_memory(self, npc, event, suspicion_delta=0):
+        if npc not in self.npc_memory:
+            self.npc_memory[npc] = {"suspicion": 0, "memories": []}
+        self.npc_memory[npc]["suspicion"] += suspicion_delta
+        self.npc_memory[npc]["memories"].append(event)
+        self.log_journal(f"{npc} remembers: {event} (Suspicion now {self.npc_memory[npc]['suspicion']})", type_="system", importance="medium", tags=["npc"])
+        self.autosave()
