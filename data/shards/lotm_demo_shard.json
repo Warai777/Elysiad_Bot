@@ -3,32 +3,47 @@
   "world": "Lord of the Mysteries",
   "year": 1350,
   "location": "Trier",
+  "tier": "Tier 9",
+  "danger_level": 30,
+  "theme": "Mystery / Spiritualism",
   "entry_point": "Pritz Academy Dormitory",
   "initial_message": "You awaken at your desk. A map you didn't draw is pinned to your notebook.",
   "main_mission": {
     "id": "m001",
-    "description": "Decipher Rozel's forbidden map before the Second Moon."
+    "description": "Decipher Rozel's forbidden map before the Second Moon.",
+    "phase": "intro"
   },
+  "side_missions": [
+    {
+      "id": "s001",
+      "description": "Find your roommate's hidden dream diary."
+    }
+  ],
   "actions": [
     {
       "text": "Follow the wet footsteps outside your door.",
-      "type": "canon"
+      "type": "canon",
+      "consequence": "gain_clue"
     },
     {
       "text": "Inspect the map with a magnifying glass.",
-      "type": "worldbuilding"
+      "type": "worldbuilding",
+      "consequence": "reveal_symbol"
     },
     {
       "text": "Whisper a prayer to the moon.",
-      "type": "random"
+      "type": "random",
+      "consequence": "gain_oe"
     },
     {
       "text": "Step outside and scream for help.",
-      "type": "death"
+      "type": "death",
+      "consequence": "trigger_termination"
     },
     {
       "text": "Touch the page with a silver coin.",
-      "type": "worldbuilding"
+      "type": "worldbuilding",
+      "consequence": "trigger_dream_echo"
     }
   ]
 }
