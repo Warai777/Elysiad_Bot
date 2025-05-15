@@ -5,20 +5,14 @@
   <title>Elysiad - Begin</title>
   <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English&display=swap" rel="stylesheet">
   <style>
+    html {
+      background: url('/static/rainy_study.jpg') center center/cover no-repeat fixed;
+      height: 100%;
+    }
     body {
       margin: 0;
       font-family: 'IM Fell English', serif;
-      background: url('/static/rainy_study.jpg') center center/cover no-repeat fixed;
-      overflow: hidden;
-    }
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.4);
-      z-index: 1;
     }
     .book-container {
       position: relative;
@@ -48,7 +42,6 @@
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
   <div class="book-container">
     <img src="/static/book__inner_frame.png" class="book" onclick="enterJournal()" alt="Magic Book">
   </div>
