@@ -8,6 +8,9 @@ from player import User
 from game_session import GameSession
 from mission_manager import Mission, MissionManager
 from action_handler import ActionHandler
+from lore_tracker import LoreTracker
+from suspicion_events import check_suspicion_thresholds
+from shard_saver import save_shard_state, load_shard_state
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///elysiad.db'
@@ -22,6 +25,7 @@ reset_codes = {}
 
 player_sessions = {}
 mission_managers = {}
+lore_trackers = {}
 loaded_shard = None
 
 @app.route("/")
@@ -72,14 +76,31 @@ def submit_character():
     trait = request.form.get("trait")
     session["player"] = {"name": name, "background": background, "trait": trait}
     session_id = session["user"]
+
+    # Try loading a save
+    saved_state = load_shard_state(session_id)
+    if saved_state:
+        game_session = GameSession(session_id)
+        game_session.load_from_dict(saved_state["session"])
+        mission_manager = MissionManager()
+        for m in saved_state["missions"]:
+            mission = Mission(m["mission_id"], m["description"], m["time_limit"], m["is_main"])
+            mission.completed = m["completed"]
+            mission.failed = m["failed"]
+            mission_manager.add_mission(mission)
+        player_sessions[session_id] = game_session
+        mission_managers[session_id] = mission_manager
+        lore_trackers[session_id] = LoreTracker()
+        return redirect(url_for("world_scene"))
+
+    # Fresh run
     player_sessions[session_id] = GameSession(session_id)
     mission_managers[session_id] = MissionManager()
+    lore_trackers[session_id] = LoreTracker()
 
-    # Load LotM demo shard
     with open("data/shards/lotm_demo_shard.json") as f:
         loaded_shard = json.load(f)
 
-    # Load main mission from shard
     main = loaded_shard["main_mission"]
     main_mission = Mission(main["id"], main["description"], 86400, is_main=True)
     mission_managers[session_id].add_mission(main_mission)
@@ -113,8 +134,20 @@ def submit_action():
         return jsonify({"error": "No active session"}), 400
 
     handler = ActionHandler(player_sessions[session_id])
-    result = handler.handle_action(action_text, action_type="random")  # default type for demo
+    result = handler.handle_action(action_text, action_type="random")
+
+    # Update lore if critical success
+    if result['outcome'] == 'critical_success':
+        lore_trackers[session_id].unlock(f"lore_{len(lore_trackers[session_id].unlocked_fragments)+1}")
+
+    # Check suspicion events
+    result["suspicion_event"] = check_suspicion_thresholds(player_sessions[session_id])
+
+    # Save progress
+    save_shard_state(session_id, player_sessions[session_id], mission_managers[session_id])
+
     result["session"] = player_sessions[session_id].to_dict()
+    result["unlocked_lore"] = lore_trackers[session_id].get_all_unlocked()
     return jsonify(result)
 
 @app.route("/journal")
