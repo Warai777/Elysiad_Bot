@@ -8,6 +8,7 @@ def generate_item(action_text, session):
             "weight": 2,
             "type": "tool",
             "effect": "glyph_reveal",
+            "dimensions": {"length": 6, "width": 2, "height": 1, "unit": "in"},
             "requirements": {
                 "strength": 2,
                 "traits": ["ritual_scholar"],
@@ -20,6 +21,7 @@ def generate_item(action_text, session):
             "weight": 1,
             "type": "currency",
             "effect": "fire_whisper",
+            "dimensions": {"length": 1, "width": 1, "height": 0.1, "unit": "in"},
             "requirements": {
                 "strength": 1,
                 "traits": ["fire_affinity"],
@@ -32,6 +34,7 @@ def generate_item(action_text, session):
             "weight": 1,
             "type": "consumable",
             "effect": "vision_dream",
+            "dimensions": {"length": 5, "width": 1.5, "height": 1.5, "unit": "in"},
             "requirements": {
                 "strength": 1,
                 "traits": ["dream_resistance"],
@@ -44,6 +47,7 @@ def generate_item(action_text, session):
             "weight": 1,
             "type": "relic",
             "effect": "truth_ping",
+            "dimensions": {"length": 3, "width": 3, "height": 0.5, "unit": "in"},
             "requirements": {
                 "strength": 0,
                 "traits": [],
@@ -72,5 +76,6 @@ def generate_item(action_text, session):
             "true_name": item["name"],
             "true_description": item["description"],
             "true_effect": item["effect"],
+            "dimensions": item["dimensions"],
             "requirements": item["requirements"]
         }
