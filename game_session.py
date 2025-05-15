@@ -1,3 +1,5 @@
+from container import Container
+
 class GameSession:
     def __init__(self, session_id):
         self.session_id = session_id
@@ -26,7 +28,7 @@ class GameSession:
             "strength": self.strength,
             "traits": self.traits,
             "roles": self.roles,
-            "containers": self.containers
+            "containers": [c.to_dict() for c in self.containers]
         }
 
     def load_from_dict(self, data):
@@ -40,7 +42,7 @@ class GameSession:
         self.strength = data.get("strength", 5)
         self.traits = data.get("traits", ["basic_strength"])
         self.roles = data.get("roles", [])
-        self.containers = data.get("containers", [])
+        self.containers = [Container.from_dict(c) for c in data.get("containers", [])]
 
     def can_carry(self, weight):
         return sum(i.get("weight", 0) for i in self.inventory) + weight <= self.strength * 5
