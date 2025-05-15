@@ -1,26 +1,22 @@
-{% extends 'base.html' %}
-{% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='journal_page_flip.css') }}">
-<div class="journal-container">
-    <div class="journal-book">
-        <div class="page left-page">
-            <div class="page-content" id="left-page">{{ left_page|safe }}</div>
-        </div>
-        <div class="page right-page">
-            <div class="page-content" id="right-page">{{ right_page|safe }}</div>
-        </div>
-
-        <!-- Fixed Hints Tab on left -->
-        <div id="tab-hints" class="journal-tab flipped-tab">Hints</div>
-        <div id="tab-lore" class="journal-tab {% if active_tab == 'lore' %}flipped-tab{% endif %}" onclick="switchTab('lore')">Lore</div>
-        <div id="tab-notes" class="journal-tab {% if active_tab == 'notes' %}flipped-tab{% endif %}" onclick="switchTab('notes')">Notes</div>
-    </div>
-
-    <div class="journal-controls">
-        <button onclick="changePage(-2)">&larr; Previous</button>
-        <input type="text" id="noteInput" placeholder="Write your note and press Enter...">
-        <button onclick="changePage(2)">Next &rarr;</button>
-    </div>
-</div>
-<script src="{{ url_for('static', filename='journal.js') }}"></script>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Journal</title>
+</head>
+<body>
+    <h1>Your Journal</h1>
+    {% if entries %}
+        <ul>
+        {% for entry in entries %}
+            <li>
+                <strong>{{ entry.timestamp }}</strong> — <em>{{ entry.type }}</em>:<br>
+                {{ entry.text }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your journal is empty.</p>
+    {% endif %}
+    <a href="/world_scene">Back to World</a>
+</body>
+</html>
