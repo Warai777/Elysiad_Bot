@@ -22,7 +22,6 @@ def submit_action():
     with open("data/lore_fragments/lotm_lore.json") as f:
         lore_data = json.load(f)
 
-    # Unlock lore fragment based on consequence
     unlocked = None
     for key, fragment in lore_data.items():
         if fragment["source"] == action_text:
@@ -30,14 +29,35 @@ def submit_action():
             unlocked = fragment
             break
 
-    # Add lore and suspicion event
+    # World state logic
+    if "world_state" in loaded_shard:
+        state = loaded_shard["world_state"]
+        if result["consequence"] == "gain_clue":
+            state["rozel_study_discovered"] = True
+        elif result["consequence"] == "trigger_termination":
+            state["dorm_unlocked"] = False
+        elif result["consequence"] == "reveal_symbol":
+            state["cathedral_locked"] = False
+        elif result["consequence"] == "gain_oe":
+            state["nightwatcher_awareness"] += 10
+        result["world_state"] = state
+
+    # Phase progression logic
+    current_phase = loaded_shard["main_mission"].get("phase")
+    phases = loaded_shard["main_mission"].get("phases", [])
+    phase_ids = [p["id"] for p in phases]
+    if current_phase in phase_ids:
+        idx = phase_ids.index(current_phase)
+        if idx + 1 < len(phase_ids):
+            loaded_shard["main_mission"]["phase"] = phase_ids[idx + 1]
+            result["new_phase"] = phases[idx + 1]
+
+    # Save session state
+    result["session"] = player_sessions[session_id].to_dict()
     result["unlocked_lore"] = lore_trackers[session_id].get_all_unlocked()
     result["lore_text"] = unlocked
     result["suspicion_event"] = check_suspicion_thresholds(player_sessions[session_id])
-
-    # Save session state
     save_shard_state(session_id, player_sessions[session_id], mission_managers[session_id])
-    result["session"] = player_sessions[session_id].to_dict()
 
     return jsonify(result)
 
