@@ -11,7 +11,29 @@
   "main_mission": {
     "id": "m001",
     "description": "Decipher Rozel's forbidden map before the Second Moon.",
-    "phase": "intro"
+    "phase": "intro",
+    "phases": [
+      {
+        "id": "intro",
+        "description": "Investigate strange sounds in the dormitory."
+      },
+      {
+        "id": "discovery",
+        "description": "Break into Rozel’s study and find his map notes."
+      },
+      {
+        "id": "tension",
+        "description": "Avoid the Nightwatchers while exploring the chapel tunnels."
+      },
+      {
+        "id": "climax",
+        "description": "Decode the map’s lunar language before moonset."
+      },
+      {
+        "id": "resolution",
+        "description": "Seal or release the thing below the cathedral."
+      }
+    ]
   },
   "side_missions": [
     {
@@ -19,6 +41,12 @@
       "description": "Find your roommate's hidden dream diary."
     }
   ],
+  "world_state": {
+    "dorm_unlocked": true,
+    "cathedral_locked": true,
+    "rozel_study_discovered": false,
+    "nightwatcher_awareness": 0
+  },
   "actions": [
     {
       "text": "Follow the wet footsteps outside your door.",
