@@ -1,5 +1,6 @@
 from container import Container
 from datetime import datetime
+from flask import session
 
 class GameSession:
     def __init__(self, session_id):
@@ -47,6 +48,15 @@ class GameSession:
         self.roles = data.get("roles", [])
         self.containers = [Container.from_dict(c) for c in data.get("containers", [])]
 
+    def autosave(self):
+        from routes.save_routes import save_slots
+        slot_name = session.get("active_slot")
+        user_id = session.get("user")
+        if user_id and slot_name:
+            if user_id not in save_slots:
+                save_slots[user_id] = {}
+            save_slots[user_id][slot_name] = self.to_dict()
+
     def get_total_weight(self):
         return sum(i.get("weight", 0) for i in self.inventory)
 
@@ -59,6 +69,7 @@ class GameSession:
     def add_item(self, item):
         if self.can_carry(item.get("weight", 0)):
             self.inventory.append(item)
+            self.autosave()
             return True
         return False
 
@@ -70,6 +81,7 @@ class GameSession:
             "tags": tags or [],
             "timestamp": datetime.utcnow().isoformat()
         })
+        self.autosave()
 
     def log_lore(self, text):
         self.log_journal(text, type_="lore", importance="high", tags=["lore"])
@@ -97,4 +109,6 @@ class GameSession:
                     i["type"] = "revealed"
                     revealed.append(i["name"])
                     self.log_lore(f"You deciphered {i['name']} — once veiled as '{old_name}'")
+        if revealed:
+            self.autosave()
         return revealed
