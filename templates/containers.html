@@ -18,6 +18,11 @@
                             {% else %}
                                 <strong>{{ item.name }}</strong>: {{ item.description }}
                             {% endif %}
+                            <form action="/transfer_item" method="post" style="display:inline">
+                                <input type="hidden" name="container" value="{{ c.name }}">
+                                <input type="hidden" name="item" value="{{ item.name }}">
+                                <button type="submit">Transfer</button>
+                            </form>
                         </li>
                     {% endfor %}
                 </ul>
