@@ -1,4 +1,5 @@
 from container import Container
+from datetime import datetime
 
 class GameSession:
     def __init__(self, session_id):
@@ -7,7 +8,7 @@ class GameSession:
         self.suspicion = 0
         self.year = 0
         self.inventory = []
-        self.journal = []
+        self.journal = []  # list of dicts with 'text' and optional 'type'/'timestamp'
         self.unlocked_lore = []
         self.tier = 0
         self.strength = 5
@@ -16,7 +17,6 @@ class GameSession:
         self.containers = [
             Container("Pockets", "starter", 2, {"length": 6, "width": 4, "height": 0.75, "unit": "in"})
         ]
-        self.journal_limit = 100  # Max number of entries
 
     def to_dict(self):
         return {
@@ -62,10 +62,12 @@ class GameSession:
             return True
         return False
 
-    def log_journal(self, text):
-        self.journal.append(text)
-        if len(self.journal) > self.journal_limit:
-            self.journal.pop(0)
+    def log_journal(self, text, type_="system"):
+        self.journal.append({
+            "text": text,
+            "type": type_,
+            "timestamp": datetime.utcnow().isoformat()
+        })
 
     def reveal_items(self):
         revealed = []
@@ -83,5 +85,5 @@ class GameSession:
                     i["effect"] = i.pop("true_effect")
                     i["type"] = "revealed"
                     revealed.append(i["name"])
-                    self.log_journal(f"You deciphered {i['name']} — once veiled as '{old_name}'")
+                    self.log_journal(f"You deciphered {i['name']} — once veiled as '{old_name}'", type_="lore")
         return revealed
