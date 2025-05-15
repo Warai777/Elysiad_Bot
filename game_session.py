@@ -13,7 +13,9 @@ class GameSession:
         self.strength = 5
         self.traits = ["basic_strength"]
         self.roles = []
-        self.containers = []
+        self.containers = [
+            Container("Pockets", "starter", 2, {"length": 6, "width": 4, "height": 0.75, "unit": "in"})
+        ]
 
     def to_dict(self):
         return {
