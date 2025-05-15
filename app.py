@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from twilio.rest import Client
-import os, random, time
+import os, random, time, json
 from player import User
 from game_session import GameSession
 from mission_manager import Mission, MissionManager
@@ -22,6 +22,7 @@ reset_codes = {}
 
 player_sessions = {}
 mission_managers = {}
+loaded_shard = None
 
 @app.route("/")
 def login_page_redirect():
@@ -65,6 +66,7 @@ def create_character():
 
 @app.route("/submit_character", methods=["POST"])
 def submit_character():
+    global loaded_shard
     name = request.form.get("name")
     background = request.form.get("background")
     trait = request.form.get("trait")
@@ -73,8 +75,13 @@ def submit_character():
     player_sessions[session_id] = GameSession(session_id)
     mission_managers[session_id] = MissionManager()
 
-    # Example main mission
-    main_mission = Mission("m1", "Uncover the secret under the cathedral.", 86400, is_main=True)
+    # Load LotM demo shard
+    with open("data/shards/lotm_demo_shard.json") as f:
+        loaded_shard = json.load(f)
+
+    # Load main mission from shard
+    main = loaded_shard["main_mission"]
+    main_mission = Mission(main["id"], main["description"], 86400, is_main=True)
     mission_managers[session_id].add_mission(main_mission)
 
     return redirect(url_for("world_scene"))
@@ -90,7 +97,11 @@ def choose_world():
 
 @app.route("/world_scene")
 def world_scene():
-    return render_template("world_scene.html")
+    global loaded_shard
+    if not loaded_shard:
+        with open("data/shards/lotm_demo_shard.json") as f:
+            loaded_shard = json.load(f)
+    return render_template("world_scene.html", shard=loaded_shard)
 
 @app.route("/submit_action", methods=["POST"])
 def submit_action():
@@ -103,6 +114,7 @@ def submit_action():
 
     handler = ActionHandler(player_sessions[session_id])
     result = handler.handle_action(action_text, action_type="random")  # default type for demo
+    result["session"] = player_sessions[session_id].to_dict()
     return jsonify(result)
 
 @app.route("/journal")
