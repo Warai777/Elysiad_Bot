@@ -23,16 +23,17 @@
 </head>
 <body>
     <h1>World Scene</h1>
+    <p><strong>World:</strong> {{ shard.world }} | <strong>Year:</strong> {{ shard.year }} | <strong>Location:</strong> {{ shard.location }}</p>
+    <p><strong>Main Mission:</strong> {{ shard.main_mission.description }}</p>
+    <p><em>{{ shard.initial_message }}</em></p>
     <div>
         <p id="oe">Origin Essence: 0</p>
         <p id="suspicion">Suspicion: 0</p>
         <p>Choose an action or type your own:</p>
         <ul>
-            <li><button onclick="submitActionOption('Investigate the sound near the ruins')">Investigate the sound near the ruins</button></li>
-            <li><button onclick="submitActionOption('Follow the footsteps quietly')">Follow the footsteps quietly</button></li>
-            <li><button onclick="submitActionOption('Return to the cathedral gate')">Return to the cathedral gate</button></li>
-            <li><button onclick="submitActionOption('Use your dream token')">Use your dream token</button></li>
-            <li><button onclick="submitActionOption('Sit and wait for the figure to approach')">Sit and wait for the figure to approach</button></li>
+            {% for a in shard.actions %}
+                <li><button onclick="submitActionOption('{{ a.text }}')">{{ a.text }}</button></li>
+            {% endfor %}
         </ul>
         <input id="actionInput" type="text" placeholder="Type your action here...">
         <button onclick="submitAction()">Submit</button>
