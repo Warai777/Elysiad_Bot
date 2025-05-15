@@ -19,11 +19,15 @@ reset_codes = {}
 
 @app.route("/")
 def login_page_redirect():
-    return redirect(url_for("login_page"))
+    return redirect(url_for("login_stage"))
 
 @app.route("/login")
-def login_page():
+def login_stage():
     return render_template("home.html")
+
+@app.route("/login_journal")
+def login_page():
+    return render_template("login_journal.html")
 
 @app.route("/login", methods=["POST"])
 def login():
