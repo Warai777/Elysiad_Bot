@@ -15,42 +15,8 @@
       height: 100%;
       background: transparent;
     }
-    .book-container {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .book {
-      width: 300px;
-      height: auto;
-      cursor: pointer;
-      transition: transform 0.5s ease, box-shadow 0.5s ease;
-      filter: drop-shadow(0 0 15px #a68bd0);
-    }
-    .book:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(166, 139, 208, 0.7);
-    }
-    .fade-out {
-      animation: fadeOut 1s forwards;
-    }
-    @keyframes fadeOut {
-      to { opacity: 0; }
-    }
   </style>
 </head>
 <body>
-  <div class="book-container">
-    <img src="/static/book__inner_frame.png" class="book" onclick="enterJournal()" alt="Magic Book">
-  </div>
-  <script>
-    function enterJournal() {
-      document.body.classList.add('fade-out');
-      setTimeout(() => window.location.href = "/login_journal", 1000);
-    }
-  </script>
 </body>
 </html>
