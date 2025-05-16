@@ -6,7 +6,9 @@
 <body>
     <h1>World Scene</h1>
     <p><strong>Current World:</strong> {{ session.current_world or "Unknown" }}</p>
-    <p><strong>Current Phase:</strong> {{ session.current_phase }}</p>
+    {% if session.chapters and session.current_chapter_index >= 0 %}
+        <p><strong>Chapter:</strong> {{ session.chapters[session.current_chapter_index].title }}</p>
+    {% endif %}
     <hr>
     <p>{{ story_text }}</p>
     <form method="post">
