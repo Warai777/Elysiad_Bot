@@ -9,11 +9,15 @@
     <div class="login-container">
         <div class="login-box">
             <h2>Login to Elysiad</h2>
-            <form action="/login" method="POST">
+            <form method="POST">
                 <input type="text" name="username" placeholder="Username" required>
                 <input type="password" name="password" placeholder="Password" required>
                 <button type="submit">Login</button>
             </form>
+            <p style="margin-top:1rem; font-size:0.9rem; color:#eee;">
+                Don't have an account?
+                <a href="/signup" style="color:#fff; text-decoration:underline;">Sign Up</a>
+            </p>
         </div>
     </div>
 </body>
