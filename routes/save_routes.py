@@ -30,6 +30,11 @@ def load_save(slot_name):
         session_data = save_slots[user_id][slot_name]
         new_session = GameSession(user_id)
         new_session.load_from_dict(session_data)
+
         from app import player_sessions
         player_sessions[user_id] = new_session
+
+        # World logic hook — ensure at least one world triggers chapter
+        if new_session.current_world:
+            new_session.enter_new_world(new_session.current_world)
     return redirect(url_for("world_scene"))
