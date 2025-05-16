@@ -1,6 +1,6 @@
 from flask import Blueprint, session, redirect, url_for, render_template, request, Response
 import json
-from app import player_sessions
+from globals import player_sessions
 
 journal_bp = Blueprint("journal_bp", __name__)
 
