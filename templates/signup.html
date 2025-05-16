@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up - Elysiad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login_modern.css') }}?v=1.0.1">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Create an Account</h2>
+            <form method="POST">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="confirm" placeholder="Confirm Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+            <p style="margin-top:1rem; font-size:0.9rem; color:#eee;">
+                Already have an account?
+                <a href="/login" style="color:#fff; text-decoration:underline;">Login</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
