@@ -3,6 +3,7 @@ from flask_session import Session
 from routes.inventory_routes import inventory_bp
 from routes.journal_routes import journal_bp
 from routes.save_routes import save_bp
+from globals import player_sessions
 from game_session import GameSession
 import os
 
@@ -11,13 +12,9 @@ app.secret_key = os.environ.get("SECRET_KEY", "elysiad-dev")
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Register blueprints
 app.register_blueprint(inventory_bp)
 app.register_blueprint(journal_bp)
 app.register_blueprint(save_bp)
-
-# Global session tracker
-player_sessions = {}
 
 @app.route("/")
 def index():
