@@ -9,27 +9,35 @@ class Container:
     def is_full(self):
         return len(self.items) >= self.slots
 
+    def normalize_volume(self, length, width, height, unit):
+        unit = unit.lower()
+        factor = {
+            "in": 1,
+            "cm": 0.0610237,
+            "m": 61023.7,
+            "ft": 1728,
+            "km": 61023700000,
+            "mi": 2688000000
+        }.get(unit, 1)  # fallback to inches
+        return length * width * height * factor
+
     def volume_capacity(self):
         d = self.dimensions
-        if d["unit"] == "in":
-            return d["length"] * d["width"] * d["height"]
-        # Add other unit conversions as needed
-        return 0
+        return self.normalize_volume(d["length"], d["width"], d["height"], d["unit"])
 
     def volume_used(self):
         total = 0
         for item in self.items:
             dim = item.get("dimensions", {})
-            if dim.get("unit") == "in":
-                total += dim.get("length", 0) * dim.get("width", 0) * dim.get("height", 0)
+            total += self.normalize_volume(dim.get("length", 0), dim.get("width", 0), dim.get("height", 0), dim.get("unit", "in"))
         return total
 
     def fits(self, item):
         if self.is_full():
             return False
-        if item.get("dimensions", {}).get("unit") != self.dimensions.get("unit"):
-            return False
-        return self.volume_used() + (item["dimensions"]["length"] * item["dimensions"]["width"] * item["dimensions"]["height"]) <= self.volume_capacity()
+        dim = item.get("dimensions", {})
+        item_vol = self.normalize_volume(dim.get("length", 0), dim.get("width", 0), dim.get("height", 0), dim.get("unit", "in"))
+        return self.volume_used() + item_vol <= self.volume_capacity()
 
     def add_item(self, item):
         if self.fits(item):
