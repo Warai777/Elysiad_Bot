@@ -5,6 +5,7 @@
     <style>
         .container-block { margin-top: 1em; border-top: 2px solid #aaa; padding-top: 0.5em; }
         .container-block ul { margin-left: 1.5em; }
+        li[title] { border-bottom: 1px dotted #999; cursor: help; }
     </style>
 </head>
 <body>
@@ -16,7 +17,7 @@
     {% if items %}
         <ul>
         {% for item in items %}
-            <li>
+            <li title="Req: Str {{ item.requirements.strength }}, Traits: {{ item.requirements.traits|join(', ') }}">
                 {% if item.type == 'mystery' %}
                     <em>Unidentified Object</em>: <span style="color:gray">You cannot understand this item yet.</span>
                     <form action="/examine_item" method="post" style="display:inline">
@@ -54,7 +55,7 @@
             {% if container.items %}
                 <ul>
                 {% for item in container.items %}
-                    <li><strong>{{ item.name }}</strong>: {{ item.description }}</li>
+                    <li title="Inside container. Size: {{ item.dimensions.length }}x{{ item.dimensions.width }}x{{ item.dimensions.height }} {{ item.dimensions.unit }}">{{ item.name }}</li>
                 {% endfor %}
                 </ul>
             {% else %}
