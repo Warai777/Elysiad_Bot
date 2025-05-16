@@ -5,6 +5,7 @@ from routes.journal_routes import journal_bp
 from routes.save_routes import save_bp
 from globals import player_sessions
 from game_session import GameSession
+from user_auth import create_user, validate_user
 import os
 
 app = Flask(__name__)
@@ -20,9 +21,35 @@ app.register_blueprint(save_bp)
 def index():
     return redirect(url_for("world_scene"))
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login_page():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        valid, msg = validate_user(username, password)
+        if valid:
+            session["user"] = username
+            if username not in player_sessions:
+                player_sessions[username] = GameSession(username)
+            return redirect(url_for("world_scene"))
+        else:
+            flash(msg)
     return render_template("login.html")
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm = request.form.get("confirm")
+        if password != confirm:
+            flash("Passwords do not match.")
+        else:
+            success, msg = create_user(username, password)
+            flash(msg)
+            if success:
+                return redirect(url_for("login_page"))
+    return render_template("signup.html")
 
 @app.route("/world_scene", methods=["GET", "POST"])
 def world_scene():
