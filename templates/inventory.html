@@ -2,6 +2,10 @@
 <html>
 <head>
     <title>Inventory</title>
+    <style>
+        .container-block { margin-top: 1em; border-top: 2px solid #aaa; padding-top: 0.5em; }
+        .container-block ul { margin-left: 1.5em; }
+    </style>
 </head>
 <body>
     <h1>Your Inventory</h1>
@@ -15,6 +19,10 @@
             <li>
                 {% if item.type == 'mystery' %}
                     <em>Unidentified Object</em>: <span style="color:gray">You cannot understand this item yet.</span>
+                    <form action="/examine_item" method="post" style="display:inline">
+                        <input type="hidden" name="item" value="{{ item.name }}">
+                        <button type="submit">Examine</button>
+                    </form>
                 {% else %}
                     <strong>{{ item.name }}</strong>: {{ item.description }}
                     <form action="/use_item" method="post" style="display:inline;">
@@ -39,6 +47,22 @@
     {% else %}
         <p>Your inventory is currently empty.</p>
     {% endif %}
+
+    {% for container in containers %}
+        <div class="container-block">
+            <h3>{{ container.name }} ({{ container.type }})</h3>
+            {% if container.items %}
+                <ul>
+                {% for item in container.items %}
+                    <li><strong>{{ item.name }}</strong>: {{ item.description }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p><em>Empty</em></p>
+            {% endif %}
+        </div>
+    {% endfor %}
+
     <a href="/world_scene">Return to World</a>
 </body>
 </html>
