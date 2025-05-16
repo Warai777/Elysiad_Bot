@@ -1,36 +1,23 @@
 ...TRUNCATED...
 
-    def __init__(self, session_id):
-        ...
-        self.main_mission = None
-        self.side_missions = []
-
-    def to_dict(self):
-        return {
-            ...
-            "main_mission": self.main_mission,
-            "side_missions": self.side_missions
-        }
-
-    def load_from_dict(self, data):
-        ...
-        self.main_mission = data.get("main_mission")
-        self.side_missions = data.get("side_missions", [])
-
-    def set_main_mission(self, description):
+    def set_main_mission(self, description, duration_minutes=1440):
+        from datetime import datetime, timedelta
+        now = datetime.utcnow()
         self.main_mission = {
             "description": description,
-            "start_time": datetime.utcnow().isoformat()
+            "start_time": now.isoformat(),
+            "end_time": (now + timedelta(minutes=duration_minutes)).isoformat()
         }
         self.log_journal(f"Main mission assigned: {description}", type_="system", tags=["mission"])
         self.autosave()
 
-    def add_side_mission(self, description):
-        self.side_missions.append({
-            "description": description,
-            "start_time": datetime.utcnow().isoformat()
-        })
-        self.log_journal(f"Side mission added: {description}", type_="system", tags=["mission"])
-        self.autosave()
+    def check_main_mission_timer(self):
+        from datetime import datetime
+        if self.main_mission:
+            end_time = datetime.fromisoformat(self.main_mission["end_time"])
+            if datetime.utcnow() > end_time:
+                self.log_journal("Main mission failed due to time expiration.", type_="system", tags=["failure"])
+                self.main_mission = None
+                self.autosave()
 
 ...TRUNCATED...
