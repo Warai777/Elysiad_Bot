@@ -6,6 +6,30 @@ body {
   color: #fff;
 }
 
+.header-bar {
+  width: 100%;
+  background-color: #2d2d34;
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem 0;
+  gap: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.header-bar a {
+  color: #c5a3ff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.header-bar a:hover {
+  text-decoration: underline;
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -84,22 +108,4 @@ li span {
 
 .advance-btn:hover {
   background-color: #956dff;
-}
-
-.nav-links {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.nav-links a {
-  color: #c5a3ff;
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
-.nav-links a:hover {
-  text-decoration: underline;
 }
