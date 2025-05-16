@@ -1,23 +1,19 @@
 ...TRUNCATED...
 
-    def set_main_mission(self, description, duration_minutes=1440):
-        from datetime import datetime, timedelta
-        now = datetime.utcnow()
-        self.main_mission = {
-            "description": description,
-            "start_time": now.isoformat(),
-            "end_time": (now + timedelta(minutes=duration_minutes)).isoformat()
-        }
-        self.log_journal(f"Main mission assigned: {description}", type_="system", tags=["mission"])
-        self.autosave()
+    def __init__(self, session_id):
+        ...
+        self.current_chapter_id = None  # Track unique chapter per phase
 
-    def check_main_mission_timer(self):
-        from datetime import datetime
-        if self.main_mission:
-            end_time = datetime.fromisoformat(self.main_mission["end_time"])
-            if datetime.utcnow() > end_time:
-                self.log_journal("Main mission failed due to time expiration.", type_="system", tags=["failure"])
-                self.main_mission = None
-                self.autosave()
+    def start_chapter(self, title):
+        chapter = {
+            "id": len(self.chapters) + 1,
+            "title": title,
+            "timestamp": datetime.utcnow().isoformat(),
+            "content": []
+        }
+        self.chapters.append(chapter)
+        self.current_chapter_index = len(self.chapters) - 1
+        self.current_chapter_id = chapter["id"]
+        self.log_journal(f"-- {title} begins --", type_="system", importance="high", tags=["chapter"])
 
 ...TRUNCATED...
