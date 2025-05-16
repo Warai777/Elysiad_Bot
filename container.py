@@ -50,6 +50,8 @@ class Container:
 
     def add_item(self, item):
         if self.fits(item):
+            if item.get("type") == "container":
+                item.setdefault("linked_items", [])  # Support nested container logic
             self.items.append(item)
             return True
         return False
