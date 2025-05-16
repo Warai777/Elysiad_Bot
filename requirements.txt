@@ -1,6 +1,6 @@
 flask
-flask_sqlalchemy
-twilio
-sendgrid
-python-dotenv
+flask-session
 gunicorn
+openai
+jinja2
+requests
