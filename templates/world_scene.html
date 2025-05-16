@@ -1,82 +1,20 @@
-<!-- templates/world_scene.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>World Scene</title>
-    <script>
-        async function submitAction() {
-            const actionInput = document.getElementById('actionInput').value;
-            const response = await fetch('/submit_action', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ action: actionInput })
-            });
-            const result = await response.json();
-            document.getElementById('result').innerText = `You rolled ${result.roll}: ${result.outcome}`;
-            document.getElementById('oe').innerText = `Origin Essence: ${result.session.origin_essence}`;
-            document.getElementById('suspicion').innerText = `Suspicion: ${result.session.suspicion}`;
-
-            const logItem = document.createElement('li');
-            logItem.textContent = `Action: ${result.action} | Outcome: ${result.outcome}`;
-            document.getElementById('log').appendChild(logItem);
-
-            if (result.suspicion_event) {
-                document.getElementById('suspicionEvent').innerText = `Event: ${result.suspicion_event}`;
-            }
-
-            if (result.unlocked_lore) {
-                document.getElementById('unlockedLore').innerText = `Unlocked Lore Fragments: ${result.unlocked_lore.join(', ')}`;
-            }
-
-            if (result.lore_text) {
-                const loreBox = document.getElementById('loreReveal');
-                loreBox.innerHTML = `<strong>${result.lore_text.title}</strong><br>${result.lore_text.text}`;
-            }
-
-            if (result.new_phase) {
-                document.getElementById('phaseInfo').innerHTML = `<strong>Phase:</strong> ${result.new_phase.id} – ${result.new_phase.description}`;
-            }
-
-            if (result.world_state) {
-                document.getElementById('worldState').innerText = `World State: ${JSON.stringify(result.world_state)}`;
-            }
-        }
-    </script>
 </head>
 <body>
     <h1>World Scene</h1>
-    <p><strong>World:</strong> {{ shard.world }} | <strong>Year:</strong> {{ shard.year }} | <strong>Location:</strong> {{ shard.location }}</p>
-    <p><strong>Main Mission:</strong> {{ shard.main_mission.description }}</p>
-    <p id="phaseInfo"><strong>Phase:</strong> {{ shard.main_mission.phase }}</p>
-    <p id="worldState">World State: {{ shard.world_state }}</p>
-    <p><em>{{ shard.initial_message }}</em></p>
-    <div>
-        <p id="oe">Origin Essence: 0</p>
-        <p id="suspicion">Suspicion: 0</p>
-        <p id="suspicionEvent"></p>
-        <p id="unlockedLore"></p>
-        <div id="loreReveal" style="margin: 10px 0; font-style: italic;"></div>
-        <p>
-            <a href="/journal_dynamic">View Journal</a> |
-            <a href="/inventory">Inventory (soon)</a>
-        </p>
-        <p>Choose an action or type your own:</p>
-        <ul>
-            {% for a in actions %}
-                <li><button onclick="submitActionOption('{{ a.text }}')">{{ a.text }}</button></li>
-            {% endfor %}
-        </ul>
-        <input id="actionInput" type="text" placeholder="Type your action here...">
-        <button onclick="submitAction()">Submit</button>
-        <p id="result"></p>
-        <h3>Action Log</h3>
-        <ul id="log"></ul>
-    </div>
-    <script>
-        function submitActionOption(text) {
-            document.getElementById('actionInput').value = text;
-            submitAction();
-        }
-    </script>
+    <p><strong>Current World:</strong> {{ session.current_world or "Unknown" }}</p>
+    <p><strong>Current Phase:</strong> {{ session.current_phase }}</p>
+    <hr>
+    <p>{{ story_text }}</p>
+    <form method="post">
+        <button type="submit">Advance</button>
+    </form>
+    <a href="/inventory">Inventory</a> |
+    <a href="/journal">Journal</a> |
+    <a href="/chapters">Chapters</a> |
+    <a href="/saves">Saves</a>
 </body>
 </html>
