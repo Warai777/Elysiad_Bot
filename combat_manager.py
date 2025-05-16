@@ -9,13 +9,16 @@ class CombatManager:
         self.instincts = ["dodge", "block", "counter", "channel power"]
 
     def generate_combat_choices(self):
-        return [
+        options = [
             "Strike quickly",
             "Defend and wait",
             "Unleash a risky technique",
             "Look for an escape",
             "Call out to your companion"
         ]
+        if hasattr(self.player, "skills"):
+            options.extend(f"Use skill: {s['name']}" for s in self.player.skills)
+        return options
 
     def resolve_choice(self, selected_index):
         result = {
@@ -25,17 +28,23 @@ class CombatManager:
             "assist_text": ""
         }
 
-        # Outcome logic based on player choice
-        if selected_index == 0:
-            result["narrative"] = "You lunge forward with raw aggression, catching the enemy off guard."
-        elif selected_index == 1:
-            result["narrative"] = "You brace yourself and let the enemy strike first. You read their rhythm."
-        elif selected_index == 2:
-            result["narrative"] = "You burn energy and focus into a powerful—but unstable—technique."
-        elif selected_index == 3:
-            result["narrative"] = "Your eyes scan for a weak point in the terrain. You find an exit."
-        elif selected_index == 4:
-            result["narrative"] = "You call to your companion—and something answers."
+        base_choices = 5
+        if selected_index < base_choices:
+            # Outcome logic based on base choices
+            if selected_index == 0:
+                result["narrative"] = "You lunge forward with raw aggression, catching the enemy off guard."
+            elif selected_index == 1:
+                result["narrative"] = "You brace yourself and let the enemy strike first. You read their rhythm."
+            elif selected_index == 2:
+                result["narrative"] = "You burn energy and focus into a powerful—but unstable—technique."
+            elif selected_index == 3:
+                result["narrative"] = "Your eyes scan for a weak point in the terrain. You find an exit."
+            elif selected_index == 4:
+                result["narrative"] = "You call to your companion—and something answers."
+        else:
+            skill_index = selected_index - base_choices
+            skill = self.player.skills[skill_index]
+            result["narrative"] = f"You invoke the skill: {skill['name']}. {skill.get('description', '')}"
 
         # Scar system (20% chance)
         if random.random() < 0.2:
