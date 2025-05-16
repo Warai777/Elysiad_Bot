@@ -14,6 +14,9 @@ def generate_item(context):
         "It's unnaturally heavy."
     ]
 
+    rarity_tags = ["common", "rare", "epic", "mythic"]
+    special_tags = ["fire-bound", "cult-only", "essence-linked", "one-use"]
+
     base = {
         "name": random.choice(names),
         "description": random.choice(descs),
@@ -32,7 +35,9 @@ def generate_item(context):
         },
         "true_name": "???",
         "true_description": "Still shrouded in secrets.",
-        "true_effect": "Unknown phenomenon activates."
+        "true_effect": "Unknown phenomenon activates.",
+        "rarity": random.choices(rarity_tags, weights=[60, 25, 10, 5])[0],
+        "tags": random.sample(special_tags, k=random.randint(0, 2))
     }
 
     return base
