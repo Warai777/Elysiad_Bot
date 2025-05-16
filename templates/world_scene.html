@@ -12,6 +12,18 @@
         {% set label = title.split(":")[1] if ":" in title else "" %}
         <p><strong>{{ number.strip() }}</strong> — {{ label.strip() }}</p>
     {% endif %}
+
+    <hr>
+    <h3>Character Status</h3>
+    <ul>
+        <li><strong>Origin Essence:</strong> {{ session.origin_essence }}</li>
+        <li><strong>Strength:</strong> {{ session.strength }}</li>
+        <li><strong>Suspicion:</strong> {{ session.suspicion }}</li>
+    </ul>
+
+    <h3>Active Mission</h3>
+    <p>No active mission yet.</p>
+
     <hr>
     <p>{{ story_text }}</p>
     <form method="post">
