@@ -7,7 +7,10 @@
     <h1>World Scene</h1>
     <p><strong>Current World:</strong> {{ session.current_world or "Unknown" }}</p>
     {% if session.chapters and session.current_chapter_index >= 0 %}
-        <p><strong>Chapter:</strong> {{ session.chapters[session.current_chapter_index].title }}</p>
+        {% set title = session.chapters[session.current_chapter_index].title %}
+        {% set number = title.split(":")[0] %}
+        {% set label = title.split(":")[1] if ":" in title else "" %}
+        <p><strong>{{ number.strip() }}</strong> — {{ label.strip() }}</p>
     {% endif %}
     <hr>
     <p>{{ story_text }}</p>
