@@ -4,3 +4,4 @@ gunicorn
 openai
 jinja2
 requests
+bcrypt
