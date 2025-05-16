@@ -21,8 +21,21 @@
         <li><strong>Suspicion:</strong> {{ session.suspicion }}</li>
     </ul>
 
-    <h3>Active Mission</h3>
-    <p>No active mission yet.</p>
+    <h3>Missions</h3>
+    {% if session.main_mission %}
+        <p><strong>Main Mission:</strong> {{ session.main_mission.description }}</p>
+    {% else %}
+        <p><em>No active main mission.</em></p>
+    {% endif %}
+    {% if session.side_missions %}
+        <ul>
+        {% for m in session.side_missions %}
+            <li>{{ m.description }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p><em>No side missions yet.</em></p>
+    {% endif %}
 
     <hr>
     <p>{{ story_text }}</p>
