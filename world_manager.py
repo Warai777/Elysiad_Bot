@@ -2,13 +2,40 @@ import random
 import datetime
 import os
 import json
-from world_templates import generate_ai_world_template  # v1.0+ GPT-powered world generation
+from world_templates import generate_ai_world_template
 
 PLAYER_FOLDER = "data/players"
 
+class WorldState:
+    def __init__(self, name, era="", region="", phase="", shard_id=""):
+        self.name = name
+        self.era = era
+        self.region = region
+        self.phase = phase
+        self.shard_id = shard_id
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "era": self.era,
+            "region": self.region,
+            "phase": self.phase,
+            "shard_id": self.shard_id
+        }
+
+    @staticmethod
+    def from_dict(data):
+        return WorldState(
+            name=data.get("name", "Unknown"),
+            era=data.get("era", ""),
+            region=data.get("region", ""),
+            phase=data.get("phase", ""),
+            shard_id=data.get("shard_id", "")
+        )
+
 class WorldManager:
     def __init__(self):
-        pass  # Worlds are dynamically generated!
+        pass
 
     def generate_books(self):
         books = []
@@ -32,8 +59,6 @@ class WorldManager:
 
             data["current_world"] = world_name
             data["world_entry_time"] = datetime.datetime.utcnow().isoformat()
-
-            # ✨ Track past visited worlds
             data.setdefault("PastWorlds", [])
             if world_name not in data["PastWorlds"]:
                 data["PastWorlds"].append(world_name)
