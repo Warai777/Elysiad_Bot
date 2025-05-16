@@ -1,0 +1,105 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #1f1f23;
+  color: #fff;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.scene-box {
+  background-color: #2d2d34;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: #c5a3ff;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  color: #c5a3ff;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 1rem 0;
+}
+
+li span {
+  font-weight: bold;
+  color: #fff;
+}
+
+.world-label span {
+  color: #eee;
+}
+
+.chapter-label {
+  color: #aaa;
+  margin-bottom: 1rem;
+}
+
+.inactive {
+  color: #777;
+  font-style: italic;
+}
+
+.story-box {
+  background: #3d3d45;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #eee;
+}
+
+.advance-btn {
+  background-color: #7c4dff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.advance-btn:hover {
+  background-color: #956dff;
+}
+
+.nav-links {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.nav-links a {
+  color: #c5a3ff;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
