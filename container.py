@@ -1,10 +1,11 @@
 class Container:
-    def __init__(self, name, type_, slots, dimensions):
+    def __init__(self, name, type_, slots, dimensions, special_requirements=None):
         self.name = name
         self.type = type_  # e.g., backpack, ring
         self.slots = slots
         self.items = []
         self.dimensions = dimensions  # dict with length, width, height, unit
+        self.special_requirements = special_requirements or {}  # traits, roles, strength
 
     def is_full(self):
         return len(self.items) >= self.slots
@@ -39,6 +40,14 @@ class Container:
         item_vol = self.normalize_volume(dim.get("length", 0), dim.get("width", 0), dim.get("height", 0), dim.get("unit", "in"))
         return self.volume_used() + item_vol <= self.volume_capacity()
 
+    def access_granted(self, session):
+        r = self.special_requirements
+        return (
+            session.strength >= r.get("strength", 0)
+            and all(trait in session.traits for trait in r.get("traits", []))
+            and (not r.get("roles") or any(role in session.roles for role in r["roles"]))
+        )
+
     def add_item(self, item):
         if self.fits(item):
             self.items.append(item)
@@ -58,11 +67,12 @@ class Container:
             "type": self.type,
             "slots": self.slots,
             "items": self.items,
-            "dimensions": self.dimensions
+            "dimensions": self.dimensions,
+            "special_requirements": self.special_requirements
         }
 
     @staticmethod
     def from_dict(data):
-        c = Container(data["name"], data["type"], data["slots"], data["dimensions"])
+        c = Container(data["name"], data["type"], data["slots"], data["dimensions"], data.get("special_requirements", {}))
         c.items = data.get("items", [])
         return c
