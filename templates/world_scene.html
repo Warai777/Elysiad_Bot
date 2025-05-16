@@ -1,50 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>World Scene</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Scene - Elysiad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/world_scene.css') }}">
 </head>
 <body>
-    <h1>World Scene</h1>
-    <p><strong>Current World:</strong> {{ session.current_world or "Unknown" }}</p>
-    {% if session.chapters and session.current_chapter_index >= 0 %}
-        {% set title = session.chapters[session.current_chapter_index].title %}
-        {% set number = title.split(":")[0] %}
-        {% set label = title.split(":")[1] if ":" in title else "" %}
-        <p><strong>{{ number.strip() }}</strong> — {{ label.strip() }}</p>
-    {% endif %}
+<div class="container">
+    <div class="scene-box">
+        <h1>World Scene</h1>
+        <p class="world-label">Current World: <span>{{ session.current_world or "Unknown" }}</span></p>
 
-    <hr>
-    <h3>Character Status</h3>
-    <ul>
-        <li><strong>Origin Essence:</strong> {{ session.origin_essence }}</li>
-        <li><strong>Strength:</strong> {{ session.strength }}</li>
-        <li><strong>Suspicion:</strong> {{ session.suspicion }}</li>
-    </ul>
+        {% if session.chapters and session.current_chapter_index >= 0 %}
+            {% set title = session.chapters[session.current_chapter_index].title %}
+            {% set number = title.split(":")[0] %}
+            {% set label = title.split(":")[1] if ":" in title else "" %}
+            <p class="chapter-label"><strong>{{ number.strip() }}</strong> — {{ label.strip() }}</p>
+        {% endif %}
 
-    <h3>Missions</h3>
-    {% if session.main_mission %}
-        <p><strong>Main Mission:</strong> {{ session.main_mission.description }}</p>
-    {% else %}
-        <p><em>No active main mission.</em></p>
-    {% endif %}
-    {% if session.side_missions %}
-        <ul>
-        {% for m in session.side_missions %}
-            <li>{{ m.description }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p><em>No side missions yet.</em></p>
-    {% endif %}
+        <div class="status-box">
+            <h3>Character Status</h3>
+            <ul>
+                <li>Origin Essence: <span>{{ session.origin_essence }}</span></li>
+                <li>Strength: <span>{{ session.strength }}</span></li>
+                <li>Suspicion: <span>{{ session.suspicion }}</span></li>
+            </ul>
+        </div>
 
-    <hr>
-    <p>{{ story_text }}</p>
-    <form method="post">
-        <button type="submit">Advance</button>
-    </form>
-    <a href="/inventory">Inventory</a> |
-    <a href="/journal">Journal</a> |
-    <a href="/chapters">Chapters</a> |
-    <a href="/saves">Saves</a>
+        <div class="missions-box">
+            <h3>Missions</h3>
+            {% if session.main_mission %}
+                <p><strong>Main Mission:</strong> {{ session.main_mission.description }}</p>
+            {% else %}
+                <p class="inactive">No active main mission.</p>
+            {% endif %}
+            {% if session.side_missions %}
+                <ul>
+                {% for m in session.side_missions %}
+                    <li>{{ m.description }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="inactive">No side missions yet.</p>
+            {% endif %}
+        </div>
+
+        {% if story_text %}
+            <div class="story-box">
+                <p>{{ story_text }}</p>
+            </div>
+        {% endif %}
+
+        <form method="post">
+            <button type="submit" class="advance-btn">Advance</button>
+        </form>
+
+        <div class="nav-links">
+            <a href="/inventory">Inventory</a>
+            <a href="/journal">Journal</a>
+            <a href="/chapters">Chapters</a>
+            <a href="/saves">Saves</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>
