@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/world_scene.css') }}">
 </head>
 <body>
+<div class="header-bar">
+    <a href="/inventory">Inventory</a>
+    <a href="/journal">Journal</a>
+    <a href="/chapters">Chapters</a>
+    <a href="/saves">Saves</a>
+</div>
+
 <div class="container">
     <div class="scene-box">
         <h1>World Scene</h1>
@@ -55,13 +62,6 @@
         <form method="post">
             <button type="submit" class="advance-btn">Advance</button>
         </form>
-
-        <div class="nav-links">
-            <a href="/inventory">Inventory</a>
-            <a href="/journal">Journal</a>
-            <a href="/chapters">Chapters</a>
-            <a href="/saves">Saves</a>
-        </div>
     </div>
 </div>
 </body>
