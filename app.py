@@ -6,7 +6,6 @@ from routes.save_routes import save_bp
 from globals import player_sessions
 from game_session import GameSession
 from user_auth import create_user, validate_user
-from world_templates import generate_ai_world_template
 import os
 
 app = Flask(__name__)
@@ -58,8 +57,20 @@ def choose_world():
     if not session_id or session_id not in player_sessions:
         return redirect(url_for("login_page"))
 
-    worlds = [generate_ai_world_template() for _ in range(5)]
-    return render_template("choose_world.html", worlds=worlds)
+    starter_worlds = [
+        {"name": "Harvestland", "inspiration": "The Promised Neverland", "tone": "Grimly hopeful", "summary": "Children hide intelligence behind innocence, waiting for the harvest moon."},
+        {"name": "Rosicrucium", "inspiration": "Lord of the Mysteries", "tone": "Mystical, Arcane", "summary": "Ink-bound deities stir beneath the masks of secret societies."},
+        {"name": "KameSphere", "inspiration": "Dragon Ball", "tone": "Adventurous, Mythical", "summary": "Chi-infused relics scatter across a world teetering between peace and chaos."},
+        {"name": "Seelentiebe", "inspiration": "Dororo", "tone": "Dark redemption", "summary": "A cursed body hunts demons to reclaim what was bartered away."},
+        {"name": "Chrysalis", "inspiration": "Worm", "tone": "Hopeful despair", "summary": "Every power bears a price in a city drowning in consequence."},
+        {"name": "AeonRebirth", "inspiration": "Evangelion", "tone": "Post-apocalyptic, Existential", "summary": "Pilots dream of peace while carrying the weight of shattered gods."},
+        {"name": "IronArc", "inspiration": "Fullmetal Alchemist", "tone": "Industrial magic", "summary": "Alchemy fuels a war machine that may devour its own soul."},
+        {"name": "Nullspire", "inspiration": "Made in Abyss", "tone": "Surreal horror", "summary": "A chasm of dreams tempts explorers to depths no mind can endure."},
+        {"name": "Blightvale", "inspiration": "Bloodborne", "tone": "Victorian grotesque", "summary": "Ink, beasts, and madness soak the cobblestones under twin moons."},
+        {"name": "Skysteel", "inspiration": "Stormlight Archive", "tone": "Mythic conflict", "summary": "Ancient oaths awaken as highstorms carve the battlefield skies."}
+    ]
+
+    return render_template("choose_world.html", worlds=starter_worlds)
 
 @app.route("/enter_world", methods=["POST"])
 def enter_world():
