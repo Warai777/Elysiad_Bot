@@ -28,6 +28,7 @@
       height: 80vh;
       scrollbar-width: none;
       min-width: 100vw;
+      width: max-content;
     }
     .carousel-wrapper::-webkit-scrollbar {
       display: none;
@@ -36,8 +37,8 @@
       flex: 0 0 5%;
     }
     .world-form {
-      flex: 0 0 90%;
-      min-width: 600px;
+      flex: 0 0 auto;
+      width: 700px;
       flex-shrink: 0;
       scroll-snap-align: center;
       display: flex;
@@ -47,7 +48,6 @@
     }
     .world-card {
       width: 100%;
-      max-width: 700px;
       height: 90%;
       background-color: #7f5af0;
       border-radius: 16px;
