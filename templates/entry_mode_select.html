@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Choose Entry Mode</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      background: #141111;
+      color: #fefae0;
+      font-family: 'Garamond', serif;
+      padding: 2rem;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+    .mode-card {
+      background: #2e2a28;
+      border-radius: 12px;
+      padding: 2rem;
+      width: 300px;
+      margin: 1rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      text-align: center;
+    }
+    .mode-card:hover {
+      background: #7f5af0;
+      transform: scale(1.05);
+    }
+    .mode-container {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Choose How You Will Enter This World</h1>
+  <div class="mode-container">
+    <form action="/enter_world" method="post">
+      <input type="hidden" name="mode" value="canon">
+      <button class="mode-card" type="submit">
+        <h2>Canon Path</h2>
+        <p>Become the original main character of this world. Start from their story's beginning.</p>
+      </button>
+    </form>
+    <form action="/enter_world" method="post">
+      <input type="hidden" name="mode" value="original">
+      <button class="mode-card" type="submit">
+        <h2>Original Character</h2>
+        <p>Enter this world as your own unique self with a forged backstory and identity.</p>
+      </button>
+    </form>
+  </div>
+</body>
+</html>
