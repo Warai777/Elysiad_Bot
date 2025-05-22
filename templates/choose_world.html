@@ -25,6 +25,10 @@
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
       height: 80vh;
+      scrollbar-width: none;
+    }
+    .carousel-wrapper::-webkit-scrollbar {
+      display: none;
     }
     .world-form {
       flex: 0 0 90%;
@@ -90,6 +94,22 @@
       margin-top: 0.5rem;
       color: #ddd;
     }
+    .dots {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .dot {
+      height: 12px;
+      width: 12px;
+      margin: 0 4px;
+      background-color: #888;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    .dot.active {
+      background-color: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -110,14 +130,44 @@
     </form>
     {% endfor %}
   </div>
+  <div class="dots" id="dots">
+    {% for _ in worlds %}
+      <span class="dot"></span>
+    {% endfor %}
+  </div>
   <script>
     const carousel = document.getElementById('worldCarousel');
+    const dots = document.getElementById('dots').children;
+    const cards = carousel.querySelectorAll('.world-form');
+
+    function updateDots() {
+      let center = carousel.scrollLeft + carousel.offsetWidth / 2;
+      let activeIndex = 0;
+      let minDiff = Infinity;
+      cards.forEach((card, i) => {
+        const box = card.offsetLeft + card.offsetWidth / 2;
+        const diff = Math.abs(center - box);
+        if (diff < minDiff) {
+          minDiff = diff;
+          activeIndex = i;
+        }
+      });
+      Array.from(dots).forEach(dot => dot.classList.remove('active'));
+      if (dots[activeIndex]) dots[activeIndex].classList.add('active');
+    }
+
+    carousel.addEventListener('scroll', () => {
+      window.requestAnimationFrame(updateDots);
+    });
+
     carousel.addEventListener('wheel', function(e) {
       if (e.deltaY !== 0) {
         e.preventDefault();
         carousel.scrollLeft += e.deltaY;
       }
     });
+
+    updateDots();
   </script>
 </body>
 </html>
