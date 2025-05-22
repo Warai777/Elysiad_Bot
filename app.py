@@ -34,7 +34,13 @@ def select_entry_mode():
 def enter_world():
     mode = request.form['mode']
     if mode == 'canon':
-        return "You have chosen the canon path. [Placeholder for canon entry logic.]"
+        character = {
+            "name": "Shinji Ikari",
+            "source_work": "Neon Genesis Evangelion",
+            "expected_arc": "A reluctant pilot who hesitates, breaks under pressure, and struggles with isolation and fear.",
+            "intro": "You are Shinji Ikari. The city trembles under the shadow of a descending angel. The phone in your hand won't ring fast enough. The machine that awaits you isn't just a weapon — it's a mirror."
+        }
+        return render_template('canon_intro.html', character=character)
     elif mode == 'original':
         with open('data/player_profile.json') as f:
             profile = json.load(f)
