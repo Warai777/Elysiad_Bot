@@ -1,16 +1,35 @@
+import os
+from chapter_saver import save_chapter, load_chapter
+
 # story_manager.py
 # Handles global story phase transitions and world-specific narrative logic
 
 def generate_story_scene(session):
     phase = session.current_phase
     world = session.current_world or "generic"
+    chapter_key = f"{world}_Chapter_1"  # TEMP: will support more later
 
     if world == "One Piece":
-        return handle_one_piece_phase(session, phase)
+        scene = handle_one_piece_phase(session, phase)
     elif world == "Death Note":
-        return handle_death_note_phase(session, phase)
+        scene = handle_death_note_phase(session, phase)
     else:
-        return handle_generic_phase(session, phase)
+        scene = handle_generic_phase(session, phase)
+
+    # Load existing chapter or start new
+    chapter = load_chapter(world, 1) or {
+        "world": world,
+        "chapter": 1,
+        "entry_mode": session.entry_mode,
+        "scenes": []
+    }
+    chapter["scenes"].append({
+        "phase": phase,
+        "narrative": scene
+    })
+    save_chapter(world, 1, chapter)
+
+    return scene
 
 def handle_generic_phase(session, phase):
     if phase == "Intro":
