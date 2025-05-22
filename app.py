@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json, os
 from world_templates import generate_ai_world_template
+from chapter_saver import load_chapter
 
 app = Flask(__name__)
 
@@ -64,6 +65,13 @@ def enter_world():
         return render_template('original_intro.html', profile=profile)
     else:
         return "Invalid mode selected."
+
+@app.route('/read_chapter/<world>/<int:chapter>')
+def read_chapter(world, chapter):
+    chapter_data = load_chapter(world, chapter)
+    if chapter_data:
+        return render_template('chapter_viewer.html', chapter=chapter_data)
+    return "Chapter not found."
 
 if __name__ == '__main__':
     app.run(debug=True)
