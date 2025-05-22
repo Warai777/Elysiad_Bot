@@ -33,15 +33,12 @@
       display: none;
     }
     .ghost {
-      flex: 0 0 10%;
-    }
-    @media (max-width: 800px) {
-      .ghost {
-        flex: 0 0 5%;
-      }
+      flex: 0 0 5%;
     }
     .world-form {
-      flex: 0 0 90%;
+      flex: 0 0 auto;
+      width: 80vw;
+      max-width: 600px;
       flex-shrink: 0;
       scroll-snap-align: center;
       display: flex;
@@ -51,7 +48,6 @@
     }
     .world-card {
       width: 100%;
-      max-width: 700px;
       height: 90%;
       background-color: #7f5af0;
       border-radius: 16px;
