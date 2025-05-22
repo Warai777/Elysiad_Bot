@@ -163,8 +163,10 @@
     function scrollToCard(index) {
       if (cards[index]) {
         const card = cards[index];
-        const scrollLeft = card.offsetLeft - carousel.offsetWidth / 2 + card.offsetWidth / 2;
-        carousel.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+        const rect = card.getBoundingClientRect();
+        const wrapperRect = carousel.getBoundingClientRect();
+        const offset = rect.left - wrapperRect.left - (wrapperRect.width - rect.width) / 2;
+        carousel.scrollBy({ left: offset, behavior: 'smooth' });
       }
     }
 
