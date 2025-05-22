@@ -54,6 +54,10 @@ def signup():
 
 @app.route("/choose_world")
 def choose_world():
+    session_id = session.get("user")
+    if not session_id or session_id not in player_sessions:
+        return redirect(url_for("login_page"))
+
     worlds = [generate_ai_world_template() for _ in range(5)]
     return render_template("choose_world.html", worlds=worlds)
 
