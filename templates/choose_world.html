@@ -6,8 +6,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <style>
     body {
-      background: url('/static/parchment_bg.jpg') center/cover no-repeat;
-      font-family: 'Cinzel', serif;
+      background-color: #2c2f33;
+      font-family: 'Segoe UI', sans-serif;
       color: #fff;
       margin: 0;
       padding: 2rem;
@@ -15,6 +15,7 @@
     h1 {
       text-align: center;
       margin-bottom: 2rem;
+      color: white;
     }
     .manga-grid {
       display: flex;
@@ -27,36 +28,35 @@
       width: 160px;
     }
     .cover {
-      background: #1c1c1c;
-      border-radius: 12px;
+      background-color: #7f5af0;
+      border-radius: 10px;
       padding: 1rem;
       height: 240px;
       overflow: hidden;
       position: relative;
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      color: white;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
     .cover:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 15px #9d4edd;
+      box-shadow: 0 0 15px #ffffffaa;
     }
     .cover-title {
       font-size: 1.2rem;
       font-weight: bold;
-      color: #e0bbff;
       margin-bottom: 0.5rem;
     }
     .cover-sub {
       font-size: 0.9rem;
-      color: #ccc;
     }
     .cover-summary {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(0,0,0,0.75);
-      color: #ccc;
+      background: rgba(0, 0, 0, 0.4);
       font-size: 0.75rem;
       padding: 0.5rem;
       transform: translateY(100%);
