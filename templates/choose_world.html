@@ -1,70 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Choose a World - Elysiad</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        .book-entry {
-            border: 2px solid #444;
-            background: #1a1a1a;
-            padding: 20px;
-            margin: 20px auto;
-            border-radius: 12px;
-            max-width: 600px;
-            color: #eee;
-            box-shadow: 0 0 10px #8882;
-        }
-
-        .book-entry h3 {
-            margin-top: 0;
-            color: #ffc857;
-        }
-
-        .book-entry p {
-            margin: 10px 0;
-            font-size: 1.1em;
-        }
-
-        .book-entry button {
-            padding: 10px 25px;
-            font-size: 1em;
-            background-color: #556bda;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .book-entry button:hover {
-            background-color: #3344aa;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Choose Your World</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      background: url('/static/parchment_bg.jpg') center/cover no-repeat;
+      font-family: 'Cinzel', serif;
+      color: #fff;
+    }
+    .scroll-shelf {
+      display: flex;
+      overflow-x: auto;
+      gap: 2rem;
+      padding: 2rem;
+      scroll-snap-type: x mandatory;
+    }
+    .book {
+      flex: 0 0 300px;
+      background: linear-gradient(#2c2c2c, #1c1c1c);
+      padding: 1.5rem;
+      border-radius: 12px;
+      scroll-snap-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .book:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #9d4edd;
+    }
+    .book-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #e0bbff;
+    }
+    form {
+      display: inline-block;
+    }
+    .enter-btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #9d4edd;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Choose Your World</h1>
-        <p>Three books glow before you, their titles whispering promises and threats.</p>
-
-        {% for world in books %}
-            <form method="POST">
-                <input type="hidden" name="world" value="{{ world.name }}">
-                <div class="book-entry">
-                    <h3>{{ world.name }}</h3>
-                    <p><strong>Tone:</strong> {{ world.tone }}</p>
-                    <p><strong>Inspired by:</strong> {{ world.inspiration }}</p>
-                    <p><em>{{ world.summary }}</em></p>
-                    <button type="submit">Enter</button>
-                </div>
-            </form>
-        {% endfor %}
-
-        <a href="{{ url_for('library') }}" class="button small">Return to Library</a>
-    </div>
-
-    <div class="mascot-container">
-    <img src="{{ url_for('static', filename='elysiad_mascot.png') }}" alt="Elysiad Mascot">
-</div>
-
+  <h1 style="text-align:center; margin-top:2rem;">Select a World</h1>
+  <div class="scroll-shelf">
+    {% for world in worlds %}
+    <form action="/enter_world" method="post">
+      <input type="hidden" name="world" value="{{ world['title'] }}">
+      <div class="book" onclick="this.closest('form').submit()">
+        <div class="book-title">{{ world['title'] }}</div>
+        <div>Genre: {{ world['genre'] }}</div>
+        <div>Danger: {{ world['danger'] }}</div>
+        <div>Essence Yield: {{ world['essence'] }}</div>
+      </div>
+    </form>
+    {% endfor %}
+  </div>
 </body>
 </html>
