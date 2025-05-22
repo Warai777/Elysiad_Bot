@@ -26,8 +26,8 @@
       scroll-behavior: smooth;
       height: 80vh;
       scrollbar-width: none;
-      padding-left: 5vw;
-      padding-right: 5vw;
+      padding-left: 10vw;
+      padding-right: 10vw;
     }
     .carousel-wrapper::-webkit-scrollbar {
       display: none;
@@ -162,11 +162,10 @@
 
     function scrollToCard(index) {
       if (cards[index]) {
-        const card = cards[index];
-        const rect = card.getBoundingClientRect();
         const wrapperRect = carousel.getBoundingClientRect();
-        const offset = rect.left - wrapperRect.left - (wrapperRect.width - rect.width) / 2;
-        carousel.scrollBy({ left: offset, behavior: 'smooth' });
+        const cardRect = cards[index].getBoundingClientRect();
+        const offset = cardRect.left - wrapperRect.left - (wrapperRect.width - cardRect.width) / 2;
+        carousel.scrollTo({ left: carousel.scrollLeft + offset, behavior: 'smooth' });
       }
     }
 
@@ -185,7 +184,7 @@
       setTimeout(() => {
         scrollToCard(0);
         updateDots();
-      }, 300);
+      }, 400);
     });
   </script>
 </body>
