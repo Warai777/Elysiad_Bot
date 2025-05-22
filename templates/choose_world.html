@@ -21,6 +21,7 @@
     .carousel-wrapper {
       width: 100vw;
       max-width: 100vw;
+      padding: 0 5vw;
       overflow-x: auto;
       display: flex;
       align-items: center;
@@ -34,7 +35,7 @@
       display: none;
     }
     .ghost {
-      flex: 0 0 5%;
+      display: none;
     }
     .world-form {
       flex: 0 0 100vw;
@@ -125,7 +126,6 @@
 <body>
   <h1>Select Your World</h1>
   <div class="carousel-wrapper" id="worldCarousel">
-    <div class="ghost"></div>
     {% for world in worlds %}
     <form class="world-form" action="/enter_world" method="post">
       <input type="hidden" name="world" value="{{ world['name'] }}">
@@ -140,7 +140,6 @@
       </div>
     </form>
     {% endfor %}
-    <div class="ghost"></div>
   </div>
   <div class="dots" id="dots">
     {% for _ in worlds %}
