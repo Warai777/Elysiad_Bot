@@ -15,71 +15,79 @@
     h1 {
       text-align: center;
       margin-bottom: 2rem;
-      color: white;
     }
-    .manga-grid {
+    .scroll-wrapper {
+      overflow-x: auto;
+      white-space: nowrap;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .card-row {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-    }
-    .cover-form {
-      display: inline-block;
-      width: 160px;
-    }
-    .cover {
-      background-color: #7f5af0;
-      border-radius: 10px;
+      gap: 1.5rem;
       padding: 1rem;
-      height: 240px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-form {
+      display: inline-block;
+      scroll-snap-align: center;
+    }
+    .world-card {
+      width: 240px;
+      height: 360px;
+      background: #7f5af0;
+      border-radius: 12px;
       color: white;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      overflow: hidden;
     }
-    .cover:hover {
+    .world-card:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 15px #ffffffaa;
+      box-shadow: 0 0 20px #ffffff99;
     }
-    .cover-title {
-      font-size: 1.2rem;
+    .world-title {
+      font-size: 1.3rem;
       font-weight: bold;
       margin-bottom: 0.5rem;
     }
-    .cover-sub {
-      font-size: 0.9rem;
+    .world-meta {
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
     }
-    .cover-summary {
+    .world-summary {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(0, 0, 0, 0.4);
-      font-size: 0.75rem;
+      background: rgba(0, 0, 0, 0.5);
       padding: 0.5rem;
+      font-size: 0.75rem;
       transform: translateY(100%);
       transition: transform 0.3s ease;
     }
-    .cover:hover .cover-summary {
+    .world-card:hover .world-summary {
       transform: translateY(0);
     }
   </style>
 </head>
 <body>
   <h1>Select Your World</h1>
-  <div class="manga-grid">
-    {% for world in worlds %}
-    <form class="cover-form" action="/enter_world" method="post">
-      <input type="hidden" name="world" value="{{ world['name'] }}">
-      <div class="cover" onclick="this.closest('form').submit()">
-        <div class="cover-title">{{ world['name'] }}</div>
-        <div class="cover-sub">{{ world['inspiration'] }} / {{ world['tone'] }}</div>
-        <div class="cover-summary">{{ world['summary'] }}</div>
-      </div>
-    </form>
-    {% endfor %}
+  <div class="scroll-wrapper">
+    <div class="card-row">
+      {% for world in worlds %}
+      <form class="card-form" action="/enter_world" method="post">
+        <input type="hidden" name="world" value="{{ world['name'] }}">
+        <div class="world-card" onclick="this.closest('form').submit()">
+          <div class="world-title">{{ world['name'] }}</div>
+          <div class="world-meta">{{ world['inspiration'] }} / {{ world['tone'] }}</div>
+          <div class="world-summary">{{ world['summary'] }}</div>
+        </div>
+      </form>
+      {% endfor %}
+    </div>
   </div>
 </body>
 </html>
