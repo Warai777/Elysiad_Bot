@@ -38,7 +38,7 @@ def enter_world():
     elif mode == 'original':
         with open('data/player_profile.json') as f:
             profile = json.load(f)
-        return f"You are entering the world as your original self: {profile['name']}. Appearance: {profile['appearance']}."
+        return render_template('original_intro.html', profile=profile)
     else:
         return "Invalid mode selected."
 
