@@ -6,6 +6,7 @@ from routes.save_routes import save_bp
 from globals import player_sessions
 from game_session import GameSession
 from user_auth import create_user, validate_user
+from world_templates import generate_ai_world_template
 import os
 
 app = Flask(__name__)
@@ -50,6 +51,17 @@ def signup():
             if success:
                 return redirect(url_for("login_page"))
     return render_template("signup.html")
+
+@app.route("/choose_world")
+def choose_world():
+    worlds = [generate_ai_world_template() for _ in range(5)]
+    return render_template("choose_world.html", worlds=worlds)
+
+@app.route("/enter_world", methods=["POST"])
+def enter_world():
+    selected_world = request.form.get("world")
+    # TODO: store selected_world in session or player state
+    return redirect(url_for("world_scene"))
 
 @app.route("/world_scene", methods=["GET", "POST"])
 def world_scene():
