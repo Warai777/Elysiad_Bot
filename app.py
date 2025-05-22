@@ -22,11 +22,25 @@ def save_character():
         "worlds_visited": [],
         "suspicion_level": 0
     }
-
     with open('data/player_profile.json', 'w') as f:
         json.dump(profile, f, indent=2)
+    return redirect(url_for('select_entry_mode'))
 
-    return redirect(url_for('home'))
+@app.route('/select_entry_mode')
+def select_entry_mode():
+    return render_template('entry_mode_select.html')
+
+@app.route('/enter_world', methods=['POST'])
+def enter_world():
+    mode = request.form['mode']
+    if mode == 'canon':
+        return "You have chosen the canon path. [Placeholder for canon entry logic.]"
+    elif mode == 'original':
+        with open('data/player_profile.json') as f:
+            profile = json.load(f)
+        return f"You are entering the world as your original self: {profile['name']}. Appearance: {profile['appearance']}."
+    else:
+        return "Invalid mode selected."
 
 if __name__ == '__main__':
     app.run(debug=True)
