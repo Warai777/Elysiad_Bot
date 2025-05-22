@@ -27,12 +27,18 @@
       scroll-behavior: smooth;
       height: 80vh;
       scrollbar-width: none;
+      min-width: 100vw;
     }
     .carousel-wrapper::-webkit-scrollbar {
       display: none;
     }
     .ghost {
-      flex: 0 0 50%;
+      flex: 0 0 30%;
+    }
+    @media (max-width: 800px) {
+      .ghost {
+        flex: 0 0 10%;
+      }
     }
     .world-form {
       flex: 0 0 90%;
