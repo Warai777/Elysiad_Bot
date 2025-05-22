@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>World Entry - Original Self</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      background: #1e1b18;
+      color: #f5f0ea;
+      font-family: 'Garamond', serif;
+      padding: 2rem;
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #2c2623;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>You Have Entered</h1>
+    <p><strong>Name:</strong> {{ profile.name }}</p>
+    <p><strong>Appearance:</strong> {{ profile.appearance }}</p>
+    <p><strong>Personality:</strong> {{ profile.personality | join(', ') }}</p>
+    <p><strong>Speech Style:</strong> {{ profile.speech_style }}</p>
+    <hr>
+    <p><em>The world does not know who you truly are.</em></p>
+    <p>You have awoken in a body known as Kael Asano — a cover identity generated to mask your true essence. The memories you feel are not yours, but the world believes them. You remember your own name, your own face, your own mission.</p>
+    <p>And yet... something about this world feels familiar.</p>
+  </div>
+</body>
+</html>
