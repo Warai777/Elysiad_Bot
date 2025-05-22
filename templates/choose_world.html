@@ -160,7 +160,7 @@
 
     function scrollToCard(index) {
       if (cards[index]) {
-        cards[index].scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        cards[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
       }
     }
 
@@ -171,15 +171,17 @@
     carousel.addEventListener('wheel', function(e) {
       if (e.deltaY !== 0) {
         e.preventDefault();
-        carousel.scrollLeft += e.deltaY;
+        carousel.scrollBy({ left: e.deltaY, behavior: 'smooth' });
       }
     });
 
     window.addEventListener('load', () => {
-      if (cards[0]) {
-        cards[0].scrollIntoView({ behavior: 'smooth', inline: 'center' });
-        updateDots();
-      }
+      setTimeout(() => {
+        if (cards[0]) {
+          cards[0].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          updateDots();
+        }
+      }, 200);
     });
   </script>
 </body>
