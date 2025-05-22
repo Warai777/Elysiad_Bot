@@ -52,7 +52,7 @@ def generate_ai_world_template():
 Create a fictional world template for a light novel-style RPG.
 
 RULES:
-- The world must have a ONE-WORD NAME that is poetic, symbolic, and clearly inspired by the fictional work "{inspiration}"
+- The world must have a ONE-WORD NAME that is poetic, symbolic, and clearly inspired by the fictional work \"{inspiration}\"
 - DO NOT use copyrighted names or terms.
 - It must be easily recognizable to fans of that universe.
 - Match the tone and themes of the original work.
@@ -62,7 +62,12 @@ Return the following JSON object:
   "name": "OneWordNameHere",
   "tone": "1-2 word mood descriptor (e.g. grimdark, mystical)",
   "inspiration": "{inspiration}",
-  "summary": "1–2 sentence poetic summary describing the world."
+  "summary": "1–2 sentence poetic summary describing the world.",
+  "canon_profile": {{
+    "name": "Name of the main character",
+    "expected_arc": "1–2 sentence summary of their original journey",
+    "intro": "Immersive second-person intro describing their starting point in the story"
+  }}
 }}
 
 ONLY return valid JSON. Do not explain anything.
@@ -76,7 +81,7 @@ ONLY return valid JSON. Do not explain anything.
                 {"role": "user", "content": prompt}
             ],
             temperature=0.95,
-            max_tokens=300
+            max_tokens=500
         )
 
         content = response.choices[0].message.content
@@ -95,5 +100,10 @@ ONLY return valid JSON. Do not explain anything.
             "name": "Nullspire",
             "tone": "mystical",
             "inspiration": inspiration,
-            "summary": "A shrouded land adrift between time and ruin."
+            "summary": "A shrouded land adrift between time and ruin.",
+            "canon_profile": {
+                "name": "The Hollow Prince",
+                "expected_arc": "A cursed heir who must awaken his legacy or be consumed by it.",
+                "intro": "You awaken in a cathedral of black glass. The winds whisper your name — the one you no longer recognize. Tonight, the curse stirs."
+            }
         }
