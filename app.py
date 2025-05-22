@@ -20,7 +20,7 @@ app.register_blueprint(save_bp)
 
 @app.route("/")
 def index():
-    return redirect(url_for("world_scene"))
+    return redirect(url_for("choose_world"))
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
@@ -32,7 +32,7 @@ def login_page():
             session["user"] = username
             if username not in player_sessions:
                 player_sessions[username] = GameSession(username)
-            return redirect(url_for("world_scene"))
+            return redirect(url_for("choose_world"))
         else:
             flash(msg)
     return render_template("login.html")
