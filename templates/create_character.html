@@ -1,33 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Your Character</title>
-    <link rel="stylesheet" href="/static/styles.css">
+  <meta charset="UTF-8">
+  <title>Create Your Origin Character</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      background: #1e1b18;
+      color: #f5f0ea;
+      font-family: 'Garamond', serif;
+      padding: 2rem;
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #2c2623;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+    }
+    button {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      background-color: #5e503f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #7f5af0;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Create Your Character</h1>
-        <form action="/submit_character" method="POST">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+  <div class="container">
+    <h1>Create Your Origin Essence</h1>
+    <form action="/save_character" method="POST">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
 
-            <label for="background">Background:</label>
-            <select id="background" name="background">
-                <option value="orphan">Orphan</option>
-                <option value="scholar">Scholar</option>
-                <option value="wanderer">Wanderer</option>
-            </select>
+      <label for="appearance">Appearance</label>
+      <textarea id="appearance" name="appearance" rows="3" required></textarea>
 
-            <label for="trait">Dominant Trait:</label>
-            <select id="trait" name="trait">
-                <option value="bravery">Bravery</option>
-                <option value="cunning">Cunning</option>
-                <option value="wisdom">Wisdom</option>
-            </select>
+      <label for="personality">Personality Traits (comma-separated)</label>
+      <input type="text" id="personality" name="personality" placeholder="e.g., brave, sarcastic, loyal" required>
 
-            <button type="submit">Begin Journey</button>
-        </form>
-    </div>
+      <label for="speech_style">Speech Style</label>
+      <input type="text" id="speech_style" name="speech_style" placeholder="e.g., dry and clipped" required>
+
+      <button type="submit">Begin the Journey</button>
+    </form>
+  </div>
 </body>
 </html>
