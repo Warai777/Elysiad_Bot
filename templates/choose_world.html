@@ -9,57 +9,74 @@
       background: url('/static/parchment_bg.jpg') center/cover no-repeat;
       font-family: 'Cinzel', serif;
       color: #fff;
-    }
-    .scroll-shelf {
-      display: flex;
-      overflow-x: auto;
-      gap: 2rem;
+      margin: 0;
       padding: 2rem;
-      scroll-snap-type: x mandatory;
     }
-    .book {
-      flex: 0 0 300px;
-      background: linear-gradient(#2c2c2c, #1c1c1c);
-      padding: 1.5rem;
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .manga-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .cover-form {
+      display: inline-block;
+      width: 160px;
+    }
+    .cover {
+      background: #1c1c1c;
       border-radius: 12px;
-      scroll-snap-align: center;
+      padding: 1rem;
+      height: 240px;
+      overflow: hidden;
+      position: relative;
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .book:hover {
+    .cover:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 20px #9d4edd;
+      box-shadow: 0 0 15px #9d4edd;
     }
-    .book-title {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
+    .cover-title {
+      font-size: 1.2rem;
+      font-weight: bold;
       color: #e0bbff;
+      margin-bottom: 0.5rem;
     }
-    form {
-      display: inline-block;
+    .cover-sub {
+      font-size: 0.9rem;
+      color: #ccc;
     }
-    .enter-btn {
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      background: #9d4edd;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+    .cover-summary {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.75);
+      color: #ccc;
+      font-size: 0.75rem;
+      padding: 0.5rem;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .cover:hover .cover-summary {
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
-  <h1 style="text-align:center; margin-top:2rem;">Select a World</h1>
-  <div class="scroll-shelf">
+  <h1>Select Your World</h1>
+  <div class="manga-grid">
     {% for world in worlds %}
-    <form action="/enter_world" method="post">
-      <input type="hidden" name="world" value="{{ world['title'] }}">
-      <div class="book" onclick="this.closest('form').submit()">
-        <div class="book-title">{{ world['title'] }}</div>
-        <div>Genre: {{ world['genre'] }}</div>
-        <div>Danger: {{ world['danger'] }}</div>
-        <div>Essence Yield: {{ world['essence'] }}</div>
+    <form class="cover-form" action="/enter_world" method="post">
+      <input type="hidden" name="world" value="{{ world['name'] }}">
+      <div class="cover" onclick="this.closest('form').submit()">
+        <div class="cover-title">{{ world['name'] }}</div>
+        <div class="cover-sub">{{ world['inspiration'] }} / {{ world['tone'] }}</div>
+        <div class="cover-summary">{{ world['summary'] }}</div>
       </div>
     </form>
     {% endfor %}
