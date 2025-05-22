@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>World Entry - Canon Character</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      background: #1d1b1a;
+      color: #f5efe3;
+      font-family: 'Garamond', serif;
+      padding: 2rem;
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #2e2926;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    }
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .quote {
+      font-style: italic;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>You Have Taken the Role of {{ character.name }}</h1>
+    <p><strong>Story:</strong> {{ character.source_work }}</p>
+    <p><strong>Known Arc:</strong> {{ character.expected_arc }}</p>
+    <hr>
+    <p class="quote">{{ character.intro }}</p>
+    <p><em>This is the world they once knew. But now you are inside it. And the story may change...</em></p>
+  </div>
+</body>
+</html>
