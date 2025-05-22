@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json, os
+from world_templates import generate_ai_world_template
 
 app = Flask(__name__)
 
@@ -24,7 +25,24 @@ def save_character():
     }
     with open('data/player_profile.json', 'w') as f:
         json.dump(profile, f, indent=2)
-    return redirect(url_for('select_entry_mode'))
+    return redirect(url_for('world_entry'))
+
+@app.route('/world_entry')
+def world_entry():
+    if os.path.exists('data/cached_worlds.json'):
+        with open('data/cached_worlds.json') as f:
+            cached = json.load(f)
+    else:
+        cached = []
+
+    if not cached:
+        new_world = generate_ai_world_template()
+        cached.append(new_world)
+        with open('data/cached_worlds.json', 'w') as f:
+            json.dump(cached, f, indent=2)
+
+    world = cached[-1]
+    return render_template('entry_mode_select.html', world=world)
 
 @app.route('/select_entry_mode')
 def select_entry_mode():
@@ -33,13 +51,12 @@ def select_entry_mode():
 @app.route('/enter_world', methods=['POST'])
 def enter_world():
     mode = request.form['mode']
+    with open('data/cached_worlds.json') as f:
+        world = json.load(f)[-1]
+
     if mode == 'canon':
-        character = {
-            "name": "Shinji Ikari",
-            "source_work": "Neon Genesis Evangelion",
-            "expected_arc": "A reluctant pilot who hesitates, breaks under pressure, and struggles with isolation and fear.",
-            "intro": "You are Shinji Ikari. The city trembles under the shadow of a descending angel. The phone in your hand won't ring fast enough. The machine that awaits you isn't just a weapon — it's a mirror."
-        }
+        character = world['canon_profile']
+        character['source_work'] = world['inspiration']
         return render_template('canon_intro.html', character=character)
     elif mode == 'original':
         with open('data/player_profile.json') as f:
