@@ -26,6 +26,8 @@
       scroll-behavior: smooth;
       height: 80vh;
       scrollbar-width: none;
+      padding-left: 5vw;
+      padding-right: 5vw;
     }
     .carousel-wrapper::-webkit-scrollbar {
       display: none;
@@ -160,7 +162,9 @@
 
     function scrollToCard(index) {
       if (cards[index]) {
-        cards[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        const card = cards[index];
+        const scrollLeft = card.offsetLeft - carousel.offsetWidth / 2 + card.offsetWidth / 2;
+        carousel.scrollTo({ left: scrollLeft, behavior: 'smooth' });
       }
     }
 
@@ -177,11 +181,9 @@
 
     window.addEventListener('load', () => {
       setTimeout(() => {
-        if (cards[0]) {
-          cards[0].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-          updateDots();
-        }
-      }, 200);
+        scrollToCard(0);
+        updateDots();
+      }, 300);
     });
   </script>
 </body>
