@@ -105,10 +105,12 @@
       background-color: #888;
       border-radius: 50%;
       display: inline-block;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
     }
     .dot.active {
       background-color: #ffffff;
+      transform: scale(1.4);
     }
   </style>
 </head>
@@ -132,7 +134,7 @@
   </div>
   <div class="dots" id="dots">
     {% for _ in worlds %}
-      <span class="dot"></span>
+      <span class="dot" onclick="scrollToCard({{ loop.index0 }})"></span>
     {% endfor %}
   </div>
   <script>
@@ -156,6 +158,12 @@
       if (dots[activeIndex]) dots[activeIndex].classList.add('active');
     }
 
+    function scrollToCard(index) {
+      if (cards[index]) {
+        cards[index].scrollIntoView({ behavior: 'smooth', inline: 'center' });
+      }
+    }
+
     carousel.addEventListener('scroll', () => {
       window.requestAnimationFrame(updateDots);
     });
@@ -167,7 +175,12 @@
       }
     });
 
-    updateDots();
+    window.addEventListener('load', () => {
+      if (cards[0]) {
+        cards[0].scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        updateDots();
+      }
+    });
   </script>
 </body>
 </html>
