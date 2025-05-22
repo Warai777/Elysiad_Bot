@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Read Your Chapter</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      background-color: #1d1b1a;
+      color: #eae6dc;
+      font-family: 'Georgia', serif;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #2a2523;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .scene {
+      margin-bottom: 2rem;
+    }
+    .scene h3 {
+      margin: 0.5rem 0;
+    }
+    .scene p {
+      line-height: 1.7;
+      margin: 0;
+      text-indent: 2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>{{ chapter.world }} – Chapter {{ chapter.chapter }}</h1>
+    <h2>Mode: {{ chapter.entry_mode }}</h2>
+    <hr>
+    {% for scene in chapter.scenes %}
+      <div class="scene">
+        <h3>{{ scene.phase }}</h3>
+        <p>{{ scene.narrative }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
