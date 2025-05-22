@@ -60,7 +60,12 @@ def choose_world():
 @app.route("/enter_world", methods=["POST"])
 def enter_world():
     selected_world = request.form.get("world")
-    # TODO: store selected_world in session or player state
+    session_id = session.get("user")
+    if not session_id or session_id not in player_sessions:
+        return redirect(url_for("login_page"))
+    current_session = player_sessions[session_id]
+    current_session.current_world = selected_world
+    current_session.log_journal(f"You have entered the world of {selected_world}.", type_="system", importance="high", tags=["world"])
     return redirect(url_for("world_scene"))
 
 @app.route("/world_scene", methods=["GET", "POST"])
