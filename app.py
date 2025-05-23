@@ -11,7 +11,7 @@ app.secret_key = 'elysiad_secret_key'
 def root():
     return redirect(url_for('login'))
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -132,11 +132,11 @@ def emporium():
     with open('data/player_profile.json') as f:
         profile = json.load(f)
     tier = profile.get("tier", "10-C")
-    items = {
-        "Techniques": generate_emporium_items("Techniques", tier),
-        "Relics & Artifacts": generate_emporium_items("Relics & Artifacts", tier),
-        "Tomes & Knowledge": generate_emporium_items("Tomes & Knowledge", tier)
-    }
+    categories = [
+        "Techniques", "Relics & Artifacts", "Tomes & Knowledge",
+        "Essences & Cores", "Titles & Blessings", "Summons & Contracts"
+    ]
+    items = {cat: generate_emporium_items(cat, tier) for cat in categories}
     return render_template('emporium_dynamic.html', items=items)
 
 @app.route('/read_chapter/<world>/<int:chapter>')
