@@ -66,10 +66,11 @@ def save_character():
         "build": request.form['build'],
         "style": request.form['style']
     }
+    personality_traits = request.form.getlist('personality')
     profile = {
         "name": request.form['name'],
         "appearance": appearance,
-        "personality": [trait.strip() for trait in request.form['personality'].split(',')],
+        "personality": personality_traits,
         "speech_style": request.form['speech_style'],
         "origin_essence": 0,
         "worlds_visited": [],
