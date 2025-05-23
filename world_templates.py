@@ -1,109 +1,27 @@
-import openai
-import json
 import random
-import os
+import json
 
-# ✅ Initialize OpenAI v1.0+ client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-# ✅ Large inspiration pool
-FICTIONAL_INSPIRATIONS = [
-    # Anime & Manga
-    "One Piece", "Bleach", "Naruto", "Dragon Ball", "Attack on Titan", "Fullmetal Alchemist",
-    "Jujutsu Kaisen", "Demon Slayer", "My Hero Academia", "Mob Psycho 100", "Chainsaw Man",
-    "Tokyo Ghoul", "Hunter x Hunter", "Black Clover", "Fate/Stay Night", "Re:Zero",
-    "Erased", "Death Note", "The Promised Neverland", "Vinland Saga", "Berserk", "Dororo",
-    "Made in Abyss", "Parasyte", "Neon Genesis Evangelion", "Trigun", "Spy x Family",
-
-    # Light/Web Novels
-    "Lord of the Mysteries", "Shadow Slave", "Reverend Insanity", "Omniscient Reader’s Viewpoint",
-    "Solo Leveling", "Trash of the Count’s Family", "The Beginning After the End",
-    "I Shall Seal the Heavens", "Coiling Dragon", "The Legendary Mechanic",
-    "Worlds’ Apocalypse Online", "He Who Fights With Monsters", "Dungeon Crawler Carl",
-    "Mother of Learning", "Worm", "Super Minion", "The Wandering Inn",
-
-    # Popular Movies
-    "Star Wars", "The Matrix", "Inception", "The Lord of the Rings", "The Hobbit",
-    "Interstellar", "Dune", "The Dark Knight", "Harry Potter", "John Wick", "Avatar",
-    "The Hunger Games", "Mad Max", "Everything Everywhere All At Once",
-
-    # TV Shows
-    "Stranger Things", "Breaking Bad", "The Mandalorian", "The Witcher",
-    "Game of Thrones", "The Boys", "Westworld", "Doctor Who", "Peaky Blinders",
-    "Lost", "The Expanse", "Arcane", "The Last of Us",
-
-    # Books & Western Fiction
-    "The Name of the Wind", "Mistborn", "Stormlight Archive", "Red Rising", "Ender's Game",
-    "The Wheel of Time", "Percy Jackson", "The Chronicles of Narnia", "His Dark Materials",
-    "The First Law Trilogy", "The Dresden Files", "Discworld",
-
-    # Video Games
-    "Elden Ring", "Dark Souls", "Bloodborne", "Hollow Knight", "Final Fantasy",
-    "Legend of Zelda", "The Witcher", "Skyrim", "Cyberpunk 2077", "Baldur's Gate",
-    "League of Legends", "Hades", "Mass Effect", "Dragon Age", "Undertale",
-    "Persona 5", "NieR Automata", "Genshin Impact", "Stellaris", "Dead Space",
-    "Returnal", "Sekiro", "Minecraft", "Terraria"
-]
+TIER_POOL = ["10-C", "10-B", "10-A", "9-C", "0"]
 
 def generate_ai_world_template():
-    inspiration = random.choice(FICTIONAL_INSPIRATIONS)
+    # Placeholder static data for now
+    name = random.choice(["Aeonfall", "Thorneveil", "Yureisen", "Frosthollow"])
+    tone = random.choice(["melancholic", "bright", "oppressive", "mysterious"])
+    inspiration = random.choice(["anime", "book", "webtoon", "game"])
+    tier = "10-C"  # default for now
 
-    prompt = f"""
-Create a fictional world template for a light novel-style RPG.
+    summary = f"In the land of {name}, where {tone} forces rule and destiny sleeps beneath cracked stone..."
+    canon_profile = {
+        "name": random.choice(["Kael", "Rin", "Asher", "Luna"]),
+        "arc": "Rebirth of the Flame",
+        "intro_paragraph": f"You awaken as the heir to a ruined family in the land of {name}, shrouded in silence and schemes."
+    }
 
-RULES:
-- The world must have a ONE-WORD NAME that is poetic, symbolic, and clearly inspired by the fictional work \"{inspiration}\"
-- DO NOT use copyrighted names or terms.
-- It must be easily recognizable to fans of that universe.
-- Match the tone and themes of the original work.
-
-Return the following JSON object:
-{{
-  "name": "OneWordNameHere",
-  "tone": "1-2 word mood descriptor (e.g. grimdark, mystical)",
-  "inspiration": "{inspiration}",
-  "summary": "1–2 sentence poetic summary describing the world.",
-  "canon_profile": {{
-    "name": "Name of the main character",
-    "expected_arc": "1–2 sentence summary of their original journey",
-    "intro": "Immersive second-person intro describing their starting point in the story"
-  }}
-}}
-
-ONLY return valid JSON. Do not explain anything.
-"""
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an RPG world generator."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.95,
-            max_tokens=500
-        )
-
-        content = response.choices[0].message.content
-        world = json.loads(content)
-        return world
-
-    except Exception as e:
-        import sys
-        print("⚠️ AI world generation failed:", file=sys.stderr)
-        print("Reason:", e, file=sys.stderr)
-
-        if 'response' in locals():
-            print("Raw content:", getattr(response.choices[0].message, "content", "[no content]"), file=sys.stderr)
-
-        return {
-            "name": "Nullspire",
-            "tone": "mystical",
-            "inspiration": inspiration,
-            "summary": "A shrouded land adrift between time and ruin.",
-            "canon_profile": {
-                "name": "The Hollow Prince",
-                "expected_arc": "A cursed heir who must awaken his legacy or be consumed by it.",
-                "intro": "You awaken in a cathedral of black glass. The winds whisper your name — the one you no longer recognize. Tonight, the curse stirs."
-            }
-        }
+    return {
+        "name": name,
+        "tone": tone,
+        "inspiration": inspiration,
+        "summary": summary,
+        "tier": tier,
+        "canon_profile": canon_profile
+    }
