@@ -34,7 +34,7 @@
       margin-top: 1rem;
       font-weight: bold;
     }
-    input[type="text"], textarea {
+    select, input[type="text"] {
       width: 100%;
       padding: 0.75rem;
       margin-top: 0.5rem;
@@ -67,8 +67,71 @@
       <label for="name">Name</label>
       <input type="text" name="name" required>
 
-      <label for="appearance">Appearance</label>
-      <textarea name="appearance" rows="2"></textarea>
+      <label for="hair_color">Hair Color</label>
+      <select name="hair_color">
+        <option>Black</option>
+        <option>Brown</option>
+        <option>Blonde</option>
+        <option>Red</option>
+        <option>Silver</option>
+        <option>White</option>
+        <option>Blue</option>
+        <option>Pink</option>
+        <option>Purple</option>
+        <option>Other</option>
+      </select>
+
+      <label for="eye_color">Eye Color</label>
+      <select name="eye_color">
+        <option>Brown</option>
+        <option>Blue</option>
+        <option>Green</option>
+        <option>Gray</option>
+        <option>Hazel</option>
+        <option>Red</option>
+        <option>Purple</option>
+        <option>Other</option>
+      </select>
+
+      <label for="skin_color">Skin Color</label>
+      <select name="skin_color">
+        <option>Fair</option>
+        <option>Light</option>
+        <option>Olive</option>
+        <option>Tan</option>
+        <option>Brown</option>
+        <option>Dark</option>
+        <option>Other</option>
+      </select>
+
+      <label for="height">Height</label>
+      <select name="height">
+        <option>Short</option>
+        <option>Average</option>
+        <option>Tall</option>
+        <option>Other</option>
+      </select>
+
+      <label for="build">Build</label>
+      <select name="build">
+        <option>Slender</option>
+        <option>Lean</option>
+        <option>Muscular</option>
+        <option>Stocky</option>
+        <option>Heavyset</option>
+        <option>Other</option>
+      </select>
+
+      <label for="style">Style</label>
+      <select name="style">
+        <option>Elegant</option>
+        <option>Casual</option>
+        <option>Streetwear</option>
+        <option>Armored</option>
+        <option>Roguish</option>
+        <option>Mystical</option>
+        <option>Other</option>
+      </select>
 
       <label for="personality">Personality Traits (comma-separated)</label>
       <input type="text" name="personality" placeholder="e.g. brave, sarcastic, loyal">
