@@ -48,7 +48,8 @@ def signup():
         }
         with open('data/player_profile.json', 'w') as f:
             json.dump(profile, f, indent=2)
-        return redirect(url_for('login'))
+        session['user'] = username
+        return redirect(url_for('create_character'))
     return render_template('signup.html')
 
 @app.route('/create_character')
