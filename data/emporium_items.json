@@ -1,56 +1,62 @@
 {
   "Techniques": [
     {
-      "name": "Iron Shadow Step",
-      "description": "A silent movement art that lets the user flicker between shadows for rapid strikes.",
-      "origin": "Jin-Yi Chronicles",
-      "cost": 20
+      "name": "Heaven-Splitting Slash",
+      "description": "A sword technique that cuts through dimensional fabric. Forbidden in mortal realms.",
+      "tier": "9-C",
+      "cost": 300
     },
     {
-      "name": "Starfire Palm",
-      "description": "An inner energy technique that ignites attacks with micro-star explosions.",
-      "origin": "Eclipse Dynasty",
-      "cost": 35
+      "name": "Shadow Step",
+      "description": "Instant movement between shadows. Ideal for assassins and spies.",
+      "tier": "10-B",
+      "cost": 100
     }
   ],
   "Relics & Artifacts": [
     {
-      "name": "Blackveil Mask",
-      "description": "A cursed mask that allows the wearer to see through deception, but slowly erodes their identity.",
-      "origin": "The Labyrinth Court",
-      "cost": 40
+      "name": "Mirror of Echoed Time",
+      "description": "Shows possible futures when blood is spilled on its surface.",
+      "tier": "10-A",
+      "cost": 180
+    },
+    {
+      "name": "Phoenix Feather Cloak",
+      "description": "Grants fire immunity and regeneration from one mortal wound.",
+      "tier": "10-B",
+      "cost": 220
     }
   ],
   "Tomes & Knowledge": [
     {
-      "name": "Codex of the Abyss",
-      "description": "Forbidden compendium that teaches how to summon abstract entities from the void.",
-      "origin": "Eldritch Academy",
-      "cost": 50
+      "name": "Codex of the First Flame",
+      "description": "An ancient grimoire that reveals elemental manipulation secrets.",
+      "tier": "10-A",
+      "cost": 150
     }
   ],
   "Essences & Cores": [
     {
-      "name": "Frost Serpent Core",
-      "description": "Refined crystal from a slain frost wyrm. Greatly boosts ice affinity.",
-      "origin": "Cryo Wars",
-      "cost": 25
+      "name": "Infernal Core",
+      "description": "A condensed soul of a lava beast. Can be consumed to gain fire-aligned essence.",
+      "tier": "9-C",
+      "cost": 190
     }
   ],
   "Titles & Blessings": [
     {
-      "name": "Marked by the Moon",
-      "description": "Passive title that increases perception during night hours and boosts evasion.",
-      "origin": "Silver Veins Saga",
-      "cost": 30
+      "name": "Blessing of the Moonless Night",
+      "description": "Enhances stealth, charisma under starlight, and mind resistance.",
+      "tier": "10-B",
+      "cost": 140
     }
   ],
   "Summons & Contracts": [
     {
-      "name": "Verdant Pact",
-      "description": "A soul contract with a forest spirit that grants healing and vine-based defense.",
-      "origin": "Verdant Tithe",
-      "cost": 28
+      "name": "Contract of the Azure Wyrm",
+      "description": "Binds a minor sky-dragon to your service for one full arc.",
+      "tier": "9-C",
+      "cost": 400
     }
   ]
 }
