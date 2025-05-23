@@ -1,0 +1,48 @@
+{% set emporium = items %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Emporium of Origins</title>
+  <style>
+    body { background-color: #1b1614; font-family: 'Georgia', serif; color: #eae6dc; margin: 0; padding: 2rem; }
+    h1 { text-align: center; margin-bottom: 2rem; }
+    .category { margin-bottom: 2rem; }
+    .category h2 { background: #3b2f2a; padding: 1rem; cursor: pointer; border-radius: 8px; }
+    .items { display: none; margin-top: 1rem; }
+    .item { background: #2e2520; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.4); }
+    .item h3 { margin-top: 0; }
+    .item p { margin: 0.3rem 0; }
+    .translation { font-style: italic; color: #c9b8a3; }
+  </style>
+  <script>
+    function toggleItems(id) {
+      const block = document.getElementById(id);
+      block.style.display = block.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
+</head>
+<body>
+  <h1>Emporium of Origins</h1>
+  {% for category, entries in emporium.items() %}
+  <div class="category">
+    <h2 onclick="toggleItems('{{ category|replace(' ', '_') }}')">{{ category }}</h2>
+    <div id="{{ category|replace(' ', '_') }}" class="items">
+      {% for item in entries %}
+      <div class="item">
+        <h3>{{ item.name }} ({{ item.original_origin }})</h3>
+        <p>Tier: {{ item.tier }} | Cost: {{ item.cost }} Origin Essence</p>
+        <p>{{ item.description }}</p>
+        <p><strong>Requires Mastery:</strong> {{ 'Yes' if item.requires_mastery else 'No' }}</p>
+        <div class="translation">
+          {% for world, translation in item.translation_examples.items() %}
+          <p><strong>{{ world }}:</strong> {{ translation }}</p>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</body>
+</html>
