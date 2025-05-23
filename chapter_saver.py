@@ -1,24 +1,25 @@
-import os
-import json
+import os, json
+from datetime import datetime
 
-CHAPTER_DIR = "data/chapters"
-
-if not os.path.exists(CHAPTER_DIR):
-    os.makedirs(CHAPTER_DIR)
-
-def save_chapter(world_name, chapter_number, chapter_data):
-    filename = f"{world_name}_Chapter_{chapter_number}.json"
-    filepath = os.path.join(CHAPTER_DIR, filename)
-    with open(filepath, "w") as f:
-        json.dump(chapter_data, f, indent=2)
+def save_chapter(world_name, chapter_number, content):
+    os.makedirs(f"data/chapters/{world_name}", exist_ok=True)
+    with open(f"data/chapters/{world_name}/chapter{chapter_number}.json", "w") as f:
+        json.dump(content, f, indent=2)
 
 def load_chapter(world_name, chapter_number):
-    filename = f"{world_name}_Chapter_{chapter_number}.json"
-    filepath = os.path.join(CHAPTER_DIR, filename)
-    if not os.path.exists(filepath):
-        return None
-    with open(filepath, "r") as f:
-        return json.load(f)
+    path = f"data/chapters/{world_name}/chapter{chapter_number}.json"
+    if os.path.exists(path):
+        with open(path) as f:
+            return json.load(f)
+    return None
 
-def list_chapters():
-    return [f for f in os.listdir(CHAPTER_DIR) if f.endswith(".json")]
+def log_world_entry(world, profile, mode):
+    entry = {
+        "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "world": world["name"],
+        "tier": world["tier"],
+        "entry_mode": mode,
+        "identity": world["canon_profile"] if mode == "canon" else profile,
+        "summary": world["summary"]
+    }
+    save_chapter(world["name"], 1, entry)
