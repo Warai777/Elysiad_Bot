@@ -5,14 +5,16 @@
   <title>Enter the Library</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <style>
-    body {
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
       background-color: #1b1614;
       font-family: 'Georgia', serif;
       color: #eae6dc;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
     }
     .login-box {
       background: #3b2f2a;
@@ -51,6 +53,11 @@
     button:hover {
       background-color: #9b7350;
     }
+    .signup-link {
+      margin-top: 1rem;
+      display: block;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -61,6 +68,7 @@
       <input type="password" name="password" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
+    <a class="signup-link" href="/signup">Don't have an account? Sign up</a>
   </div>
 </body>
 </html>
