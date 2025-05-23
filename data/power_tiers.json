@@ -1,0 +1,34 @@
+{
+  "tiers": [
+    {
+      "id": "10-C",
+      "label": "Street Level",
+      "description": "Characters with the strength to harm or defeat regular humans and wild animals. Typical of early slice-of-life or school-based worlds.",
+      "example_worlds": ["Persona (start)", "Detective Conan", "Hyouka"]
+    },
+    {
+      "id": "10-B",
+      "label": "Athletic Level",
+      "description": "Characters capable of peak human feats. Often from grounded action or martial arts worlds.",
+      "example_worlds": ["Yakuza", "My Wife is a Gangster", "Megalo Box"]
+    },
+    {
+      "id": "10-A",
+      "label": "Enhanced Human",
+      "description": "Characters with physical enhancements like cybernetics, ki, or low-level magic. May include minor superpowers.",
+      "example_worlds": ["Hunter x Hunter", "Naruto (Academy)", "Jujutsu Kaisen (Year 1)"]
+    },
+    {
+      "id": "9-C",
+      "label": "Wall Level",
+      "description": "Can destroy or withstand attacks capable of breaking through walls. First-level supernatural battles.",
+      "example_worlds": ["Bleach (Human Arc)", "Chainsaw Man (start)", "Yu Yu Hakusho (pre-Tournament)"]
+    },
+    {
+      "id": "0",
+      "label": "Omniversal",
+      "description": "Beyond all comprehension, able to affect the multiverse or transcend existence. Highest conceptual tier.",
+      "example_worlds": ["Umineko", "The One Above All", "The Writer"]
+    }
+  ]
+}
