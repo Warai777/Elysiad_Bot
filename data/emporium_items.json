@@ -1,0 +1,56 @@
+{
+  "Techniques": [
+    {
+      "name": "Iron Shadow Step",
+      "description": "A silent movement art that lets the user flicker between shadows for rapid strikes.",
+      "origin": "Jin-Yi Chronicles",
+      "cost": 20
+    },
+    {
+      "name": "Starfire Palm",
+      "description": "An inner energy technique that ignites attacks with micro-star explosions.",
+      "origin": "Eclipse Dynasty",
+      "cost": 35
+    }
+  ],
+  "Relics & Artifacts": [
+    {
+      "name": "Blackveil Mask",
+      "description": "A cursed mask that allows the wearer to see through deception, but slowly erodes their identity.",
+      "origin": "The Labyrinth Court",
+      "cost": 40
+    }
+  ],
+  "Tomes & Knowledge": [
+    {
+      "name": "Codex of the Abyss",
+      "description": "Forbidden compendium that teaches how to summon abstract entities from the void.",
+      "origin": "Eldritch Academy",
+      "cost": 50
+    }
+  ],
+  "Essences & Cores": [
+    {
+      "name": "Frost Serpent Core",
+      "description": "Refined crystal from a slain frost wyrm. Greatly boosts ice affinity.",
+      "origin": "Cryo Wars",
+      "cost": 25
+    }
+  ],
+  "Titles & Blessings": [
+    {
+      "name": "Marked by the Moon",
+      "description": "Passive title that increases perception during night hours and boosts evasion.",
+      "origin": "Silver Veins Saga",
+      "cost": 30
+    }
+  ],
+  "Summons & Contracts": [
+    {
+      "name": "Verdant Pact",
+      "description": "A soul contract with a forest spirit that grants healing and vine-based defense.",
+      "origin": "Verdant Tithe",
+      "cost": 28
+    }
+  ]
+}
