@@ -126,6 +126,10 @@ def enter_world():
     else:
         return "Invalid mode selected."
 
+@app.route('/emporium')
+def emporium():
+    return render_template('emporium.html')
+
 @app.route('/read_chapter/<world>/<int:chapter>')
 def read_chapter(world, chapter):
     chapter_data = load_chapter(world, chapter)
