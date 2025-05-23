@@ -133,7 +133,9 @@ def emporium():
         profile = json.load(f)
     tier = profile.get("tier", "10-C")
     items = {
-        "Techniques": generate_emporium_items("Techniques", tier)
+        "Techniques": generate_emporium_items("Techniques", tier),
+        "Relics & Artifacts": generate_emporium_items("Relics & Artifacts", tier),
+        "Tomes & Knowledge": generate_emporium_items("Tomes & Knowledge", tier)
     }
     return render_template('emporium_dynamic.html', items=items)
 
