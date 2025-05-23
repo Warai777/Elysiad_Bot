@@ -2,47 +2,68 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>World Entry - Original Self</title>
+  <title>Your Arrival</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <style>
     body {
-      background: #1e1b18;
-      color: #f5f0ea;
-      font-family: 'Garamond', serif;
-      padding: 2rem;
-      margin: 0;
+      background-color: #1c1816;
+      color: #eae6dc;
+      font-family: 'Georgia', serif;
+      padding: 5vh 10vw;
     }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #2c2623;
+    .intro-box {
+      background: #2e2520;
       padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.4);
     }
     h1 {
       font-size: 2rem;
-      text-align: center;
       margin-bottom: 1rem;
     }
     p {
-      font-size: 1.1rem;
       line-height: 1.6;
       margin-bottom: 1rem;
+    }
+    .traits {
+      font-style: italic;
+      color: #c9b8a3;
+    }
+    .button {
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: #7d5a3d;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .button:hover {
+      background-color: #9b7350;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>You Have Entered</h1>
-    <p><strong>Name:</strong> {{ profile.name }}</p>
-    <p><strong>Appearance:</strong> {{ profile.appearance }}</p>
-    <p><strong>Personality:</strong> {{ profile.personality | join(', ') }}</p>
-    <p><strong>Speech Style:</strong> {{ profile.speech_style }}</p>
-    <hr>
-    <p><em>The world does not know who you truly are.</em></p>
-    <p>You have awoken in a body known as Kael Asano — a cover identity generated to mask your true essence. The memories you feel are not yours, but the world believes them. You remember your own name, your own face, your own mission.</p>
-    <p>And yet... something about this world feels familiar.</p>
+  <div class="intro-box">
+    <h1>Arrival of {{ profile.name }}</h1>
+    <p>
+      You find yourself awakening beneath foreign skies, memory intact but surroundings unfamiliar.
+      The wind carries whispers of a story already in motion, one that you — <span class="traits">{{ profile.appearance.style|lower }} and {{ profile.build|lower }}</span> — are now woven into.
+    </p>
+    <p>
+      You are a <strong>{{ profile.appearance.height|lower }}</strong> figure with <strong>{{ profile.appearance.hair_color|lower }}</strong> hair,
+      <strong>{{ profile.appearance.eye_color|lower }}</strong> eyes, and <strong>{{ profile.appearance.skin_color|lower }}</strong> skin.
+    </p>
+    <p>
+      The locals have their stories, their factions, and their suspicions. You bring with you a heart shaped by:
+      <span class="traits">{{ profile.personality|join(", ") }}</span>, and a way of speaking that is
+      <span class="traits">{{ profile.speech_style }}</span>.
+    </p>
+    <p>
+      Whether this world bends to your will or swallows you whole depends on what you do next.
+    </p>
+    <a class="button" href="/begin_story">Step Into the World</a>
   </div>
 </body>
 </html>
