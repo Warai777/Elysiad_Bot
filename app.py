@@ -128,7 +128,9 @@ def enter_world():
 
 @app.route('/emporium')
 def emporium():
-    return render_template('emporium.html')
+    with open('data/emporium_items.json') as f:
+        items = json.load(f)
+    return render_template('emporium_dynamic.html', items=items)
 
 @app.route('/read_chapter/<world>/<int:chapter>')
 def read_chapter(world, chapter):
