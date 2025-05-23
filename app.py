@@ -36,7 +36,6 @@ def signup():
         os.makedirs('data/users', exist_ok=True)
         with open(user_path, 'w') as f:
             json.dump({'username': username, 'password': password}, f, indent=2)
-        # Create default profile too
         profile = {
             "name": username,
             "appearance": {},
@@ -44,7 +43,8 @@ def signup():
             "speech_style": "",
             "origin_essence": 0,
             "worlds_visited": [],
-            "suspicion_level": 0
+            "suspicion_level": 0,
+            "tier": "10-C"
         }
         with open('data/player_profile.json', 'w') as f:
             json.dump(profile, f, indent=2)
@@ -67,34 +67,42 @@ def save_character():
         "style": request.form['style']
     }
     personality_traits = request.form.getlist('personality')
-    profile = {
+    with open('data/player_profile.json') as f:
+        profile = json.load(f)
+
+    profile.update({
         "name": request.form['name'],
         "appearance": appearance,
         "personality": personality_traits,
-        "speech_style": request.form['speech_style'],
-        "origin_essence": 0,
-        "worlds_visited": [],
-        "suspicion_level": 0
-    }
+        "speech_style": request.form['speech_style']
+    })
+
     with open('data/player_profile.json', 'w') as f:
         json.dump(profile, f, indent=2)
     return redirect(url_for('world_entry'))
 
 @app.route('/world_entry')
 def world_entry():
+    with open('data/player_profile.json') as f:
+        player = json.load(f)
+    tier = player.get("tier", "10-C")
+
     if os.path.exists('data/cached_worlds.json'):
         with open('data/cached_worlds.json') as f:
             cached = json.load(f)
     else:
         cached = []
 
-    if not cached:
-        new_world = generate_ai_world_template()
-        cached.append(new_world)
-        with open('data/cached_worlds.json', 'w') as f:
-            json.dump(cached, f, indent=2)
+    eligible_worlds = [w for w in cached if w.get("tier") == tier]
 
-    world = cached[-1]
+    if not eligible_worlds:
+        new_world = generate_ai_world_template()
+        if new_world['tier'] == tier:
+            eligible_worlds.append(new_world)
+        with open('data/cached_worlds.json', 'w') as f:
+            json.dump([new_world], f, indent=2)
+
+    world = eligible_worlds[-1]
     return render_template('entry_mode_select.html', world=world)
 
 @app.route('/select_entry_mode')
