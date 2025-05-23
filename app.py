@@ -39,7 +39,7 @@ def signup():
         # Create default profile too
         profile = {
             "name": username,
-            "appearance": "",
+            "appearance": {},
             "personality": [],
             "speech_style": "",
             "origin_essence": 0,
@@ -58,9 +58,17 @@ def create_character():
 
 @app.route('/save_character', methods=['POST'])
 def save_character():
+    appearance = {
+        "hair_color": request.form['hair_color'],
+        "eye_color": request.form['eye_color'],
+        "skin_color": request.form['skin_color'],
+        "height": request.form['height'],
+        "build": request.form['build'],
+        "style": request.form['style']
+    }
     profile = {
         "name": request.form['name'],
-        "appearance": request.form['appearance'],
+        "appearance": appearance,
         "personality": [trait.strip() for trait in request.form['personality'].split(',')],
         "speech_style": request.form['speech_style'],
         "origin_essence": 0,
