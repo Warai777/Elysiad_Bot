@@ -36,6 +36,18 @@ def signup():
         os.makedirs('data/users', exist_ok=True)
         with open(user_path, 'w') as f:
             json.dump({'username': username, 'password': password}, f, indent=2)
+        # Create default profile too
+        profile = {
+            "name": username,
+            "appearance": "",
+            "personality": [],
+            "speech_style": "",
+            "origin_essence": 0,
+            "worlds_visited": [],
+            "suspicion_level": 0
+        }
+        with open('data/player_profile.json', 'w') as f:
+            json.dump(profile, f, indent=2)
         return redirect(url_for('login'))
     return render_template('signup.html')
 
