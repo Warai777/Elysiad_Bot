@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import json, os
 from world_templates import generate_ai_world_template
 from chapter_saver import load_chapter
@@ -11,7 +11,7 @@ app.secret_key = 'elysiad_secret_key'
 def root():
     return redirect(url_for('login'))
 
-@app.route('/login', methods=['['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -138,6 +138,32 @@ def emporium():
     ]
     items = {cat: generate_emporium_items(cat, tier) for cat in categories}
     return render_template('emporium_dynamic.html', items=items)
+
+@app.route('/purchase', methods=['POST'])
+def purchase():
+    item_data = request.json
+    item_cost = item_data.get("cost")
+    item_name = item_data.get("name")
+
+    with open('data/player_profile.json') as f:
+        profile = json.load(f)
+
+    if profile["origin_essence"] >= item_cost:
+        profile["origin_essence"] -= item_cost
+        with open('data/player_profile.json', 'w') as f:
+            json.dump(profile, f, indent=2)
+
+        with open('data/inventory.json') as f:
+            inventory = json.load(f)
+
+        inventory["owned_items"].append(item_data)
+
+        with open('data/inventory.json', 'w') as f:
+            json.dump(inventory, f, indent=2)
+
+        return jsonify({"status": "success", "message": f"You purchased {item_name}."})
+    else:
+        return jsonify({"status": "fail", "message": "Not enough Origin Essence."})
 
 @app.route('/read_chapter/<world>/<int:chapter>')
 def read_chapter(world, chapter):
