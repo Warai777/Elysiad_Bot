@@ -1,13 +1,25 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import json, os
 from world_templates import generate_ai_world_template
 from chapter_saver import load_chapter
 
 app = Flask(__name__)
+app.secret_key = 'elysiad_secret_key'
 
 @app.route('/')
-def home():
-    return redirect(url_for('create_character'))
+def root():
+    return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username and password:
+            session['user'] = username
+            return redirect(url_for('create_character'))
+        return "Invalid credentials. Try again."
+    return render_template('login.html')
 
 @app.route('/create_character')
 def create_character():
