@@ -15,11 +15,29 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username and password:
-            session['user'] = username
-            return redirect(url_for('create_character'))
+        user_path = f'data/users/{username}.json'
+        if os.path.exists(user_path):
+            with open(user_path) as f:
+                user = json.load(f)
+            if user['password'] == password:
+                session['user'] = username
+                return redirect(url_for('create_character'))
         return "Invalid credentials. Try again."
     return render_template('login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user_path = f'data/users/{username}.json'
+        if os.path.exists(user_path):
+            return "Username already exists."
+        os.makedirs('data/users', exist_ok=True)
+        with open(user_path, 'w') as f:
+            json.dump({'username': username, 'password': password}, f, indent=2)
+        return redirect(url_for('login'))
+    return render_template('signup.html')
 
 @app.route('/create_character')
 def create_character():
