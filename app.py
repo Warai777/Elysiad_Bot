@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import json, os
 from world_templates import generate_ai_world_template
 from chapter_saver import load_chapter
+from emporium_generator import generate_emporium_items
 
 app = Flask(__name__)
 app.secret_key = 'elysiad_secret_key'
@@ -128,8 +129,12 @@ def enter_world():
 
 @app.route('/emporium')
 def emporium():
-    with open('data/emporium_items.json') as f:
-        items = json.load(f)
+    with open('data/player_profile.json') as f:
+        profile = json.load(f)
+    tier = profile.get("tier", "10-C")
+    items = {
+        "Techniques": generate_emporium_items("Techniques", tier)
+    }
     return render_template('emporium_dynamic.html', items=items)
 
 @app.route('/read_chapter/<world>/<int:chapter>')
