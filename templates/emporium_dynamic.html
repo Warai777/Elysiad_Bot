@@ -14,11 +14,22 @@
     .item h3 { margin-top: 0; }
     .item p { margin: 0.3rem 0; }
     .translation { font-style: italic; color: #c9b8a3; }
+    .buy-button { background: #a17c54; color: #fff; border: none; padding: 0.5rem 1rem; margin-top: 0.5rem; cursor: pointer; border-radius: 6px; }
   </style>
   <script>
     function toggleItems(id) {
       const block = document.getElementById(id);
       block.style.display = block.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function purchaseItem(item) {
+      const response = await fetch('/purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item)
+      });
+      const result = await response.json();
+      alert(result.message);
     }
   </script>
 </head>
@@ -39,6 +50,7 @@
           <p><strong>{{ world }}:</strong> {{ translation }}</p>
           {% endfor %}
         </div>
+        <button class="buy-button" onclick='purchaseItem({{ item|tojson }})'>Buy</button>
       </div>
       {% endfor %}
     </div>
