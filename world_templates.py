@@ -1,27 +1,24 @@
 import random
-import json
 
-TIER_POOL = ["10-C", "10-B", "10-A", "9-C", "0"]
-
-def generate_ai_world_template():
-    # Placeholder static data for now
-    name = random.choice(["Aeonfall", "Thorneveil", "Yureisen", "Frosthollow"])
-    tone = random.choice(["melancholic", "bright", "oppressive", "mysterious"])
-    inspiration = random.choice(["anime", "book", "webtoon", "game"])
-    tier = "10-C"  # default for now
-
-    summary = f"In the land of {name}, where {tone} forces rule and destiny sleeps beneath cracked stone..."
-    canon_profile = {
-        "name": random.choice(["Kael", "Rin", "Asher", "Luna"]),
-        "arc": "Rebirth of the Flame",
-        "intro_paragraph": f"You awaken as the heir to a ruined family in the land of {name}, shrouded in silence and schemes."
+def generate_ai_world_template(tier="10-C"):
+    inspirations = {
+        "10-C": ["Slice of Life City", "Medieval Hamlet", "Low-Risk School Life"],
+        "10-B": ["Sports Drama Town", "Rural Ninja Village"],
+        "10-A": ["Elite Soldier Base", "Haunted Research Lab"],
+        "9-C": ["Superpowered Street Gangs", "Low-Magic Dungeon Crawler"],
+        "9-B": ["Military PsyOps City", "Modern Sorcery Academy"],
+        "0": ["The Meta Abyss", "Chrono-collapse Realm"]
     }
+    name = random.choice(inspirations.get(tier, ["Unknown World"]))
 
     return {
         "name": name,
-        "tone": tone,
-        "inspiration": inspiration,
-        "summary": summary,
+        "tone": random.choice(["mysterious", "heroic", "tragic", "comedic"]),
+        "summary": f"You are transmigrated into {name}, a place of {tier} tier danger and destiny.",
         "tier": tier,
-        "canon_profile": canon_profile
+        "canon_profile": {
+            "name": "Default Protagonist",
+            "background": "A known figure from this world with embedded ties and secrets."
+        },
+        "inspiration": name
     }
