@@ -4,31 +4,48 @@
     <title>Journal</title>
     <style>
         body { background: #1c1614; color: #f4efe7; font-family: 'Georgia', serif; padding: 2rem; }
-        h1 { text-align: center; margin-bottom: 2rem; }
+        h1 { text-align: center; margin-bottom: 1rem; }
+        .toc { background: #2a1e1b; padding: 1rem; margin-bottom: 2rem; border-radius: 10px; }
+        .toc h3 { margin-top: 0; }
+        .toc ul { padding-left: 1.5rem; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { color: #d9c1af; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
         .chapter-entry { background: #2a1e1b; margin-bottom: 2rem; padding: 1.5rem; border-radius: 12px; box-shadow: 0 0 8px rgba(0,0,0,0.4); }
         .chapter-entry h2 { margin-top: 0; color: #e9d6c4; }
         .meta { font-size: 0.9rem; color: #bba89a; margin-bottom: 1rem; }
         .narrative { white-space: pre-wrap; line-height: 1.6; }
-        a { display: inline-block; margin-top: 1rem; color: #ccc; text-decoration: none; }
+        a.back { display: inline-block; margin-top: 1rem; color: #ccc; text-decoration: none; }
+        .nav-link { float: right; font-size: 0.85rem; color: #a88; cursor: pointer; }
     </style>
 </head>
 <body>
     <h1>📖 Your Journal of Worlds</h1>
     {% if journal %}
+    <div class="toc">
+        <h3>📜 Table of Contents</h3>
+        <ul>
         {% for chapter in journal %}
-        <div class="chapter-entry">
-            <h2>Chapter {{ chapter.chapter }}: {{ chapter.title }}</h2>
-            <div class="meta">
-                <div>🕰️ {{ chapter.date }}</div>
-                <div>🌍 {{ chapter.world }} — Tier {{ chapter.tier }} | Mode: {{ chapter.mode }}</div>
-                <div>🎭 Identity: {{ chapter.identity }}</div>
-            </div>
-            <div class="narrative">{{ chapter.narrative }}</div>
-        </div>
+            <li><a href="#chapter{{ chapter.chapter }}">Chapter {{ chapter.chapter }}: {{ chapter.title }}</a></li>
         {% endfor %}
+        </ul>
+    </div>
+
+    {% for chapter in journal %}
+    <div class="chapter-entry" id="chapter{{ chapter.chapter }}">
+        <h2>Chapter {{ chapter.chapter }}: {{ chapter.title }}</h2>
+        <div class="meta">
+            <div>🕰️ {{ chapter.date }}</div>
+            <div>🌍 {{ chapter.world }} — Tier {{ chapter.tier }} | Mode: {{ chapter.mode }}</div>
+            <div>🎭 Identity: {{ chapter.identity }}</div>
+        </div>
+        <div class="narrative">{{ chapter.narrative }}</div>
+        <div class="nav-link"><a href="#chapter{{ chapter.chapter + 1 }}">↓ Next</a></div>
+    </div>
+    {% endfor %}
     {% else %}
         <p>No chapters logged yet.</p>
     {% endif %}
-    <a href="/world_scene">← Return to World</a>
+    <a class="back" href="/world_scene">← Return to World</a>
 </body>
 </html>
