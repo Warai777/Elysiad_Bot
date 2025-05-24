@@ -1,5 +1,5 @@
 import os
-from chapter_saver import save_chapter, load_chapter
+from chapter_saver import save_chapter, load_chapter, advance_to_next_chapter
 
 # story_manager.py
 # Handles global story phase transitions and world-specific narrative logic
@@ -7,7 +7,10 @@ from chapter_saver import save_chapter, load_chapter
 def generate_story_scene(session):
     phase = session.current_phase
     world = session.current_world or "generic"
-    chapter_key = f"{world}_Chapter_1"  # TEMP: will support more later
+    player_id = session.user_id or "default"
+    chapter_num = session.current_chapter or 1
+    entry_mode = session.entry_mode or "Canon"
+    identity = session.identity or "Unknown"
 
     if world == "One Piece":
         scene = handle_one_piece_phase(session, phase)
@@ -16,65 +19,26 @@ def generate_story_scene(session):
     else:
         scene = handle_generic_phase(session, phase)
 
-    # Load existing chapter or start new
-    chapter = load_chapter(world, 1) or {
+    # Load or initialize chapter
+    chapter = load_chapter(world, chapter_num) or {
         "world": world,
-        "chapter": 1,
-        "entry_mode": session.entry_mode,
+        "chapter": chapter_num,
+        "entry_mode": entry_mode,
         "scenes": []
     }
     chapter["scenes"].append({
         "phase": phase,
         "narrative": scene
     })
-    save_chapter(world, 1, chapter)
+    save_chapter(world, chapter_num, chapter)
+
+    # Final phase check for auto chapter advancement
+    final_phases = ["Resolution", "Judgment", "New World"]
+    if phase in final_phases:
+        actions = [s["narrative"] for s in chapter["scenes"]]
+        advance_to_next_chapter(player_id, chapter_num, actions, {"name": world, "tier": session.world_tier}, entry_mode, identity)
+        session.current_chapter += 1
 
     return scene
 
-def handle_generic_phase(session, phase):
-    if phase == "Intro":
-        session.advance_phase("Exploration")
-        return "You awaken in a mysterious world. Your journey begins."
-    elif phase == "Exploration":
-        session.advance_phase("Tension")
-        return "You uncover ancient ruins hinting at deeper secrets."
-    elif phase == "Tension":
-        session.advance_phase("Climax")
-        return "A confrontation brews. Allies waver. Foes rally."
-    elif phase == "Climax":
-        session.advance_phase("Resolution")
-        return "With everything at stake, you make your final move."
-    else:
-        return "Your journey pauses in quiet reflection."
-
-def handle_one_piece_phase(session, phase):
-    if phase == "Intro":
-        session.advance_phase("Training")
-        return "You begin your life as a young pirate dreamer in East Blue."
-    elif phase == "Training":
-        session.advance_phase("Recruiting")
-        return "You seek crewmates and test your blade against bandits."
-    elif phase == "Recruiting":
-        session.advance_phase("Grand Line")
-        return "The sea opens to legend and danger."
-    elif phase == "Grand Line":
-        session.advance_phase("New World")
-        return "You must now face the emperors of the sea."
-    else:
-        return "Quiet tides wash over the Thousand Sunny..."
-
-def handle_death_note_phase(session, phase):
-    if phase == "Intro":
-        session.advance_phase("Discovery")
-        return "You find a black notebook lying in the street..."
-    elif phase == "Discovery":
-        session.advance_phase("Conflict")
-        return "Others begin to notice your patterns..."
-    elif phase == "Conflict":
-        session.advance_phase("Collapse")
-        return "Suspicions tighten. Your world shrinks."
-    elif phase == "Collapse":
-        session.advance_phase("Judgment")
-        return "Only one will outsmart the other."
-    else:
-        return "The pages fall silent for now..."
+... (rest unchanged) ...
