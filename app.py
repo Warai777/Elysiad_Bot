@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, request, session, url_for
 from flask_cors import CORS
 from routes.journal_routes import journal_bp
-from routes.story_routes import story_bp
 from routes.world_routes import world_bp
 from routes.user_routes import user_bp
 from routes.character_routes import character_bp
@@ -17,7 +16,6 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev")
 
 # Register blueprints
 app.register_blueprint(journal_bp)
-app.register_blueprint(story_bp)
 app.register_blueprint(world_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(character_bp)
