@@ -12,12 +12,20 @@ def format_narrative(actions):
         return "The story begins, but the details remain unwritten."
     return " ".join([action[0].upper() + action[1:] if action.endswith('.') else action + '.' for action in actions])
 
+def auto_title(narrative):
+    if not narrative.strip():
+        return "Untitled Encounter"
+    first_sentence = narrative.split('.')[0].strip()
+    keywords = first_sentence.split()[:6]
+    return " ".join(keywords).capitalize()
+
 def save_chapter_log(player_id, world_data, chapter_num, actions=None, mode="Canon", identity="", entry_time=None):
     ensure_chapter_dir()
     if entry_time is None:
         entry_time = datetime.utcnow().isoformat()
 
-    summary = format_narrative(actions or [])
+    narrative = format_narrative(actions or [])
+    title = auto_title(narrative)
     filename = f"{CHAPTER_DIR}/{player_id}_chapter{chapter_num}.json"
     log_data = {
         "chapter": chapter_num,
@@ -26,7 +34,8 @@ def save_chapter_log(player_id, world_data, chapter_num, actions=None, mode="Can
         "tier": world_data.get("tier"),
         "mode": mode,
         "identity": identity,
-        "narrative": summary
+        "title": title,
+        "narrative": narrative
     }
 
     with open(filename, 'w') as f:
