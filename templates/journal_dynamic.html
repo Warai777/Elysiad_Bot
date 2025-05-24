@@ -17,10 +17,10 @@
     {% if journal %}
         {% for chapter in journal %}
         <div class="chapter-entry">
-            <h2>Chapter {{ chapter.chapter }}: {{ chapter.world }}</h2>
+            <h2>Chapter {{ chapter.chapter }}: {{ chapter.title }}</h2>
             <div class="meta">
                 <div>🕰️ {{ chapter.date }}</div>
-                <div>🌍 Tier {{ chapter.tier }} | Mode: {{ chapter.mode }}</div>
+                <div>🌍 {{ chapter.world }} — Tier {{ chapter.tier }} | Mode: {{ chapter.mode }}</div>
                 <div>🎭 Identity: {{ chapter.identity }}</div>
             </div>
             <div class="narrative">{{ chapter.narrative }}</div>
