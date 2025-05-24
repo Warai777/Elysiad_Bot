@@ -2,18 +2,33 @@
 <html>
 <head>
     <title>Journal</title>
+    <style>
+        body { background: #1c1614; color: #f4efe7; font-family: 'Georgia', serif; padding: 2rem; }
+        h1 { text-align: center; margin-bottom: 2rem; }
+        .chapter-entry { background: #2a1e1b; margin-bottom: 2rem; padding: 1.5rem; border-radius: 12px; box-shadow: 0 0 8px rgba(0,0,0,0.4); }
+        .chapter-entry h2 { margin-top: 0; color: #e9d6c4; }
+        .meta { font-size: 0.9rem; color: #bba89a; margin-bottom: 1rem; }
+        .narrative { white-space: pre-wrap; line-height: 1.6; }
+        a { display: inline-block; margin-top: 1rem; color: #ccc; text-decoration: none; }
+    </style>
 </head>
 <body>
-    <h1>Your Journey Notes</h1>
+    <h1>📖 Your Journal of Worlds</h1>
     {% if journal %}
-        <ul>
-        {% for entry in journal %}
-            <li>{{ entry }}</li>
+        {% for chapter in journal %}
+        <div class="chapter-entry">
+            <h2>Chapter {{ chapter.chapter }}: {{ chapter.world }}</h2>
+            <div class="meta">
+                <div>🕰️ {{ chapter.date }}</div>
+                <div>🌍 Tier {{ chapter.tier }} | Mode: {{ chapter.mode }}</div>
+                <div>🎭 Identity: {{ chapter.identity }}</div>
+            </div>
+            <div class="narrative">{{ chapter.narrative }}</div>
+        </div>
         {% endfor %}
-        </ul>
     {% else %}
-        <p>No journal entries yet.</p>
+        <p>No chapters logged yet.</p>
     {% endif %}
-    <a href="/world_scene">Back to World</a>
+    <a href="/world_scene">← Return to World</a>
 </body>
 </html>
