@@ -1,25 +1,20 @@
-import os, json
+import os
+import json
 from datetime import datetime
 
-def save_chapter(world_name, chapter_number, content):
-    os.makedirs(f"data/chapters/{world_name}", exist_ok=True)
-    with open(f"data/chapters/{world_name}/chapter{chapter_number}.json", "w") as f:
-        json.dump(content, f, indent=2)
+def log_world_entry(player_id, world_data, character_data, entry_mode):
+    logs_dir = f"data/chapters/{player_id}/{world_data['world_id']}"
+    os.makedirs(logs_dir, exist_ok=True)
 
-def load_chapter(world_name, chapter_number):
-    path = f"data/chapters/{world_name}/chapter{chapter_number}.json"
-    if os.path.exists(path):
-        with open(path) as f:
-            return json.load(f)
-    return None
-
-def log_world_entry(world, profile, mode):
-    entry = {
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "world": world["name"],
-        "tier": world["tier"],
-        "entry_mode": mode,
-        "identity": world["canon_profile"] if mode == "canon" else profile,
-        "summary": world["summary"]
+    chapter_log = {
+        "chapter": 1,
+        "date": datetime.utcnow().isoformat() + 'Z',
+        "world": world_data['name'],
+        "tier": world_data['tier'],
+        "entry_mode": entry_mode,
+        "identity": character_data['name'],
+        "summary": world_data.get('summary', 'No summary available.')
     }
-    save_chapter(world["name"], 1, entry)
+
+    with open(f"{logs_dir}/chapter1.json", "w") as f:
+        json.dump(chapter_log, f, indent=2)
