@@ -1,36 +1,34 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request, session, url_for
 from flask_cors import CORS
-from user_auth import auth_bp
 from routes.journal_routes import journal_bp
-from routes.world_routes import world_bp
 from routes.story_routes import story_bp
-from routes.companion_routes import companion_bp
-from routes.choice_routes import choice_bp
+from routes.world_routes import world_bp
+from routes.user_routes import user_bp
 from routes.character_routes import character_bp
+from routes.auth_routes import auth_bp
 from routes.emporium_routes import emporium_bp
 from routes.chapter_routes import chapter_bp
-from routes.entry_routes import entry_bp
-from session_store import player_sessions
+import os
 
+# App init
 app = Flask(__name__)
 CORS(app)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev")
 
-# Register Blueprints
-app.register_blueprint(auth_bp)
+# Register blueprints
 app.register_blueprint(journal_bp)
-app.register_blueprint(world_bp)
 app.register_blueprint(story_bp)
-app.register_blueprint(companion_bp)
-app.register_blueprint(choice_bp)
+app.register_blueprint(world_bp)
+app.register_blueprint(user_bp)
 app.register_blueprint(character_bp)
+app.register_blueprint(auth_bp)
 app.register_blueprint(emporium_bp)
 app.register_blueprint(chapter_bp)
-app.register_blueprint(entry_bp)
 
-# Root route for testing
+# Routes
 @app.route('/')
-def home():
-    return render_template('login.html')
+def index():
+    return redirect(url_for('auth_bp.login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
