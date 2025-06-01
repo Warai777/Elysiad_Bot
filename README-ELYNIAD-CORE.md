@@ -1,6 +1,6 @@
-# Elysiad / Alicietta: Core Design Philosophy
+# Elysiad: Core Design Philosophy
 
-Alicietta is a magical, narrative-heavy, transmigration-based RPG web experience (and future app) where the player enters any fictional story world in existence — from anime and books to movies, games, and comics.
+Elysiad is a magical, narrative-heavy, transmigration-based RPG web experience (and future app) where the player enters any fictional story world in existence — from anime and books to movies, games, and comics.
 
 ## 🧬 Core Premise
 You, the player, are a persistent soul known as an **Origin Essence**. You have one true self — a custom character you design — and this identity follows you across every fictional world you enter.
