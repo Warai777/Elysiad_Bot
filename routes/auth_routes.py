@@ -7,7 +7,16 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        # TEMP: Authenticate everything
-        session['user'] = username
-        return redirect(url_for('main.choose_world'))  # Adjust to your post-login route
+        session['user'] = username  # TEMP: Authenticate all
+        return redirect(url_for('main.choose_world'))
     return render_template('login.html')
+
+@auth_bp.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        # TEMP: Accept all new users
+        session['user'] = username
+        return redirect(url_for('main.choose_world'))
+    return render_template('signup_page.html')
