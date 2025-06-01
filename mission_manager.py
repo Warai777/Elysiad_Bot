@@ -19,9 +19,15 @@ class Mission:
             return True
         return False
 
-    def complete(self):
+    def complete(self, session=None):
         self.completed = True
         self.failed = False
+        if session and hasattr(session, "enter_new_world"):
+            # Unlock world lore at mission completion
+            available = session.current_world
+            if available:
+                session.enter_new_world(available)
+                session.log_journal("Something buried was revealed by your success...", type_="lore", importance="medium", tags=["mission", "discovery"])
 
 class MissionManager:
     def __init__(self, player_name):
