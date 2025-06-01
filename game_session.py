@@ -3,6 +3,7 @@ import json
 import os
 from datetime import datetime
 from container import Container
+from companion_manager import Companion
 
 class GameSession:
     def __init__(self, session_id):
@@ -24,6 +25,18 @@ class GameSession:
         self.chapters = []
         self.current_chapter_index = 0
         self.current_chapter_id = None
+        self.companions = []
+
+    def add_companion(self, companion_data):
+        comp = Companion.from_dict(companion_data)
+        self.companions.append(comp)
+        self.log_journal(f"{comp.name} has joined you as a companion.", type_="event", tags=["companion"])
+
+    def companion_react(self, event_type):
+        for comp in self.companions:
+            comp.react_to_event(event_type)
+            if comp.recent_reaction:
+                self.log_journal(comp.recent_reaction, type_="companion", tags=["reaction"])
 
     def start_chapter(self, title):
         chapter = {
@@ -66,7 +79,8 @@ class GameSession:
             "strength": self.strength,
             "traits": self.traits,
             "roles": self.roles,
-            "chapters": self.chapters
+            "chapters": self.chapters,
+            "companions": [c.to_dict() for c in self.companions]
         }
         with open(f"{save_dir}/{self.session_id}_autosave.json", "w") as f:
             json.dump(data, f, indent=2)
