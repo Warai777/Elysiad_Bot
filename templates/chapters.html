@@ -1,30 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Story Chapters</title>
-    <style>
-        .chapter { margin-bottom: 1.5em; border-left: 4px solid #888; padding-left: 10px; }
-        .chapter h3 { margin-bottom: 0; }
-        .chapter small { color: #666; }
-    </style>
-</head>
-<body>
-    <h1>All Story Chapters</h1>
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6 bg-[url('/static/leather_bg.jpg')] bg-cover min-h-screen text-black">
+  <div class="max-w-4xl mx-auto bg-white bg-opacity-90 rounded-2xl p-6 shadow-xl">
+    <h1 class="text-3xl font-bold mb-4 text-center">📜 Your Chapter Log</h1>
     {% if chapters %}
-        <ul>
+      <div class="space-y-4">
         {% for ch in chapters %}
-            <li class="chapter">
-                <h3>{{ ch.title }}</h3>
-                <small>{{ ch.timestamp }}</small>
-                <div>
-                    {% for entry in ch.content %}<p>{{ entry }}</p>{% endfor %}
-                </div>
-            </li>
+          <div class="border rounded-xl p-4 bg-white shadow-md">
+            <div class="flex justify-between items-center">
+              <h2 class="text-xl font-semibold">{{ ch.title }}</h2>
+              <span class="text-sm text-gray-600">{{ ch.date }}</span>
+            </div>
+            <p class="text-gray-800 italic">World: {{ ch.world }} | Mode: {{ ch.mode }} | Identity: {{ ch.identity }}</p>
+            <p class="mt-2">{{ ch.narrative }}</p>
+          </div>
         {% endfor %}
-        </ul>
+      </div>
     {% else %}
-        <p>No chapters recorded yet.</p>
+      <p class="text-center text-gray-700">No chapters recorded yet. Begin your journey to write your story.</p>
     {% endif %}
-    <a href="/world_scene">Back to World</a>
-</body>
-</html>
+  </div>
+</div>
+{% endblock %}
