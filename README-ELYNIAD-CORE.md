@@ -73,6 +73,8 @@ This system powers:
 - `lore_manager.py`: Now unlocks lore tagged to "Library of Beginnings" only (no Library of Echoes).
 - `journal_dynamic.html`: Lore filter dropdown updated to only show "Library of Beginnings".
 - `world_templates.py`: Generates procedurally themed worlds by tier and tone.
+- `ai_behavior.py`: Refactored to define NPCBehavior — modular loyalty/mood system.
+- `companion_manager.py`: Companion now inherits from NPCBehavior for unified NPC simulation.
 
 ---
 
