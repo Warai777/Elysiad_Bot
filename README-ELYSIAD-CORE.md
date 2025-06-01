@@ -75,6 +75,7 @@ This system powers:
 - `world_templates.py`: Generates procedurally themed worlds by tier and tone.
 - `ai_behavior.py`: Refactored to define NPCBehavior — modular loyalty/mood system.
 - `companion_manager.py`: Companion now inherits from NPCBehavior for unified NPC simulation.
+- `routes/user_routes.py`: Added `/profile` route for player profile page with session check and render.
 
 ---
 
@@ -106,6 +107,9 @@ This system powers:
 - `journal_dynamic.html`: Main journal UI with flipping pages and tabs.
 - `journal_routes.py`: Backend routes for journal access and tab handling.
 - `chapter_saver.py`: Formats and stores narrated events per chapter.
+
+### 👤 User/Profile Routes
+- `routes/user_routes.py`: Includes `/profile` route to render profile.html for logged-in users only.
 
 ### 🏛️ UI / Templates
 - `templates/world_scene.html`: Main world interaction screen.
