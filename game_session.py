@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from container import Container
 from companion_manager import Companion
+from lore_manager import get_all_archivist_lore
 
 class GameSession:
     def __init__(self, session_id):
@@ -27,6 +28,19 @@ class GameSession:
         self.current_chapter_id = None
         self.companions = []
         self._suspicion_triggered_levels = set()
+
+    def enter_new_world(self, world):
+        self.current_world = world
+        self.log_journal(f"You have arrived in {world}.", type_="system", importance="high", tags=["travel"])
+        
+        # Discover world lore
+        available_lore = [l for l in get_all_archivist_lore() if l.origin_world == world]
+        undiscovered = [l for l in available_lore if l.id not in {x.id for x in self.lore}]
+
+        if undiscovered:
+            fragment = random.choice(undiscovered)
+            self.lore.append(fragment)
+            self.log_journal("You glimpse something ancient stirring beneath the surface...", type_="lore", importance="medium", tags=["discovery"])
 
     def add_companion(self, companion_data):
         comp = Companion.from_dict(companion_data)
