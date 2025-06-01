@@ -19,14 +19,14 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .companion-card {
+        .companion-card, .lore-page {
             background: #2a1e1b;
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 1rem;
             box-shadow: 0 0 8px rgba(0,0,0,0.3);
         }
-        .companion-card h3 { margin-top: 0; color: #d9c1af; }
+        .companion-card h3, .lore-page h3 { margin-top: 0; color: #d9c1af; }
         .bar {
             height: 10px;
             border-radius: 5px;
@@ -34,6 +34,17 @@
         }
         .loyalty-bar { background: linear-gradient(to right, #8f8, #080); }
         .suspicion-bar { background: linear-gradient(to right, #f88, #800); }
+        .filters { margin-bottom: 1rem; }
+        .filters input, .filters select {
+            padding: 0.4rem;
+            background: #2a1e1b;
+            color: #e9d6c4;
+            border: 1px solid #5a403c;
+            border-radius: 6px;
+            margin-right: 0.5rem;
+        }
+        .lore-columns { display: flex; gap: 2rem; }
+        .lore-page { flex: 1; }
     </style>
     <script>
         function switchTab(tabName) {
@@ -50,6 +61,7 @@
     <div class="tabs">
         <button id="chapters-btn" class="tab-button active" onclick="switchTab('chapters')">📜 Chapters</button>
         <button id="companions-btn" class="tab-button" onclick="switchTab('companions')">🧑‍🤝‍🧑 Companions</button>
+        <button id="lore-btn" class="tab-button" onclick="switchTab('lore')">📚 Lore</button>
     </div>
 
     <div id="chapters-tab" class="tab-content active">
@@ -94,6 +106,32 @@
         {% else %}
             <p>You have no companions yet.</p>
         {% endif %}
+    </div>
+
+    <div id="lore-tab" class="tab-content">
+        <div class="filters">
+            <input type="text" id="loreSearch" placeholder="Search lore...">
+            <select id="loreTag">
+                <option value="">All Tags</option>
+                <option value="archivist">Archivist</option>
+                <option value="memory">Memory</option>
+            </select>
+            <select id="loreWorld">
+                <option value="">All Worlds</option>
+                <option value="Library of Echoes">Library of Echoes</option>
+            </select>
+        </div>
+        <div class="lore-columns">
+            {% for frag in lore %}
+            <div class="lore-page">
+                <h3>{{ frag.title }}</h3>
+                <p>{{ frag.text }}</p>
+                <div><strong>🌍 Origin:</strong> {{ frag.origin_world }}</div>
+                <div><strong>🏷️ Tags:</strong> {{ frag.tags | join(', ') }}</div>
+                <div><strong>🔍 Found via:</strong> {{ frag.discovery_method }}</div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
     <a class="back" href="/world_scene">← Return to World</a>
