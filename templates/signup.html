@@ -15,13 +15,15 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 100vh;
     }
     .signup-box {
       background: #3b2f2a;
-      padding: 2.5rem;
+      padding: 2rem;
       border-radius: 14px;
       box-shadow: 0 0 30px rgba(0,0,0,0.5);
-      width: 400px;
+      width: 100%;
+      max-width: 420px;
       text-align: center;
     }
     h1 {
@@ -31,7 +33,7 @@
     input[type="text"], input[type="password"] {
       width: 100%;
       padding: 0.75rem;
-      margin: 0.6rem 0;
+      margin: 0.5rem 0;
       border: 1px solid #5a4430;
       border-radius: 6px;
       background-color: #2e2520;
@@ -69,7 +71,7 @@
 </head>
 <body>
   <div class="signup-box">
-    <h1>Create Your Account</h1>
+    <h1>Create an Account</h1>
     <form action="/signup" method="post" onsubmit="return checkPasswordMatch()">
       <input type="text" name="username" placeholder="Choose a Username" required>
 
@@ -81,7 +83,7 @@
 
       <button type="submit">Sign Up</button>
     </form>
-    <a class="login-link" href="/login">Already have an account? Login</a>
+    <a class="login-link" href="/login">Already have an account? Log in</a>
   </div>
 
   <script>
