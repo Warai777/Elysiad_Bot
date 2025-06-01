@@ -10,7 +10,7 @@ def get_all_archivist_lore():
             title=f"Archivist Fragment {i+1}",
             text=line,
             tags=["archivist", "memory"],
-            origin_world="Library of Echoes",
+            origin_world="Library of Beginnings",
             discovery_method="system_default"
         )
         fragments.append(frag)
