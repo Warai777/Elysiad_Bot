@@ -2,31 +2,32 @@ import json
 import random
 import openai
 import os
+from game.ai_behavior import NPCBehavior
 
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-class Companion:
+class Companion(NPCBehavior):
     def __init__(self, name, archetype, tier, stats, ability, personality, loyalty=50, suspicion=0):
-        self.name = name
+        super().__init__(name=name, role="companion", loyalty=loyalty)
         self.archetype = archetype
         self.tier = tier
         self.stats = stats
         self.ability = ability
         self.personality = personality
-        self.loyalty = loyalty
         self.suspicion = suspicion
         self.recent_reaction = None
 
     def react_to_event(self, event_type):
         if event_type == "betrayal":
-            self.loyalty -= 15
+            self.update_relationship("betray")
             self.suspicion += 20
             self.recent_reaction = f"{self.name} looks at you with mistrust."
         elif event_type == "heroic":
-            self.loyalty += 10
+            self.update_relationship("assist")
             self.suspicion = max(0, self.suspicion - 10)
             self.recent_reaction = f"{self.name} seems inspired by your courage."
         elif event_type == "silence":
+            self.update_relationship("ignore")
             self.suspicion += 5
             self.recent_reaction = f"{self.name} quietly watches you, saying nothing."
 
@@ -104,12 +105,10 @@ Respond strictly in JSON format:
         content = response.choices[0].message.content
         companion_data = json.loads(content)
 
-        # ✅ Validate essential keys
         required_keys = ["name", "tier", "stats", "ability", "personality", "loyalty"]
         if not all(k in companion_data for k in required_keys):
             raise ValueError("❌ Incomplete AI companion data.")
 
-        # ✅ Validate nested keys in stats and ability
         stat_keys = ["attack", "speed", "durability", "range", "intelligence", "stamina"]
         if not all(k in companion_data["stats"] for k in stat_keys):
             raise ValueError("❌ Missing stat fields in AI companion data.")
