@@ -6,6 +6,10 @@ main = Blueprint('main', __name__)
 def home():
     return redirect(url_for('auth_bp.login'))
 
+@main.route('/choose-world')
+def choose_world():
+    return render_template('library.html')
+
 @main.route('/enter_world')
 def enter_world():
     if 'world' not in session or 'entry_mode' not in session:
