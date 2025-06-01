@@ -6,6 +6,7 @@ from routes.character_routes import character_bp
 from routes.auth_routes import auth_bp
 from routes.emporium_routes import emporium_bp
 from routes.chapter_routes import chapter_bp
+from routes.main_routes import main  # added
 import os
 
 # App init
@@ -20,6 +21,7 @@ app.register_blueprint(character_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(emporium_bp)
 app.register_blueprint(chapter_bp)
+app.register_blueprint(main)  # added
 
 # Routes
 @app.route('/')
