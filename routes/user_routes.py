@@ -4,6 +4,6 @@ user_bp = Blueprint('user_bp', __name__)
 
 @user_bp.route('/profile')
 def profile():
-    if 'player_name' not in session:
+    if 'user' not in session or 'profile' not in session:
         return redirect(url_for('auth_bp.login'))
-    return render_template('profile.html', player_name=session['player_name'])
+    return render_template('profile.html', profile=session['profile'])
