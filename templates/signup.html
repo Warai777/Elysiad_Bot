@@ -37,6 +37,14 @@
       background-color: #2e2520;
       color: #eae6dc;
     }
+    .toggle {
+      float: right;
+      margin-top: -2.2rem;
+      margin-right: 1rem;
+      cursor: pointer;
+      color: #bbb;
+      font-size: 0.85rem;
+    }
     button {
       margin-top: 1rem;
       width: 100%;
@@ -62,12 +70,34 @@
 <body>
   <div class="signup-box">
     <h1>Create Your Account</h1>
-    <form action="/signup" method="post">
+    <form action="/signup" method="post" onsubmit="return checkPasswordMatch()">
       <input type="text" name="username" placeholder="Choose a Username" required>
-      <input type="password" name="password" placeholder="Create a Password" required>
+
+      <input id="password" type="password" name="password" placeholder="Create a Password" required>
+      <span class="toggle" onclick="togglePassword('password')">Show</span>
+
+      <input id="confirm" type="password" name="confirm_password" placeholder="Confirm Password" required>
+      <span class="toggle" onclick="togglePassword('confirm')">Show</span>
+
       <button type="submit">Sign Up</button>
     </form>
     <a class="login-link" href="/login">Already have an account? Login</a>
   </div>
+
+  <script>
+    function togglePassword(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+    function checkPasswordMatch() {
+      const pass = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+      if (pass !== confirm) {
+        alert("Passwords do not match.");
+        return false;
+      }
+      return true;
+    }
+  </script>
 </body>
 </html>
