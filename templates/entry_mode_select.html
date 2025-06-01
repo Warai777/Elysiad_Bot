@@ -47,15 +47,17 @@
 <body>
   <h1>Choose How You Will Enter This World</h1>
   <div class="mode-container">
-    <form action="/enter_world" method="post">
-      <input type="hidden" name="mode" value="canon">
+    <form action="/begin-world" method="post">
+      <input type="hidden" name="entry_mode" value="canon">
+      <input type="hidden" name="world_name" value="{{ session['world'] }}">
       <button class="mode-card" type="submit">
         <h2>Canon Path</h2>
         <p>Become the original main character of this world. Start from their story's beginning.</p>
       </button>
     </form>
-    <form action="/enter_world" method="post">
-      <input type="hidden" name="mode" value="original">
+    <form action="/begin-world" method="post">
+      <input type="hidden" name="entry_mode" value="original">
+      <input type="hidden" name="world_name" value="{{ session['world'] }}">
       <button class="mode-card" type="submit">
         <h2>Original Character</h2>
         <p>Enter this world as your own unique self with a forged backstory and identity.</p>
