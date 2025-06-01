@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from user_auth import create_user, validate_user
 
 auth_bp = Blueprint('auth_bp', __name__)
 
@@ -7,8 +8,12 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        session['user'] = username  # TEMP: Authenticate all
-        return redirect(url_for('main.choose_world'))
+        valid, message = validate_user(username, password)
+        if valid:
+            session['user'] = username
+            return redirect(url_for('main.choose_world'))
+        else:
+            flash(message, 'error')
     return render_template('login.html')
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
@@ -16,7 +21,10 @@ def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        # TEMP: Accept all new users
-        session['user'] = username
-        return redirect(url_for('main.choose_world'))
+        success, message = create_user(username, password)
+        if success:
+            session['user'] = username
+            return redirect(url_for('main.choose_world'))
+        else:
+            flash(message, 'error')
     return render_template('signup_page.html')
