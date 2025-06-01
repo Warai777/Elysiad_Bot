@@ -44,7 +44,7 @@ Each world entry includes:
 - What the story originally was — and how your presence shifts it.
 
 ## 🧩 Persistent Player Identity
-Stored in `player_profile.json`, your identity follows you:
+Each player has a dedicated JSON profile at `data/players/{username}.json`:
 ```json
 {
   "name": "Your name",
@@ -75,9 +75,13 @@ This system powers:
 - `world_templates.py`: Generates procedurally themed worlds by tier and tone.
 - `ai_behavior.py`: Refactored to define NPCBehavior — modular loyalty/mood system.
 - `companion_manager.py`: Companion now inherits from NPCBehavior for unified NPC simulation.
-- `routes/user_routes.py`: Added `/profile` route for player profile page with session check and render.
-- `routes/character_routes.py`: Placeholder `/character` route created to satisfy app import.
-- `routes/emporium_routes.py`: Connected emporium_generator and renders `/emporium` page.
+- `routes/user_routes.py`: `/profile` shows and now edits the user's soulbound profile.
+- `routes/emporium_routes.py`: Connects to item generation and shows `/emporium` UI.
+- `routes/chapter_routes.py`: Loads user-specific chapter logs to `/chapters` timeline.
+- `auth_routes.py`: Integrated with `user_auth.py` for real login/signup and error feedback.
+- `user_auth.py`: Adds profile creation on signup and per-user storage in `data/players/`.
+- `profile.html`: Editable player appearance, personality, speech style with live save.
+- `base.html`: Displays styled flash messages for error/success UX.
 
 ---
 
@@ -103,26 +107,30 @@ This system powers:
 - `player.py`: Loads/stores persistent Origin Essence profile.
 - `companion_manager.py`: Manages companions, generation, reactions.
 - `ai_behavior.py`: NPCBehavior logic for moods, suspicion, loyalty.
-- `player_profile.json`: Stores player’s eternal identity across worlds.
+- `data/players/`: One JSON profile per user for persistent identity.
 
-### 📖 Journal Interface
+### 📖 Journal & Chapter Log
 - `journal_dynamic.html`: Main journal UI with flipping pages and tabs.
 - `journal_routes.py`: Backend routes for journal access and tab handling.
 - `chapter_saver.py`: Formats and stores narrated events per chapter.
+- `chapter_routes.py`: Renders chapters from disk into a scrollable timeline.
 
-### 👤 User/Profile Routes
-- `routes/user_routes.py`: Includes `/profile` route to render profile.html for logged-in users only.
-- `routes/character_routes.py`: Placeholder route for future character interactions.
+### 👤 User/Auth Routes
+- `auth_routes.py`: Signup/login using bcrypt + flash messages.
+- `user_routes.py`: Profile view and live editable identity fields.
+- `user_auth.py`: Creates and validates user creds, manages profile saves.
 
 ### 🛒 Emporium
 - `emporium_generator.py`: Item generator logic for the magical shop.
-- `routes/emporium_routes.py`: Renders `/emporium` using generated shop items and template.
+- `emporium_routes.py`: Renders `/emporium` using generated shop items.
 
 ### 🏛️ UI / Templates
 - `templates/world_scene.html`: Main world interaction screen.
 - `templates/entry_mode_select.html`: Choose canon vs origin entry.
 - `templates/library.html`: Visual hub for world selection (Library of Beginnings).
 - `templates/death_screen.html`: Death/reset screen for suspicion overflow.
+- `templates/profile.html`: Editable player profile with appearance, traits.
+- `templates/chapters.html`: Timeline of story chapters saved per player.
 - `static/styles.css`, `journal_page_flip.css`: Antique magical UI + page animations.
 
 ### 💾 Save / Load
