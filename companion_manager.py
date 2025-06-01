@@ -5,6 +5,59 @@ import os
 
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+class Companion:
+    def __init__(self, name, archetype, tier, stats, ability, personality, loyalty=50, suspicion=0):
+        self.name = name
+        self.archetype = archetype
+        self.tier = tier
+        self.stats = stats
+        self.ability = ability
+        self.personality = personality
+        self.loyalty = loyalty
+        self.suspicion = suspicion
+        self.recent_reaction = None
+
+    def react_to_event(self, event_type):
+        if event_type == "betrayal":
+            self.loyalty -= 15
+            self.suspicion += 20
+            self.recent_reaction = f"{self.name} looks at you with mistrust."
+        elif event_type == "heroic":
+            self.loyalty += 10
+            self.suspicion = max(0, self.suspicion - 10)
+            self.recent_reaction = f"{self.name} seems inspired by your courage."
+        elif event_type == "silence":
+            self.suspicion += 5
+            self.recent_reaction = f"{self.name} quietly watches you, saying nothing."
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "archetype": self.archetype,
+            "tier": self.tier,
+            "stats": self.stats,
+            "ability": self.ability,
+            "personality": self.personality,
+            "loyalty": self.loyalty,
+            "suspicion": self.suspicion,
+            "recent_reaction": self.recent_reaction
+        }
+
+    @staticmethod
+    def from_dict(data):
+        comp = Companion(
+            name=data["name"],
+            archetype=data["archetype"],
+            tier=data["tier"],
+            stats=data["stats"],
+            ability=data["ability"],
+            personality=data["personality"],
+            loyalty=data.get("loyalty", 50),
+            suspicion=data.get("suspicion", 0)
+        )
+        comp.recent_reaction = data.get("recent_reaction")
+        return comp
+
 def generate_ai_inspired_companion(world_inspiration):
     prompt = f"""
 You are generating a fictional RPG companion inspired by the world of {world_inspiration}.
