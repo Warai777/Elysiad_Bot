@@ -33,7 +33,6 @@
             margin-bottom: 0.5rem;
         }
         .loyalty-bar { background: linear-gradient(to right, #8f8, #080); }
-        .suspicion-bar { background: linear-gradient(to right, #f88, #800); }
         .filters { margin-bottom: 1rem; }
         .filters input, .filters select {
             padding: 0.4rem;
@@ -98,7 +97,6 @@
             <div class="companion-card">
                 <h3>{{ c.name }} — {{ c.archetype }}</h3>
                 <div>Loyalty: <div class="bar loyalty-bar" style="width: {{ c.loyalty }}%"></div></div>
-                <div>Suspicion: <div class="bar suspicion-bar" style="width: {{ c.suspicion }}%"></div></div>
                 <p><em>{{ c.personality }}</em></p>
                 {% if c.recent_reaction %}<p>🗨️ {{ c.recent_reaction }}</p>{% endif %}
             </div>
