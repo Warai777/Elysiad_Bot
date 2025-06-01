@@ -1,4 +1,4 @@
-class AICharacter:
+class NPCBehavior:
     def __init__(self, name, role="npc", loyalty=50):
         self.name = name
         self.role = role
@@ -27,3 +27,12 @@ class AICharacter:
 
     def behavior_summary(self):
         return f"{self.name} [{self.role}] - Mood: {self.mood}, Loyalty: {self.loyalty}, Rivalry: {self.rivalry}"
+
+    def react_to_suspicion(self, suspicion_level):
+        if suspicion_level > 90:
+            return f"{self.name} narrows their eyes. 'You're not who you say you are, are you?'"
+        elif suspicion_level > 60:
+            return f"{self.name} grows distant and cautious."
+        elif suspicion_level > 30:
+            return f"{self.name} starts asking odd questions about your past."
+        return f"{self.name} seems at ease around you... for now."
