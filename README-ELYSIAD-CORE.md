@@ -62,10 +62,20 @@ This system powers:
 - Character voice consistency.
 - Accumulating meta-story connections between worlds.
 
+## 😨 Suspicion System (Hidden Mechanic)
+- Players build **suspicion** by acting out of character.
+- Tracked silently in session and profile as `suspicion_level`.
+- Certain thresholds (40, 70, 100) trigger narrative consequences:
+  - World becomes wary, events shift tone
+  - NPCs react coldly or confront
+  - At 100: forced narrative punishment or death
+- `game_session.py` logs suspicion moments as journal entries.
+- `suspicion_events.py` handles logic.
+- `death_screen.html` triggered on overflow.
+
 ---
 
 ## ✅ System Updates
-
 > A running log of newly added systems, used to keep Elysiad sessions in sync with development.
 
 - `structured_lore.py`: Fetch lore by world, phase, and tag for dynamic narrative drops.
@@ -82,6 +92,10 @@ This system powers:
 - `user_auth.py`: Adds profile creation on signup and per-user storage in `data/players/`.
 - `profile.html`: Editable player appearance, personality, speech style with live save.
 - `base.html`: Displays styled flash messages for error/success UX.
+- `entry_mode_select.html` → `/begin-world`: Entry mode setup for canon or original character.
+- `routes/world_routes.py` → `/begin-world`: Caches world and entry mode, starts session.
+- `main_routes.py` → `/enter_world`: Loads narrative welcome scene.
+- `world_scene.html`: Immersive world intro with entry path summary.
 
 ---
 
@@ -107,6 +121,7 @@ This system powers:
 - `player.py`: Loads/stores persistent Origin Essence profile.
 - `companion_manager.py`: Manages companions, generation, reactions.
 - `ai_behavior.py`: NPCBehavior logic for moods, suspicion, loyalty.
+- `suspicion_events.py`: Triggers story events on suspicion thresholds.
 - `data/players/`: One JSON profile per user for persistent identity.
 
 ### 📖 Journal & Chapter Log
