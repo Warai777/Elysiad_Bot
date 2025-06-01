@@ -2,44 +2,30 @@
 {% block content %}
 <div class="min-h-screen bg-[url('/static/leather_bg.jpg')] bg-cover p-8 text-black">
   <div class="max-w-3xl mx-auto bg-white bg-opacity-90 rounded-2xl p-6 shadow-xl">
-    <h1 class="text-3xl font-bold text-center mb-6">🧬 Your True Identity</h1>
+    <h1 class="text-3xl font-bold text-center mb-6">🧬 Edit Your Identity</h1>
 
-    <div class="space-y-4">
-      <div>
-        <label class="block font-semibold">Name:</label>
-        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.name }}</div>
-      </div>
+    <form method="POST">
+      <div class="space-y-4">
+        <div>
+          <label class="block font-semibold">Appearance:</label>
+          <input type="text" name="appearance" value="{{ profile.appearance }}" class="w-full rounded px-4 py-2 bg-gray-100">
+        </div>
 
-      <div>
-        <label class="block font-semibold">Appearance:</label>
-        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.appearance }}</div>
-      </div>
+        <div>
+          <label class="block font-semibold">Personality (comma-separated):</label>
+          <input type="text" name="personality" value="{{ profile.personality | join(', ') }}" class="w-full rounded px-4 py-2 bg-gray-100">
+        </div>
 
-      <div>
-        <label class="block font-semibold">Personality:</label>
-        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.personality | join(', ') }}</div>
-      </div>
+        <div>
+          <label class="block font-semibold">Speech Style:</label>
+          <input type="text" name="speech_style" value="{{ profile.speech_style }}" class="w-full rounded px-4 py-2 bg-gray-100">
+        </div>
 
-      <div>
-        <label class="block font-semibold">Speech Style:</label>
-        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.speech_style }}</div>
+        <div class="text-center mt-6">
+          <button type="submit" class="bg-blue-700 text-white px-6 py-2 rounded-lg shadow">Save Changes</button>
+        </div>
       </div>
-
-      <div>
-        <label class="block font-semibold">Origin Essence:</label>
-        <div class="bg-yellow-100 rounded-lg px-4 py-2">{{ profile.origin_essence }}</div>
-      </div>
-
-      <div>
-        <label class="block font-semibold">Worlds Visited:</label>
-        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.worlds_visited | join(', ') }}</div>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-red-700">Suspicion Level:</label>
-        <div class="bg-red-100 rounded-lg px-4 py-2">{{ profile.suspicion_level }}</div>
-      </div>
-    </div>
+    </form>
   </div>
 </div>
 {% endblock %}
