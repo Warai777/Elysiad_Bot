@@ -30,10 +30,19 @@ class ActionHandler:
 
         self.session.choice_log.append(result)
 
-        # Adjust session stats based on outcome
+        # Suspicion handling
+        suspicion_boost = 0
         if outcome == 'negative':
-            self.session.suspicion += 5
-        elif outcome == 'positive':
+            suspicion_boost += 5
+        if action_type == 'suspicious':
+            suspicion_boost += 10
+
+        if suspicion_boost > 0:
+            self.session.suspicion += suspicion_boost
+            self.session.companion_react("betrayal")
+
+        # Reward logic
+        if outcome == 'positive':
             self.session.origin_essence += 3
         elif outcome == 'critical_success':
             self.session.origin_essence += 10
