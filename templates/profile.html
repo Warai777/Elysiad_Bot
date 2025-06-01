@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="min-h-screen bg-[url('/static/leather_bg.jpg')] bg-cover p-8 text-black">
+  <div class="max-w-3xl mx-auto bg-white bg-opacity-90 rounded-2xl p-6 shadow-xl">
+    <h1 class="text-3xl font-bold text-center mb-6">🧬 Your True Identity</h1>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block font-semibold">Name:</label>
+        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.name }}</div>
+      </div>
+
+      <div>
+        <label class="block font-semibold">Appearance:</label>
+        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.appearance }}</div>
+      </div>
+
+      <div>
+        <label class="block font-semibold">Personality:</label>
+        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.personality | join(', ') }}</div>
+      </div>
+
+      <div>
+        <label class="block font-semibold">Speech Style:</label>
+        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.speech_style }}</div>
+      </div>
+
+      <div>
+        <label class="block font-semibold">Origin Essence:</label>
+        <div class="bg-yellow-100 rounded-lg px-4 py-2">{{ profile.origin_essence }}</div>
+      </div>
+
+      <div>
+        <label class="block font-semibold">Worlds Visited:</label>
+        <div class="bg-gray-100 rounded-lg px-4 py-2">{{ profile.worlds_visited | join(', ') }}</div>
+      </div>
+
+      <div>
+        <label class="block font-semibold text-red-700">Suspicion Level:</label>
+        <div class="bg-red-100 rounded-lg px-4 py-2">{{ profile.suspicion_level }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
