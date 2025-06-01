@@ -76,6 +76,8 @@ This system powers:
 - `ai_behavior.py`: Refactored to define NPCBehavior — modular loyalty/mood system.
 - `companion_manager.py`: Companion now inherits from NPCBehavior for unified NPC simulation.
 - `routes/user_routes.py`: Added `/profile` route for player profile page with session check and render.
+- `routes/character_routes.py`: Placeholder `/character` route created to satisfy app import.
+- `routes/emporium_routes.py`: Connected emporium_generator and renders `/emporium` page.
 
 ---
 
@@ -110,6 +112,11 @@ This system powers:
 
 ### 👤 User/Profile Routes
 - `routes/user_routes.py`: Includes `/profile` route to render profile.html for logged-in users only.
+- `routes/character_routes.py`: Placeholder route for future character interactions.
+
+### 🛒 Emporium
+- `emporium_generator.py`: Item generator logic for the magical shop.
+- `routes/emporium_routes.py`: Renders `/emporium` using generated shop items and template.
 
 ### 🏛️ UI / Templates
 - `templates/world_scene.html`: Main world interaction screen.
