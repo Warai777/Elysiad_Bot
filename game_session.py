@@ -26,6 +26,7 @@ class GameSession:
         self.current_chapter_index = 0
         self.current_chapter_id = None
         self.companions = []
+        self._suspicion_triggered_levels = set()
 
     def add_companion(self, companion_data):
         comp = Companion.from_dict(companion_data)
@@ -37,6 +38,21 @@ class GameSession:
             comp.react_to_event(event_type)
             if comp.recent_reaction:
                 self.log_journal(comp.recent_reaction, type_="companion", tags=["reaction"])
+
+        thresholds = {
+            30: "They’re glancing at me differently...",
+            60: "There’s fear in their eyes now.",
+            90: "I’m being watched. Closely."
+        }
+        for threshold, message in thresholds.items():
+            if self.suspicion >= threshold and threshold not in self._suspicion_triggered_levels:
+                self.log_journal(message, type_="suspicion", importance="medium", tags=["tension"])
+                self._suspicion_triggered_levels.add(threshold)
+
+        if self.suspicion >= 100:
+            self.log_journal("The realm has seen through you. Reality trembles...", type_="death", importance="high", tags=["fail"])
+            self.phase = "ResetRequired"
+            self.current_phase = "Dead"
 
     def start_chapter(self, title):
         chapter = {
