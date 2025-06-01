@@ -64,4 +64,16 @@ This system powers:
 
 ---
 
+## ✅ System Updates
+
+> A running log of newly added systems, used to keep Elysiad sessions in sync with development.
+
+- `structured_lore.py`: Fetch lore by world, phase, and tag for dynamic narrative drops.
+- `timeline_log.py`: Merged timeline logging and shard saving into one system.
+- `lore_manager.py`: Now unlocks lore tagged to "Library of Beginnings" only (no Library of Echoes).
+- `journal_dynamic.html`: Lore filter dropdown updated to only show "Library of Beginnings".
+- `world_templates.py`: Generates procedurally themed worlds by tier and tone.
+
+---
+
 This README defines the permanent design blueprint for the Elysiad Helper GPT. It should be loaded and referenced whenever a session starts to maintain immersive consistency and narrative integrity.
