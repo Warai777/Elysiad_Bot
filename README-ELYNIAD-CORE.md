@@ -78,4 +78,47 @@ This system powers:
 
 ---
 
+## 🧩 Full Feature & File Reference
+
+### 🌍 World & Lore
+- `world_templates.py`: Procedural world generator by tone and tier.
+- `structured_lore.py`: Provides lore fragments by world, phase, and tag.
+- `archivist_lore.py`: Canon metanarrative fragments written by the Archivist.
+- `lore_tracker.py`: Class for unlocking, storing, and retrieving lore.
+- `lore_manager.py`: Manages default lore flow, paging, and filtering.
+- `timeline_log.py`: Logs major in-world events as timeline shards.
+
+### 🎮 Gameplay Systems
+- `game_session.py`: Master object tracking current world, journal, suspicion, companions.
+- `mission_manager.py`: Handles mission phases and mission-related lore.
+- `action_handler.py`: Applies action tags and outcomes, modifies suspicion.
+- `combat_manager.py`: Simple combat resolution logic.
+- `combat_story_manager.py`: Generates narrated outcomes of combat.
+- `roll_engine.py`: Dice logic and resolution interpreter.
+
+### 🧠 Character & Behavior
+- `player.py`: Loads/stores persistent Origin Essence profile.
+- `companion_manager.py`: Manages companions, generation, reactions.
+- `ai_behavior.py`: NPCBehavior logic for moods, suspicion, loyalty.
+- `player_profile.json`: Stores player’s eternal identity across worlds.
+
+### 📖 Journal Interface
+- `journal_dynamic.html`: Main journal UI with flipping pages and tabs.
+- `journal_routes.py`: Backend routes for journal access and tab handling.
+- `chapter_saver.py`: Formats and stores narrated events per chapter.
+
+### 🏛️ UI / Templates
+- `templates/world_scene.html`: Main world interaction screen.
+- `templates/entry_mode_select.html`: Choose canon vs origin entry.
+- `templates/library.html`: Visual hub for world selection (Library of Beginnings).
+- `templates/death_screen.html`: Death/reset screen for suspicion overflow.
+- `static/styles.css`, `journal_page_flip.css`: Antique magical UI + page animations.
+
+### 💾 Save / Load
+- `save_routes.py`: Save and load session files.
+- `data/lore_fragments/`: Folder for per-world lore fragments.
+- `data/cached_worlds.json`: Likely stores procedurally generated world cache.
+
+---
+
 This README defines the permanent design blueprint for the Elysiad Helper GPT. It should be loaded and referenced whenever a session starts to maintain immersive consistency and narrative integrity.
