@@ -68,10 +68,14 @@ This system powers:
 - Certain thresholds (40, 70, 100) trigger narrative consequences:
   - World becomes wary, events shift tone
   - NPCs react coldly or confront
-  - At 100: forced narrative punishment or death
-- `game_session.py` logs suspicion moments as journal entries.
-- `suspicion_events.py` handles logic.
-- `death_screen.html` triggered on overflow.
+  - At 100: forced narrative punishment
+- If suspicion reaches 100:
+  - You are immediately redirected to a **Dark Souls-style death screen** (`death_screen.html`)
+  - Journal is wiped
+  - Suspicion resets
+  - You re-enter the same world from the start
+- `game_session.py` and `main_routes.py` handle this transition.
+- `suspicion_events.py` detects and marks thresholds.
 
 ---
 
@@ -96,6 +100,8 @@ This system powers:
 - `routes/world_routes.py` → `/begin-world`: Caches world and entry mode, starts session.
 - `main_routes.py` → `/enter_world`: Loads narrative welcome scene.
 - `world_scene.html`: Immersive world intro with entry path summary.
+- `main_routes.py` → `/death`: Detects phase = ResetRequired, wipes session journal, resets suspicion.
+- `death_screen.html`: Styled as Dark Souls “YOU DIED” screen with delayed return link.
 
 ---
 
