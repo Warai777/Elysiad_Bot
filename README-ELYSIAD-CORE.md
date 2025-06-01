@@ -82,6 +82,7 @@ This system powers:
 ## ✅ System Updates
 > A running log of newly added systems, used to keep Elysiad sessions in sync with development.
 
+- `signup.html`: Now supports password confirmation and show/hide toggles with styling that matches the login screen.
 - `structured_lore.py`: Fetch lore by world, phase, and tag for dynamic narrative drops.
 - `timeline_log.py`: Merged timeline logging and shard saving into one system.
 - `lore_manager.py`: Now unlocks lore tagged to "Library of Beginnings" only (no Library of Echoes).
@@ -99,7 +100,6 @@ This system powers:
 - `entry_mode_select.html` → `/begin-world`: Entry mode setup for canon or original character.
 - `routes/world_routes.py` → `/begin-world`: Caches world and entry mode, starts session.
 - `main_routes.py` → `/enter_world`: Loads narrative welcome scene.
-- `world_scene.html`: Immersive world intro with entry path summary.
 - `main_routes.py` → `/death`: Detects phase = ResetRequired, wipes session journal, resets suspicion.
 - `death_screen.html`: Styled as Dark Souls “YOU DIED” screen with delayed return link.
 
@@ -150,6 +150,7 @@ This system powers:
 - `templates/entry_mode_select.html`: Choose canon vs origin entry.
 - `templates/library.html`: Visual hub for world selection (Library of Beginnings).
 - `templates/death_screen.html`: Death/reset screen for suspicion overflow.
+- `templates/signup.html`: Styled form with password confirm + toggle visibility.
 - `templates/profile.html`: Editable player profile with appearance, traits.
 - `templates/chapters.html`: Timeline of story chapters saved per player.
 - `static/styles.css`, `journal_page_flip.css`: Antique magical UI + page animations.
