@@ -9,6 +9,18 @@
 </head>
 <body>
     <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="max-w-3xl mx-auto mt-4">
+              {% for category, message in messages %}
+                <div class="mb-2 p-4 rounded-xl text-white {{ 'bg-red-600' if category == 'error' else 'bg-green-600' }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </main>
 </body>
