@@ -2,20 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>☠️ Death - Elysiad</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>YOU DIED</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: #8b0000;
+            font-family: 'Times New Roman', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 6rem;
+            letter-spacing: 0.3rem;
+            margin: 0;
+            animation: fadeIn 2s ease-in-out forwards;
+        }
+        .return-link {
+            margin-top: 3rem;
+            opacity: 0;
+            color: #fefae0;
+            font-size: 1.2rem;
+            text-decoration: none;
+            border: 1px solid #fefae0;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+            animation: fadeInLink 5s ease-in-out forwards;
+        }
+        .return-link:hover {
+            background: #8b0000;
+            color: white;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(1.4); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeInLink {
+            0% { opacity: 0; }
+            60% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
 </head>
-<body style="background-color: #1a0000;">
-    <div class="container">
-        <h1>☠️ Your story ends here, {{ player.name }}...</h1>
-        <p>The realm of {{ player.current_world }} claims your soul.</p>
-        <br>
-        <a href="/" class="button">Return to the Library of Beginnings</a>
-    </div>
-
-    <div class="mascot-container">
-    <img src="{{ url_for('static', filename='elysiad_mascot.png') }}" alt="Elysiad Mascot">
-</div>
-
+<body>
+    <h1>YOU DIED</h1>
+    <a href="/" class="return-link">Return to the Library of Beginnings</a>
 </body>
 </html>
