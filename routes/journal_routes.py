@@ -2,6 +2,7 @@ from flask import Blueprint, session, redirect, url_for, render_template, reques
 import json
 from globals import player_sessions
 from companion_manager import generate_ai_inspired_companion, Companion
+from lore_manager import get_all_archivist_lore
 
 journal_bp = Blueprint("journal_bp", __name__)
 
@@ -26,7 +27,15 @@ def journal_dynamic():
     if not session_id or session_id not in player_sessions:
         return redirect(url_for("login_page"))
     session_data = player_sessions[session_id]
-    return render_template("journal_dynamic.html", journal=session_data.chapters, companions=[c.to_dict() for c in session_data.companions])
+    lore_entries = []
+    if hasattr(session_data, "lore"):
+        lore_entries = session_data.lore
+    return render_template(
+        "journal_dynamic.html",
+        journal=session_data.chapters,
+        companions=[c.to_dict() for c in session_data.companions],
+        lore=[l.to_dict() if hasattr(l, 'to_dict') else l for l in lore_entries]
+    )
 
 @journal_bp.route("/add_journal_entry", methods=["POST"])
 def add_journal_entry():
