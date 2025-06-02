@@ -8,7 +8,8 @@ def home():
 
 @main.route('/choose-world')
 def choose_world():
-    return render_template('library.html')
+    player = session.get('profile')
+    return render_template('library.html', player=player)
 
 @main.route('/enter_world')
 def enter_world():
