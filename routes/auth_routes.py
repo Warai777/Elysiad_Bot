@@ -33,4 +33,4 @@ def signup():
             return redirect(url_for('main.choose_world'))
         else:
             flash(message, 'error')
-    return render_template('signup_actual.html')
+    return render_template('signup_new.html')
